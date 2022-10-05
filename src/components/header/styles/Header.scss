@@ -1,0 +1,26 @@
+.header {
+  width: 100%;
+
+  .section-container {
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid rgb(200, 200, 200);
+  }
+
+  .section {
+    font-family: "Lexend Deca", sans-serif;
+    font-size: 1.7rem;
+    padding: 2rem;
+    border: none;
+    background-color: var(--primary-element-colour);
+    transition: background-color 125ms ease-in-out;
+
+    &:hover {
+      background-color: var(--secondary-element-colour);
+    }
+  }
+
+  .selected {
+    background-color: var(--secondary-element-colour);
+  }
+}

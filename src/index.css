@@ -1,13 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=Asap&family=Lexend+Deca&family=Signika+Negative&display=swap");
+
+:root {
+  --primary-element-colour: white;
+  --secondary-element-colour: rgb(233, 233, 233);
+}
+
+html {
+  font-size: 62.5%;
+}
+
 body {
+  font-size: 1.6rem;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Signica Negative", "Lexend Deca", "Asap", "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+button {
+  cursor: pointer;
 }

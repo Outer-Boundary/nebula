@@ -1,0 +1,22 @@
+.header {
+  width: 100%;
+}
+.header .section-container {
+  display: flex;
+  justify-content: center;
+  border-bottom: 1px solid rgb(200, 200, 200);
+}
+.header .section {
+  font-family: "Lexend Deca", sans-serif;
+  font-size: 1.7rem;
+  padding: 2rem;
+  border: none;
+  background-color: var(--primary-element-colour);
+  transition: background-color 125ms ease-in-out;
+}
+.header .section:hover {
+  background-color: var(--secondary-element-colour);
+}
+.header .selected {
+  background-color: var(--secondary-element-colour);
+}/*# sourceMappingURL=Header.css.map */
