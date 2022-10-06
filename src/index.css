@@ -3,6 +3,8 @@
 :root {
   --primary-element-colour: white;
   --secondary-element-colour: rgb(233, 233, 233);
+  --primary-border-radius: 2rem;
+  --primary-drop-shadow: drop-shadow(0 0 4px rgb(200, 200, 200));
 }
 
 html {

@@ -1,0 +1,23 @@
+.product-icon {
+  background-color: var(--primary-element-colour);
+  border-radius: var(--primary-border-radius);
+  filter: var(--primary-drop-shadow);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .product-image {
+    height: 100%;
+    border: none;
+    object-fit: contain;
+    background-color: var(--secondary-element-colour);
+  }
+
+  .product-details {
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+}

@@ -1,13 +1,12 @@
 import { useState } from "react";
+import { SectionType } from "../types/SectionType";
 
 import "./styles/Header.css";
 
-type Section = "all" | "new" | "clothing" | "shoes" | "accessories";
-
 export default function Header() {
-  const [curSection, setCurSection] = useState<Section>("all");
+  const [curSection, setCurSection] = useState<SectionType>("all");
 
-  function selectSection(section: Section) {
+  function selectSection(section: SectionType) {
     document.getElementById(`${curSection}-section`)?.classList.remove("selected");
     document.getElementById(`${section}-section`)?.classList.add("selected");
     setCurSection(section);
@@ -15,23 +14,24 @@ export default function Header() {
 
   return (
     <div className="header">
-      <div className="section-container">
-        <button id="all-section" className="section selected" onClick={() => selectSection("all")}>
-          All
-        </button>
-        <button id="new-section" className="section" onClick={() => selectSection("new")}>
-          New
-        </button>
-        <button id="clothing-section" className="section" onClick={() => selectSection("clothing")}>
-          Clothing
-        </button>
-        <button id="shoes-section" className="section" onClick={() => selectSection("shoes")}>
-          Shoes
-        </button>
-        <button id="accessories-section" className="section" onClick={() => selectSection("accessories")}>
-          Accessories
-        </button>
-      </div>
+      <button id="all-section" className="section-title selected" onClick={() => selectSection("all")}>
+        All
+      </button>
+      <button id="new-section" className="section-title" onClick={() => selectSection("new")}>
+        New
+      </button>
+      <button id="clothing-section" className="section-title" onClick={() => selectSection("clothing")}>
+        Clothing
+      </button>
+      <button id="shoes-section" className="section-title" onClick={() => selectSection("shoes")}>
+        Shoes
+      </button>
+      <button id="accessories-section" className="section-title" onClick={() => selectSection("accessories")}>
+        Accessories
+      </button>
+      <button id="sale-section" className="section-title" onClick={() => selectSection("sale")}>
+        Sale
+      </button>
     </div>
   );
 }
