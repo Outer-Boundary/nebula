@@ -23,12 +23,23 @@ export default function Section({ section }: { section: SectionType }) {
   function filterResults() {
     const searchFilters = (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value
       .toLowerCase()
-      .replace(/[\W_]/g, "")
+      .replace(/\S\W_|-/g, "")
       .split(" ");
-
+    console.log(searchFilters);
     const newFilteredProducts: IProduct[] = [];
     for (const product of products) {
-      const matches = searchFilters.every((filter) => product.name.toLowerCase().includes(filter));
+      const productNameKeys = product.name
+        .toLowerCase()
+        .replace(/\S\W_|-/g, "")
+        .split(" ");
+
+      let matches = false;
+      for (const productNameKey of productNameKeys) {
+        if (searchFilters.some((filter) => productNameKey === filter)) {
+          matches = true;
+          break;
+        }
+      }
       if (matches) newFilteredProducts.push(product);
     }
 
