@@ -7,6 +7,7 @@ import ProductIcon from "../product-icon/ProductIcon";
 import IProduct from "../types/IProduct";
 import { SectionType } from "../types/SectionType";
 
+// need this to refresh when clicking on different sections so that the filters reset
 export default function Section({ section }: { section: SectionType }) {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
@@ -19,9 +20,10 @@ export default function Section({ section }: { section: SectionType }) {
     );
     setProducts(newProducts);
     setFilteredProducts(newProducts);
+    resetFilters();
   }, [section]);
 
-  // filters the products based on the search string and the product names
+  // goes through each filter then sets the products being viewed
   function filterProducts() {
     const newFilteredProducts = [...products];
     searchFilter(newFilteredProducts);
@@ -29,6 +31,7 @@ export default function Section({ section }: { section: SectionType }) {
     setFilteredProducts(newFilteredProducts);
   }
 
+  // filters the products based on the search string and the product names. can use a hyphen to negate a search
   function searchFilter(products: IProduct[]) {
     const searchString = (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value;
     if (searchString.replace(/\s/g, "") === "") {
@@ -36,10 +39,8 @@ export default function Section({ section }: { section: SectionType }) {
       return;
     }
 
-    const searchFilters = searchString
-      .toLowerCase()
-      .replace(/\S\W_|-/g, "")
-      .split(" ");
+    const searchFilters = searchString.toLowerCase().replace(/\S\W_/g, "").split(" ");
+    console.log(searchFilters);
 
     for (let i = 0; i < products.length; i++) {
       const productKeywords = products[i].name
@@ -48,7 +49,11 @@ export default function Section({ section }: { section: SectionType }) {
         .split(" ");
 
       for (const searchFilter of searchFilters) {
-        if (productKeywords.every((keyword) => keyword !== searchFilter && searchFilter !== "")) {
+        const notIncludesKeyword =
+          !searchFilter.startsWith("-") && productKeywords.every((keyword) => keyword !== searchFilter.replace(/-/g, ""));
+        const includesNegatedKeyword =
+          searchFilter.startsWith("-") && productKeywords.some((keyword) => keyword === searchFilter.replace(/-/g, ""));
+        if ((notIncludesKeyword || includesNegatedKeyword) && searchFilter !== "") {
           products.splice(i, 1);
           i--;
           break;
@@ -57,6 +62,7 @@ export default function Section({ section }: { section: SectionType }) {
     }
   }
 
+  // sorts a filter based on the selected sorting option
   function sortByFilter(products: IProduct[]) {
     const option = (document.getElementById("sort-by-select") as HTMLInputElement).value;
 
@@ -71,9 +77,20 @@ export default function Section({ section }: { section: SectionType }) {
         products.sort((a, b) => b.price - a.price);
         break;
       default:
-        console.log("Invalid sorting option");
+        // make sure each case matches the value in each option
+        console.error("Invalid sorting option");
         break;
     }
+  }
+
+  // resets filters to their default state (for when switching sections)
+  function resetFilters() {
+    // reset search filter
+    (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value = "";
+
+    // reset sort by to its first
+    const sortBySelectElement = document.getElementById("sort-by-select") as HTMLInputElement;
+    sortBySelectElement.value = (sortBySelectElement.children[0] as HTMLOptionElement).value;
   }
 
   return (
@@ -86,7 +103,6 @@ export default function Section({ section }: { section: SectionType }) {
             className="search-btn"
             onClick={(e) => {
               e.preventDefault();
-              e.stopPropagation();
               filterProducts();
             }}
           >
