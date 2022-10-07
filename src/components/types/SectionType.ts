@@ -1,1 +1,8 @@
-export type SectionType = "all" | "new" | "clothing" | "shoes" | "accessories" | "sale";
+export enum SectionType {
+  All,
+  New,
+  Clothing,
+  Shoes,
+  Accessories,
+  Sale,
+}

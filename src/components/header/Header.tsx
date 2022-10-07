@@ -1,37 +1,38 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { SectionType } from "../types/SectionType";
 
 import "./styles/Header.css";
 
 export default function Header() {
-  const [curSection, setCurSection] = useState<SectionType>("all");
+  const [curSection, setCurSection] = useState<SectionType>(SectionType.All);
 
   function selectSection(section: SectionType) {
-    document.getElementById(`${curSection}-section`)?.classList.remove("selected");
-    document.getElementById(`${section}-section`)?.classList.add("selected");
+    document.getElementById(`${SectionType[curSection].toString().toLowerCase()}-section`)?.classList.remove("selected");
+    document.getElementById(`${SectionType[section].toString().toLowerCase()}-section`)?.classList.add("selected");
     setCurSection(section);
   }
 
   return (
     <div className="header">
-      <button id="all-section" className="section-title selected" onClick={() => selectSection("all")}>
+      <Link to="/" id="all-section" className="section-title selected" onClick={() => selectSection(SectionType.All)}>
         All
-      </button>
-      <button id="new-section" className="section-title" onClick={() => selectSection("new")}>
+      </Link>
+      <Link to="/new" id="new-section" className="section-title" onClick={() => selectSection(SectionType.New)}>
         New
-      </button>
-      <button id="clothing-section" className="section-title" onClick={() => selectSection("clothing")}>
+      </Link>
+      <Link to="/clothing" id="clothing-section" className="section-title" onClick={() => selectSection(SectionType.Clothing)}>
         Clothing
-      </button>
-      <button id="shoes-section" className="section-title" onClick={() => selectSection("shoes")}>
+      </Link>
+      <Link to="/shoes" id="shoes-section" className="section-title" onClick={() => selectSection(SectionType.Shoes)}>
         Shoes
-      </button>
-      <button id="accessories-section" className="section-title" onClick={() => selectSection("accessories")}>
+      </Link>
+      <Link to="/accessories" id="accessories-section" className="section-title" onClick={() => selectSection(SectionType.Accessories)}>
         Accessories
-      </button>
-      <button id="sale-section" className="section-title" onClick={() => selectSection("sale")}>
+      </Link>
+      <Link to="sale" id="sale-section" className="section-title" onClick={() => selectSection(SectionType.Sale)}>
         Sale
-      </button>
+      </Link>
     </div>
   );
 }

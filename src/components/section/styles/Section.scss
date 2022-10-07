@@ -32,6 +32,42 @@
     }
   }
 
+  .search-container {
+    display: flex;
+    cursor: default;
+    &:hover {
+      background-color: var(--primary-element-colour);
+    }
+  }
+
+  .search-input {
+    width: 100%;
+    font-size: 2rem;
+    padding: 1rem;
+    padding-right: 0;
+    outline: none;
+    border: 2px solid var(--secondary-element-colour);
+    border-right: none;
+    border-top-left-radius: var(--primary-border-radius);
+    border-bottom-left-radius: var(--primary-border-radius);
+  }
+
+  .search-btn {
+    background-color: var(--primary-element-colour);
+    border: 2px solid var(--secondary-element-colour);
+    border-left: none;
+    border-top-right-radius: var(--primary-border-radius);
+    border-bottom-right-radius: var(--primary-border-radius);
+    cursor: pointer;
+  }
+
+  .search-icon {
+    $size: 4.4rem;
+    width: $size;
+    height: $size;
+    padding: 1rem;
+  }
+
   .products-container {
     width: 100%;
     padding: 2rem;

@@ -8,12 +8,13 @@
   z-index: 100;
 
   .section-title {
-    font-family: "Lexend Deca", sans-serif;
+    color: var(--primary-text-colour);
     font-size: 1.7rem;
     padding: 2rem;
     border: none;
     background-color: var(--primary-element-colour);
     transition: background-color 125ms ease-in-out;
+    text-decoration: none;
 
     &:hover {
       background-color: var(--secondary-element-colour);
