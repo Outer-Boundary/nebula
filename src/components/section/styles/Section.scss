@@ -8,7 +8,7 @@
     background-color: var(--primary-element-colour);
     $margin: 3rem;
     height: calc(100% - $margin * 2);
-    width: 34rem;
+    width: 30rem;
     position: absolute;
     top: 50%;
     left: $margin;
@@ -22,7 +22,7 @@
 
   .filter {
     width: 100%;
-    padding: 2rem;
+    padding: 1.6rem;
     cursor: pointer;
     border-bottom: 1px solid var(--secondary-element-colour);
   }
@@ -71,12 +71,25 @@
     font-size: 1.6rem;
   }
 
+  .size-text {
+    margin-bottom: 0.4rem;
+  }
+
+  .checkbox-size-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .checkbox-label {
+    margin-right: 0.4rem;
+  }
+
   .products-container {
     width: 100%;
     padding: 2rem;
-    padding-left: 40rem;
+    padding-left: 36rem;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     grid-auto-rows: 40rem;
     gap: 2rem;
     overflow-y: scroll;

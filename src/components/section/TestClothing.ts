@@ -14,7 +14,7 @@ export const testProducts: IProduct[] = [
     sizes: [
       { size: Size.S, amount: 6 },
       { size: Size.M, amount: 10 },
-      { size: Size.L, amount: 8 },
+      { size: Size.XL, amount: 8 },
     ],
     price: 18,
   },
@@ -38,7 +38,7 @@ export const testProducts: IProduct[] = [
     material: Material.Denim,
     target: "any",
     sizes: [
-      { size: Size.S, amount: 6 },
+      { size: Size.XS, amount: 6 },
       { size: Size.M, amount: 10 },
       { size: Size.L, amount: 8 },
     ],
@@ -64,7 +64,7 @@ export const testProducts: IProduct[] = [
     material: Material.Wool,
     target: "any",
     sizes: [
-      { size: Size.S, amount: 6 },
+      { size: Size.XS, amount: 6 },
       { size: Size.M, amount: 10 },
       { size: Size.L, amount: 8 },
     ],
@@ -77,7 +77,7 @@ export const testProducts: IProduct[] = [
     material: Material.Cotton,
     target: "any",
     sizes: [
-      { size: Size.S, amount: 6 },
+      { size: Size.XXS, amount: 6 },
       { size: Size.M, amount: 10 },
       { size: Size.L, amount: 8 },
     ],
@@ -92,7 +92,7 @@ export const testProducts: IProduct[] = [
     sizes: [
       { size: Size.S, amount: 6 },
       { size: Size.M, amount: 10 },
-      { size: Size.L, amount: 8 },
+      { size: Size.XL, amount: 8 },
     ],
     price: 22,
   },
@@ -105,7 +105,7 @@ export const testProducts: IProduct[] = [
     sizes: [
       { size: Size.S, amount: 6 },
       { size: Size.M, amount: 10 },
-      { size: Size.L, amount: 8 },
+      { size: Size.XL, amount: 8 },
     ],
     price: 48,
   },
@@ -131,7 +131,7 @@ export const testProducts: IProduct[] = [
     sizes: [
       { size: Size.S, amount: 6 },
       { size: Size.M, amount: 10 },
-      { size: Size.L, amount: 8 },
+      { size: Size.XXL, amount: 8 },
     ],
     price: 34,
   },
@@ -144,7 +144,7 @@ export const testProducts: IProduct[] = [
     sizes: [
       { size: Size.S, amount: 6 },
       { size: Size.M, amount: 10 },
-      { size: Size.L, amount: 8 },
+      { size: Size.XXL, amount: 8 },
     ],
     price: 40,
   },
@@ -155,9 +155,9 @@ export const testProducts: IProduct[] = [
     material: Material.Cotton,
     target: "any",
     sizes: [
-      { size: Size.S, amount: 6 },
+      { size: Size.XXS, amount: 6 },
       { size: Size.M, amount: 10 },
-      { size: Size.L, amount: 8 },
+      { size: Size.XL, amount: 8 },
     ],
     price: 37,
   },

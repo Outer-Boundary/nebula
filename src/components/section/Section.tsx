@@ -6,6 +6,8 @@ import { testProducts } from "./TestClothing";
 import ProductIcon from "../product-icon/ProductIcon";
 import IProduct from "../types/IProduct";
 import { SectionType } from "../types/SectionType";
+import Size from "../types/Size";
+import { getEnumValues } from "../../helper/Helper";
 
 // need this to refresh when clicking on different sections so that the filters reset
 export default function Section({ section }: { section: SectionType }) {
@@ -28,6 +30,7 @@ export default function Section({ section }: { section: SectionType }) {
     const newFilteredProducts = [...products];
     searchFilter(newFilteredProducts);
     sortByFilter(newFilteredProducts);
+    sizeFilter(newFilteredProducts);
     setFilteredProducts(newFilteredProducts);
   }
 
@@ -83,6 +86,22 @@ export default function Section({ section }: { section: SectionType }) {
     }
   }
 
+  // filters products based on the selected sizes
+  function sizeFilter(products: IProduct[]) {
+    const checkedSizes = document
+      .getElementsByClassName("checkbox-size-container")[0]
+      .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
+    for (let i = 0; i < products.length; i++) {
+      for (let ii = 0; ii < checkedSizes.length; ii++) {
+        if (products[i].sizes.every((sizeInfo) => Size[sizeInfo.size].toString() !== checkedSizes[ii].name || sizeInfo.amount <= 0)) {
+          products.splice(i, 1);
+          i--;
+          break;
+        }
+      }
+    }
+  }
+
   // resets filters to their default state (for when switching sections)
   function resetFilters() {
     // reset search filter
@@ -123,6 +142,22 @@ export default function Section({ section }: { section: SectionType }) {
         </div>
         <div className="filter size-container">
           <p className="size-text">Size</p>
+          <div className="checkbox-size-container">
+            {getEnumValues(Size).map((size, index) => (
+              <div className="checkbox-container" key={index}>
+                <label htmlFor={`${size.toLowerCase()}-size-checkbox`} className="checkbox-label">
+                  {size}
+                </label>
+                <input
+                  type="checkbox"
+                  name={size}
+                  id={`${size.toLowerCase()}-size-checkbox`}
+                  className="checkbox"
+                  onChange={() => filterProducts()}
+                />
+              </div>
+            ))}
+          </div>
         </div>
         <div className="filter material-container">
           <p className="material-text">Material</p>
