@@ -20,23 +20,30 @@ export default function Section({ section }: { section: SectionType }) {
     setFilteredProducts(newProducts);
   }, [section]);
 
+  // filters the products based on the search string and the product names
   function filterResults() {
-    const searchFilters = (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value
+    const searchString = (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value;
+    if (searchString.replace(/\s/g, "") === "") {
+      setFilteredProducts(products);
+      return;
+    }
+
+    const searchFilters = searchString
       .toLowerCase()
       .replace(/\S\W_|-/g, "")
       .split(" ");
-    console.log(searchFilters);
+
     const newFilteredProducts: IProduct[] = [];
     for (const product of products) {
-      const productNameKeys = product.name
+      const productKeywords = product.name
         .toLowerCase()
         .replace(/\S\W_|-/g, "")
         .split(" ");
 
-      let matches = false;
-      for (const productNameKey of productNameKeys) {
-        if (searchFilters.some((filter) => productNameKey === filter)) {
-          matches = true;
+      let matches = true;
+      for (const searchFilter of searchFilters) {
+        if (!productKeywords.some((keyword) => keyword === searchFilter)) {
+          matches = false;
           break;
         }
       }
