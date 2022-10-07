@@ -4,7 +4,7 @@
   display: flex;
   position: relative;
 
-  .filter-container {
+  .filters-container {
     background-color: var(--primary-element-colour);
     $margin: 3rem;
     height: calc(100% - $margin * 2);
@@ -66,6 +66,17 @@
     width: $size;
     height: $size;
     padding: 1rem;
+  }
+
+  .sort-by-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  #sort-by-select {
+    font-size: 1.6rem;
   }
 
   .products-container {

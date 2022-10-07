@@ -4,7 +4,7 @@
   display: flex;
   position: relative;
 }
-.section .filter-container {
+.section .filters-container {
   background-color: var(--primary-element-colour);
   height: calc(100% - 6rem);
   width: 40rem;
@@ -58,6 +58,15 @@
   width: 4.4rem;
   height: 4.4rem;
   padding: 1rem;
+}
+.section .sort-by-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.section #sort-by-select {
+  font-size: 1.6rem;
 }
 .section .products-container {
   width: 100%;

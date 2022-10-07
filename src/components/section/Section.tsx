@@ -11,6 +11,7 @@ export default function Section({ section }: { section: SectionType }) {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
 
+  // gets the products from the selected section
   useEffect(() => {
     let newProducts = [...testProducts];
     newProducts = newProducts.filter(
@@ -21,7 +22,14 @@ export default function Section({ section }: { section: SectionType }) {
   }, [section]);
 
   // filters the products based on the search string and the product names
-  function filterResults() {
+  function filterProducts() {
+    const newFilteredProducts = [...products];
+    searchFilter(newFilteredProducts);
+    sortByFilter(newFilteredProducts);
+    setFilteredProducts(newFilteredProducts);
+  }
+
+  function searchFilter(products: IProduct[]) {
     const searchString = (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value;
     if (searchString.replace(/\s/g, "") === "") {
       setFilteredProducts(products);
@@ -33,29 +41,44 @@ export default function Section({ section }: { section: SectionType }) {
       .replace(/\S\W_|-/g, "")
       .split(" ");
 
-    const newFilteredProducts: IProduct[] = [];
-    for (const product of products) {
-      const productKeywords = product.name
+    for (let i = 0; i < products.length; i++) {
+      const productKeywords = products[i].name
         .toLowerCase()
         .replace(/\S\W_|-/g, "")
         .split(" ");
 
-      let matches = true;
       for (const searchFilter of searchFilters) {
-        if (!productKeywords.some((keyword) => keyword === searchFilter)) {
-          matches = false;
+        if (productKeywords.every((keyword) => keyword !== searchFilter && searchFilter !== "")) {
+          products.splice(i, 1);
+          i--;
           break;
         }
       }
-      if (matches) newFilteredProducts.push(product);
     }
+  }
 
-    setFilteredProducts(newFilteredProducts);
+  function sortByFilter(products: IProduct[]) {
+    const option = (document.getElementById("sort-by-select") as HTMLInputElement).value;
+
+    // for now while popularity and item release dates don't exist
+    if (option !== "price-low-high" && option !== "price-high-low") return;
+
+    switch (option) {
+      case "price-low-high":
+        products.sort((a, b) => a.price - b.price);
+        break;
+      case "price-high-low":
+        products.sort((a, b) => b.price - a.price);
+        break;
+      default:
+        console.log("Invalid sorting option");
+        break;
+    }
   }
 
   return (
     <div className="section">
-      <div className="filter-container">
+      <div className="filters-container">
         <form className="filter search-container">
           <input type="text" className="search-input" />
           <button
@@ -64,7 +87,7 @@ export default function Section({ section }: { section: SectionType }) {
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              filterResults();
+              filterProducts();
             }}
           >
             <FiSearch className="search-icon" />
@@ -72,6 +95,12 @@ export default function Section({ section }: { section: SectionType }) {
         </form>
         <div className="filter sort-by-container">
           <p className="sort-by-text">Sort By</p>
+          <select name="" id="sort-by-select" onChange={() => filterProducts()}>
+            <option value="most-popular">Most Popular</option>
+            <option value="newest">Newest</option>
+            <option value="price-low-high">Price Low to High</option>
+            <option value="price-high-low">Price High to Low</option>
+          </select>
         </div>
         <div className="filter category-container">
           <p className="category-text">Category</p>

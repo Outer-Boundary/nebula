@@ -97,7 +97,7 @@ export const testProducts: IProduct[] = [
     price: 22,
   },
   {
-    name: "Renaissance Hoodie",
+    name: "Renaissance Graphic Hoodie",
     section: SectionType.Clothing,
     category: { main: CategoryType.Tops, sub: TopsSubcategory.TShirt },
     material: Material.Cotton,
