@@ -110,6 +110,11 @@ export default function Section({ section }: { section: SectionType }) {
     // reset sort by to its first
     const sortBySelectElement = document.getElementById("sort-by-select") as HTMLInputElement;
     sortBySelectElement.value = (sortBySelectElement.children[0] as HTMLOptionElement).value;
+
+    const checkedSizes = document
+      .getElementsByClassName("checkbox-size-container")[0]
+      .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
+    checkedSizes.forEach((x) => (x.checked = false));
   }
 
   return (
