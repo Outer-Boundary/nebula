@@ -1,0 +1,82 @@
+.filter {
+  background-color: var(--primary-element-colour);
+  height: calc(100% - 6rem);
+  width: 30rem;
+  position: absolute;
+  top: 50%;
+  left: 3rem;
+  transform: translateY(-50%);
+  border-radius: var(--primary-border-radius);
+  filter: var(--primary-drop-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.filter .filter-container {
+  width: 100%;
+  padding: 1.6rem;
+  border-bottom: 1px solid var(--secondary-element-colour);
+}
+.filter .search-container {
+  display: flex;
+}
+.filter .search-input {
+  width: 100%;
+  font-size: 1.6rem;
+  padding: 1rem;
+  padding-right: 0;
+  outline: none;
+  border: 2px solid var(--secondary-element-colour);
+  border-right: none;
+  border-top-left-radius: var(--primary-border-radius);
+  border-bottom-left-radius: var(--primary-border-radius);
+}
+.filter .search-btn {
+  background-color: var(--primary-element-colour);
+  border: 2px solid var(--secondary-element-colour);
+  border-left: none;
+  border-top-right-radius: var(--primary-border-radius);
+  border-bottom-right-radius: var(--primary-border-radius);
+  cursor: pointer;
+}
+.filter .search-icon {
+  width: 4.4rem;
+  height: 4.4rem;
+  padding: 1rem;
+}
+.filter .sort-by-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+.filter #sort-by-select {
+  font-size: 1.6rem;
+}
+.filter .size-text {
+  margin-bottom: 0.4rem;
+}
+.filter .checkboxes-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.filter #materials-container {
+  grid-template-columns: repeat(2, 1fr);
+}
+.filter .checkbox-label {
+  margin-right: 0.4rem;
+}
+.filter .clear-filters-btn {
+  height: 4rem;
+  width: 90%;
+  font-size: 1.6rem;
+  align-self: center;
+  background-color: var(--primary-element-colour);
+  border: 2px solid var(--secondary-element-colour);
+  border-radius: var(--primary-border-radius);
+  margin-top: 1.6rem;
+  transition: background-color 125ms ease-in-out;
+}
+.filter .clear-filters-btn:hover {
+  background-color: var(--secondary-element-colour);
+}/*# sourceMappingURL=Filter.css.map */
