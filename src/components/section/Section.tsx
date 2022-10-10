@@ -8,6 +8,7 @@ import IProduct from "../types/IProduct";
 import { SectionType } from "../types/SectionType";
 import Size from "../types/Size";
 import { getEnumValues } from "../../helper/Helper";
+import Material from "../types/Material";
 
 // need this to refresh when clicking on different sections so that the filters reset
 export default function Section({ section }: { section: SectionType }) {
@@ -31,6 +32,7 @@ export default function Section({ section }: { section: SectionType }) {
     searchFilter(newFilteredProducts);
     sortByFilter(newFilteredProducts);
     sizeFilter(newFilteredProducts);
+    materialFilter(newFilteredProducts);
     setFilteredProducts(newFilteredProducts);
   }
 
@@ -86,23 +88,49 @@ export default function Section({ section }: { section: SectionType }) {
     }
   }
 
-  // filters products based on the selected sizes
+  // filters products based on the selected sizes. shoes products that have either size
   function sizeFilter(products: IProduct[]) {
-    const checkedSizes = document
-      .getElementsByClassName("checkbox-size-container")[0]
-      .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
+    const checkedSizes = document.getElementById("sizes-container")!.querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
+    if (checkedSizes.length === 0) return;
+
     for (let i = 0; i < products.length; i++) {
+      let matchesOne = false;
       for (let ii = 0; ii < checkedSizes.length; ii++) {
-        if (products[i].sizes.every((sizeInfo) => Size[sizeInfo.size].toString() !== checkedSizes[ii].name || sizeInfo.amount <= 0)) {
-          products.splice(i, 1);
-          i--;
+        if (products[i].sizes.some((sizeInfo) => sizeInfo.size === checkedSizes[ii].name && sizeInfo.amount > 0)) {
+          matchesOne = true;
           break;
         }
+      }
+      if (!matchesOne) {
+        products.splice(i, 1);
+        i--;
       }
     }
   }
 
-  // resets filters to their default state (for when switching sections)
+  // filters products based on the selected materials. shoes products that have either material
+  function materialFilter(products: IProduct[]) {
+    const checkedMaterials = document
+      .getElementById("materials-container")!
+      .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
+    if (checkedMaterials.length === 0) return;
+
+    for (let i = 0; i < products.length; i++) {
+      let matchesOne = false;
+      for (let ii = 0; ii < checkedMaterials.length; ii++) {
+        if (products[i].material === checkedMaterials[ii].name) {
+          matchesOne = true;
+          break;
+        }
+      }
+      if (!matchesOne) {
+        products.splice(i, 1);
+        i--;
+      }
+    }
+  }
+
+  // resets filters to their default state (when switching sections)
   function resetFilters() {
     // reset search filter
     (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value = "";
@@ -111,10 +139,15 @@ export default function Section({ section }: { section: SectionType }) {
     const sortBySelectElement = document.getElementById("sort-by-select") as HTMLInputElement;
     sortBySelectElement.value = (sortBySelectElement.children[0] as HTMLOptionElement).value;
 
-    const checkedSizes = document
-      .getElementsByClassName("checkbox-size-container")[0]
-      .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
+    // resets size checkboxes
+    const checkedSizes = document.getElementById("sizes-container")!.querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
     checkedSizes.forEach((x) => (x.checked = false));
+
+    // resets material checkboxes
+    const checkedMaterials = document
+      .getElementById("materials-container")!
+      .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
+    checkedMaterials.forEach((x) => (x.checked = false));
   }
 
   return (
@@ -133,7 +166,7 @@ export default function Section({ section }: { section: SectionType }) {
             <FiSearch className="search-icon" />
           </button>
         </form>
-        <div className="filter sort-by-container">
+        <div className="filter">
           <p className="sort-by-text">Sort By</p>
           <select name="" id="sort-by-select" onChange={() => filterProducts()}>
             <option value="most-popular">Most Popular</option>
@@ -145,11 +178,11 @@ export default function Section({ section }: { section: SectionType }) {
         <div className="filter category-container">
           <p className="category-text">Category</p>
         </div>
-        <div className="filter size-container">
+        <div className="filter">
           <p className="size-text">Size</p>
-          <div className="checkbox-size-container">
+          <div id="sizes-container" className="checkboxes-container">
             {getEnumValues(Size).map((size, index) => (
-              <div className="checkbox-container" key={index}>
+              <div className="size-container" key={index}>
                 <label htmlFor={`${size.toLowerCase()}-size-checkbox`} className="checkbox-label">
                   {size}
                 </label>
@@ -164,13 +197,37 @@ export default function Section({ section }: { section: SectionType }) {
             ))}
           </div>
         </div>
-        <div className="filter material-container">
+        <div className="filter">
           <p className="material-text">Material</p>
+          <div id="materials-container" className="checkboxes-container">
+            {getEnumValues(Material).map((material, index) => (
+              <div className="material-container" key={index}>
+                <label htmlFor={`${material.toLowerCase()}-material-checkbox`} className="checkbox-label">
+                  {material}
+                </label>
+                <input
+                  type="checkbox"
+                  name={material}
+                  id={`${material.toLowerCase()}-material-checkbox`}
+                  className="checkbox"
+                  onChange={() => filterProducts()}
+                />
+              </div>
+            ))}
+          </div>
         </div>
-
-        <div className="filter price-range-container">
+        <div className="filter">
           <p className="price-range-text">Price Range</p>
         </div>
+        <button
+          className="clear-filters-btn"
+          onClick={() => {
+            resetFilters();
+            filterProducts();
+          }}
+        >
+          Clear Filters
+        </button>
       </div>
       <div className="products-container">
         {filteredProducts.map((product, index) => (

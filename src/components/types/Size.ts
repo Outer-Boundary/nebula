@@ -1,11 +1,11 @@
 enum Size {
-  XXS,
-  XS,
-  S,
-  M,
-  L,
-  XL,
-  XXL,
+  XXS = "XXS",
+  XS = "XS",
+  S = "S",
+  M = "M",
+  L = "L",
+  XL = "XL",
+  XXL = "XXL",
 }
 
 export default Size;

@@ -21,12 +21,10 @@
 .section .filter {
   width: 100%;
   padding: 1.6rem;
-  cursor: pointer;
   border-bottom: 1px solid var(--secondary-element-colour);
 }
 .section .search-container {
   display: flex;
-  cursor: default;
 }
 .section .search-input {
   width: 100%;
@@ -64,12 +62,29 @@
 .section .size-text {
   margin-bottom: 0.4rem;
 }
-.section .checkbox-size-container {
+.section .checkboxes-container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
 }
+.section #materials-container {
+  grid-template-columns: repeat(2, 1fr);
+}
 .section .checkbox-label {
   margin-right: 0.4rem;
+}
+.section .clear-filters-btn {
+  height: 4rem;
+  width: 90%;
+  font-size: 1.6rem;
+  align-self: center;
+  background-color: var(--primary-element-colour);
+  border: 2px solid var(--secondary-element-colour);
+  border-radius: var(--primary-border-radius);
+  margin-top: 1.6rem;
+  transition: background-color 125ms ease-in-out;
+}
+.section .clear-filters-btn:hover {
+  background-color: var(--secondary-element-colour);
 }
 .section .products-container {
   width: 100%;

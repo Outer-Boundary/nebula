@@ -23,13 +23,11 @@
   .filter {
     width: 100%;
     padding: 1.6rem;
-    cursor: pointer;
     border-bottom: 1px solid var(--secondary-element-colour);
   }
 
   .search-container {
     display: flex;
-    cursor: default;
   }
 
   .search-input {
@@ -75,13 +73,33 @@
     margin-bottom: 0.4rem;
   }
 
-  .checkbox-size-container {
+  .checkboxes-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
   }
 
+  #materials-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .checkbox-label {
     margin-right: 0.4rem;
+  }
+
+  .clear-filters-btn {
+    height: 4rem;
+    width: 90%;
+    font-size: 1.6rem;
+    align-self: center;
+    background-color: var(--primary-element-colour);
+    border: 2px solid var(--secondary-element-colour);
+    border-radius: var(--primary-border-radius);
+    margin-top: 1.6rem;
+    transition: background-color 125ms ease-in-out;
+
+    &:hover {
+      background-color: var(--secondary-element-colour);
+    }
   }
 
   .products-container {

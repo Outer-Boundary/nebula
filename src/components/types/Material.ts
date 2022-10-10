@@ -1,8 +1,8 @@
 enum Material {
-  Cotton,
-  Wool,
-  Polyester,
-  Denim,
+  Cotton = "Cotton",
+  Wool = "Wool",
+  Polyester = "Polyester",
+  Denim = "Denim",
 }
 
 export default Material;
