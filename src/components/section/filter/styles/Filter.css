@@ -77,15 +77,33 @@
   margin-top: 1rem;
   position: relative;
 }
+.filter .price-range-bar-container {
+  width: 100%;
+  display: flex;
+}
 .filter .price-range-bar {
   min-height: 2px;
   width: 100%;
+  background-color: black;
+  position: absolute;
+  border-radius: 10rem;
+}
+.filter .price-range-bar-background {
+  min-height: 2px;
+  width: 100%;
   background-color: var(--secondary-element-colour);
+  border-radius: 10rem;
 }
 .filter .price-ranges-container {
   margin-top: 1rem;
   display: flex;
   justify-content: space-between;
+}
+.filter .price-text {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 .filter .price-handle {
   min-width: 2.4rem;

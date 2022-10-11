@@ -35,6 +35,7 @@ export default function Filter(props: FilterProps) {
     sortByFilter(newFilteredProducts);
     sizeFilter(newFilteredProducts);
     materialFilter(newFilteredProducts);
+    priceRangeFilter(newFilteredProducts);
     props.setFilteredProducts(newFilteredProducts);
   }
 
@@ -133,7 +134,16 @@ export default function Filter(props: FilterProps) {
   }
 
   // filters products by the specified price range
-  function priceRangeFilter() {}
+  function priceRangeFilter(products: IProduct[]) {
+    const lowPrice = parseInt(document.getElementsByClassName("low-price-text")[0].innerHTML.replace(/\$/g, ""));
+    const highPrice = parseInt(document.getElementsByClassName("high-price-text")[0].innerHTML.replace(/\$/g, ""));
+    for (let i = 0; i < products.length; i++) {
+      if (products[i].price < lowPrice || products[i].price > highPrice) {
+        products.splice(i, 1);
+        i--;
+      }
+    }
+  }
 
   // gets the highest and lowest price of the products
   function getPriceRange(): { low: number; high: number } {
@@ -149,27 +159,34 @@ export default function Filter(props: FilterProps) {
     return { low: low, high: high };
   }
 
-  // moves the price range handles
+  // moves the price range handles. need to figure out why the bar width doesn't snap
   function movePriceHandle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     if (!priceHandleInfo.isMoving) return;
 
     const handle = document.getElementById(`${priceHandleInfo.handle}-price-handle`) as HTMLElement;
-    const barBounds = (document.getElementsByClassName("price-range-bar")[0] as HTMLElement).getBoundingClientRect();
+    const barBounds = (document.getElementsByClassName("price-range-slider-container")[0] as HTMLElement).getBoundingClientRect();
 
+    const bar = document.getElementsByClassName("price-range-bar")[0] as HTMLElement;
     const handleBounds = handle.getBoundingClientRect();
     if (priceHandleInfo.handle === "low") {
       const highPriceHandleBounds = (document.getElementById("high-price-handle") as HTMLElement).getBoundingClientRect();
-      handle.style.left =
-        clamp(-handleBounds.width / 2, highPriceHandleBounds.left - barBounds.left, e.clientX - barBounds.left - priceHandleInfo.offset!) +
-        "px";
+      const value = clamp(
+        -handleBounds.width / 2,
+        highPriceHandleBounds.left - barBounds.left,
+        e.clientX - barBounds.left - priceHandleInfo.offset!
+      );
+      handle.style.left = value + "px";
+      bar.style.left = value + handleBounds.width / 2 + "px";
+      bar.style.width = highPriceHandleBounds.left - handleBounds.left + "px";
     } else {
       const lowPriceHandleBounds = (document.getElementById("low-price-handle") as HTMLElement).getBoundingClientRect();
-      handle.style.left =
-        clamp(
-          lowPriceHandleBounds.left - barBounds.left,
-          barBounds.width - handleBounds.width / 2,
-          e.clientX - barBounds.left - priceHandleInfo.offset!
-        ) + "px";
+      const value = clamp(
+        lowPriceHandleBounds.left - barBounds.left,
+        barBounds.width - handleBounds.width / 2,
+        e.clientX - barBounds.left - priceHandleInfo.offset!
+      );
+      handle.style.left = value + "px";
+      bar.style.width = handleBounds.left - lowPriceHandleBounds.left + "px";
     }
 
     const priceText = document.getElementsByClassName(`${priceHandleInfo.handle}-price-text`)[0];
@@ -204,7 +221,7 @@ export default function Filter(props: FilterProps) {
   function resetPriceRange(lowPrice: number, highPrice: number) {
     const lowPriceHandle = document.getElementById("low-price-handle") as HTMLElement;
     const highPriceHandle = document.getElementById("high-price-handle") as HTMLElement;
-    const barBounds = (document.getElementsByClassName("price-range-bar")[0] as HTMLElement).getBoundingClientRect();
+    const barBounds = (document.getElementsByClassName("price-range-slider-container")[0] as HTMLElement).getBoundingClientRect();
     lowPriceHandle.style.left = 0 - lowPriceHandle.getBoundingClientRect().width / 2 + "px";
     highPriceHandle.style.left = barBounds.width - highPriceHandle.getBoundingClientRect().width / 2 + "px";
     const lowPriceText = document.getElementsByClassName("low-price-text")[0];
@@ -280,16 +297,25 @@ export default function Filter(props: FilterProps) {
       </div>
       <div
         className="filter-container"
-        onMouseUp={() => setPriceHandleInfo({ isMoving: false })}
-        onMouseLeave={() => setPriceHandleInfo({ isMoving: false })}
+        onMouseUp={() => {
+          setPriceHandleInfo({ isMoving: false });
+          filterProducts();
+        }}
+        onMouseLeave={() => {
+          setPriceHandleInfo({ isMoving: false });
+          filterProducts();
+        }}
         onMouseMove={(e) => movePriceHandle(e)}
       >
         <p className="price-range-text">Price Range</p>
         <div className="price-range-slider-container">
-          <div className="price-range-bar"></div>
+          <div className="price-range-bar-container">
+            <div className="price-range-bar-background"></div>
+            <div className="price-range-bar"></div>
+          </div>
           <div className="price-ranges-container">
-            <p className="low-price-text">Low</p>
-            <p className="high-price-text">High</p>
+            <p className="low-price-text price-text">Low</p>
+            <p className="high-price-text price-text">High</p>
           </div>
           <TiArrowSortedDown
             id="low-price-handle"

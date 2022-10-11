@@ -6,6 +6,10 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 .product-icon .product-image {
   height: 100%;

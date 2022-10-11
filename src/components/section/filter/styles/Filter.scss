@@ -92,11 +92,24 @@
     position: relative;
   }
 
+  .price-range-bar-container {
+    width: 100%;
+    display: flex;
+  }
+
   $price-range-bar-height: 2px;
   .price-range-bar {
     min-height: $price-range-bar-height;
     width: 100%;
+    background-color: black;
+    position: absolute;
+    border-radius: 10rem;
+  }
+  .price-range-bar-background {
+    min-height: $price-range-bar-height;
+    width: 100%;
     background-color: var(--secondary-element-colour);
+    border-radius: 10rem;
   }
 
   .price-ranges-container {
@@ -105,6 +118,11 @@
     justify-content: space-between;
   }
 
+  .price-text {
+    user-select: none;
+  }
+
+  // change these so they don't overlap each other
   .price-handle {
     $size: 2.4rem;
     min-width: $size;
