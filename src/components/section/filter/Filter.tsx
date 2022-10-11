@@ -224,10 +224,15 @@ export default function Filter(props: FilterProps) {
     const barBounds = (document.getElementsByClassName("price-range-slider-container")[0] as HTMLElement).getBoundingClientRect();
     lowPriceHandle.style.left = 0 - lowPriceHandle.getBoundingClientRect().width / 2 + "px";
     highPriceHandle.style.left = barBounds.width - highPriceHandle.getBoundingClientRect().width / 2 + "px";
+
     const lowPriceText = document.getElementsByClassName("low-price-text")[0];
     const highPriceText = document.getElementsByClassName("high-price-text")[0];
     lowPriceText.innerHTML = "$" + lowPrice;
     highPriceText.innerHTML = "$" + highPrice;
+
+    const bar = document.getElementsByClassName("price-range-bar")[0] as HTMLElement;
+    bar.style.left = "0";
+    bar.style.width = "100%";
   }
 
   return (
