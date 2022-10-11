@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
+import { TiArrowSortedDown } from "react-icons/ti";
 
 import { clamp, getEnumValues, lerp } from "../../../helper/Helper";
 import IProduct from "../../types/IProduct";
@@ -290,20 +291,20 @@ export default function Filter(props: FilterProps) {
             <p className="low-price-text">Low</p>
             <p className="high-price-text">High</p>
           </div>
-          <button
+          <TiArrowSortedDown
             id="low-price-handle"
             className="price-handle"
             onMouseDown={(e) =>
               setPriceHandleInfo({ handle: "low", offset: e.clientX - e.currentTarget.getBoundingClientRect().left, isMoving: true })
             }
-          ></button>
-          <button
+          ></TiArrowSortedDown>
+          <TiArrowSortedDown
             id="high-price-handle"
             className="price-handle"
             onMouseDown={(e) =>
               setPriceHandleInfo({ handle: "high", offset: e.clientX - e.currentTarget.getBoundingClientRect().left, isMoving: true })
             }
-          ></button>
+          ></TiArrowSortedDown>
         </div>
       </div>
       <button

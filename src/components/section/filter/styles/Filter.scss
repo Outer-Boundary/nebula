@@ -106,16 +106,21 @@
   }
 
   .price-handle {
-    background-color: white;
     $size: 2.4rem;
     min-width: $size;
     min-height: $size;
-    border-radius: var(--primary-border-radius);
-    border: 2px solid var(--secondary-element-colour);
     position: absolute;
     left: 0;
     top: calc($price-range-bar-height / 2);
-    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  #low-price-handle {
+    transform: rotateX(180deg) translateY(30%);
+  }
+
+  #high-price-handle {
+    transform: translateY(-70%);
   }
 
   .clear-filters-btn {

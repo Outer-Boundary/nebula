@@ -88,15 +88,18 @@
   justify-content: space-between;
 }
 .filter .price-handle {
-  background-color: white;
   min-width: 2.4rem;
   min-height: 2.4rem;
-  border-radius: var(--primary-border-radius);
-  border: 2px solid var(--secondary-element-colour);
   position: absolute;
   left: 0;
   top: 1px;
-  transform: translateY(-50%);
+  cursor: pointer;
+}
+.filter #low-price-handle {
+  transform: rotateX(180deg) translateY(30%);
+}
+.filter #high-price-handle {
+  transform: translateY(-70%);
 }
 .filter .clear-filters-btn {
   min-height: 4rem;
