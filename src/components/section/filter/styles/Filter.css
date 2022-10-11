@@ -11,6 +11,11 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+.filter::-webkit-scrollbar {
+  display: none;
 }
 .filter .filter-container {
   width: 100%;
@@ -66,15 +71,42 @@
 .filter .checkbox-label {
   margin-right: 0.4rem;
 }
+.filter .price-range-slider-container {
+  width: 90%;
+  margin: 0 auto;
+  margin-top: 1rem;
+  position: relative;
+}
+.filter .price-range-bar {
+  min-height: 2px;
+  width: 100%;
+  background-color: var(--secondary-element-colour);
+}
+.filter .price-ranges-container {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+.filter .price-handle {
+  background-color: white;
+  min-width: 2.4rem;
+  min-height: 2.4rem;
+  border-radius: var(--primary-border-radius);
+  border: 2px solid var(--secondary-element-colour);
+  position: absolute;
+  left: 0;
+  top: 1px;
+  transform: translateY(-50%);
+}
 .filter .clear-filters-btn {
-  height: 4rem;
+  min-height: 4rem;
   width: 90%;
   font-size: 1.6rem;
   align-self: center;
   background-color: var(--primary-element-colour);
   border: 2px solid var(--secondary-element-colour);
   border-radius: var(--primary-border-radius);
-  margin-top: 1.6rem;
+  margin: 1.6rem 0;
   transition: background-color 125ms ease-in-out;
 }
 .filter .clear-filters-btn:hover {

@@ -12,6 +12,12 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   .filter-container {
     width: 100%;
@@ -79,15 +85,48 @@
     margin-right: 0.4rem;
   }
 
+  .price-range-slider-container {
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 1rem;
+    position: relative;
+  }
+
+  $price-range-bar-height: 2px;
+  .price-range-bar {
+    min-height: $price-range-bar-height;
+    width: 100%;
+    background-color: var(--secondary-element-colour);
+  }
+
+  .price-ranges-container {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .price-handle {
+    background-color: white;
+    $size: 2.4rem;
+    min-width: $size;
+    min-height: $size;
+    border-radius: var(--primary-border-radius);
+    border: 2px solid var(--secondary-element-colour);
+    position: absolute;
+    left: 0;
+    top: calc($price-range-bar-height / 2);
+    transform: translateY(-50%);
+  }
+
   .clear-filters-btn {
-    height: 4rem;
+    min-height: 4rem;
     width: 90%;
     font-size: 1.6rem;
     align-self: center;
     background-color: var(--primary-element-colour);
     border: 2px solid var(--secondary-element-colour);
     border-radius: var(--primary-border-radius);
-    margin-top: 1.6rem;
+    margin: 1.6rem 0;
     transition: background-color 125ms ease-in-out;
 
     &:hover {

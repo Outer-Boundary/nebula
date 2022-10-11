@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { getEnumValues } from "../../../helper/Helper";
+
+import { clamp, getEnumValues, lerp } from "../../../helper/Helper";
 import IProduct from "../../types/IProduct";
 import Material from "../../types/Material";
 import { SectionType } from "../../types/SectionType";
 import Size from "../../types/Size";
-
 import "./styles/Filter.css";
 
 interface FilterProps {
@@ -15,9 +15,17 @@ interface FilterProps {
 }
 
 export default function Filter(props: FilterProps) {
+  const [priceRange, setPriceRange] = useState({ low: 0, high: 0 });
+  const [priceHandleInfo, setPriceHandleInfo] = useState<{ handle?: "low" | "high"; offset?: number; isMoving: boolean }>({
+    isMoving: false,
+  });
+
   useEffect(() => {
+    const priceRange = getPriceRange();
+    setPriceRange(priceRange);
     resetFilters();
-  }, [props.section]);
+    resetPriceRange(priceRange.low, priceRange.high);
+  }, [props.products]);
 
   // goes through each filter then sets the products being viewed
   function filterProducts() {
@@ -123,14 +131,57 @@ export default function Filter(props: FilterProps) {
     }
   }
 
+  // filters products by the specified price range
   function priceRangeFilter() {}
+
+  // gets the highest and lowest price of the products
+  function getPriceRange(): { low: number; high: number } {
+    let low = -1;
+    let high = -1;
+    for (const product of props.products) {
+      if (product.price < low || low === -1) {
+        low = product.price;
+      } else if (product.price > high || high === -1) {
+        high = product.price;
+      }
+    }
+    return { low: low, high: high };
+  }
+
+  // moves the price range handles
+  function movePriceHandle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    if (!priceHandleInfo.isMoving) return;
+
+    const handle = document.getElementById(`${priceHandleInfo.handle}-price-handle`) as HTMLElement;
+    const barBounds = (document.getElementsByClassName("price-range-bar")[0] as HTMLElement).getBoundingClientRect();
+
+    const handleBounds = handle.getBoundingClientRect();
+    if (priceHandleInfo.handle === "low") {
+      const highPriceHandleBounds = (document.getElementById("high-price-handle") as HTMLElement).getBoundingClientRect();
+      handle.style.left =
+        clamp(-handleBounds.width / 2, highPriceHandleBounds.left - barBounds.left, e.clientX - barBounds.left - priceHandleInfo.offset!) +
+        "px";
+    } else {
+      const lowPriceHandleBounds = (document.getElementById("low-price-handle") as HTMLElement).getBoundingClientRect();
+      handle.style.left =
+        clamp(
+          lowPriceHandleBounds.left - barBounds.left,
+          barBounds.width - handleBounds.width / 2,
+          e.clientX - barBounds.left - priceHandleInfo.offset!
+        ) + "px";
+    }
+
+    const priceText = document.getElementsByClassName(`${priceHandleInfo.handle}-price-text`)[0];
+    const percentage = (handleBounds.left - barBounds.left + handleBounds.width / 2) / barBounds.width;
+    priceText.innerHTML = "$" + Math.round(lerp(priceRange.low, priceRange.high, percentage));
+  }
 
   // resets filters to their default state (when switching sections)
   function resetFilters() {
-    // reset search filter
+    // resets search filter
     (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value = "";
 
-    // reset sort by to its first
+    // resets sort by to its first option
     const sortBySelectElement = document.getElementById("sort-by-select") as HTMLInputElement;
     sortBySelectElement.value = (sortBySelectElement.children[0] as HTMLOptionElement).value;
 
@@ -143,6 +194,22 @@ export default function Filter(props: FilterProps) {
       .getElementById("materials-container")!
       .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
     checkedMaterials.forEach((x) => (x.checked = false));
+
+    // resets price range
+    resetPriceRange(priceRange.low, priceRange.high);
+  }
+
+  // resets the price range
+  function resetPriceRange(lowPrice: number, highPrice: number) {
+    const lowPriceHandle = document.getElementById("low-price-handle") as HTMLElement;
+    const highPriceHandle = document.getElementById("high-price-handle") as HTMLElement;
+    const barBounds = (document.getElementsByClassName("price-range-bar")[0] as HTMLElement).getBoundingClientRect();
+    lowPriceHandle.style.left = 0 - lowPriceHandle.getBoundingClientRect().width / 2 + "px";
+    highPriceHandle.style.left = barBounds.width - highPriceHandle.getBoundingClientRect().width / 2 + "px";
+    const lowPriceText = document.getElementsByClassName("low-price-text")[0];
+    const highPriceText = document.getElementsByClassName("high-price-text")[0];
+    lowPriceText.innerHTML = "$" + lowPrice;
+    highPriceText.innerHTML = "$" + highPrice;
   }
 
   return (
@@ -210,8 +277,34 @@ export default function Filter(props: FilterProps) {
           ))}
         </div>
       </div>
-      <div className="filter-container">
+      <div
+        className="filter-container"
+        onMouseUp={() => setPriceHandleInfo({ isMoving: false })}
+        onMouseLeave={() => setPriceHandleInfo({ isMoving: false })}
+        onMouseMove={(e) => movePriceHandle(e)}
+      >
         <p className="price-range-text">Price Range</p>
+        <div className="price-range-slider-container">
+          <div className="price-range-bar"></div>
+          <div className="price-ranges-container">
+            <p className="low-price-text">Low</p>
+            <p className="high-price-text">High</p>
+          </div>
+          <button
+            id="low-price-handle"
+            className="price-handle"
+            onMouseDown={(e) =>
+              setPriceHandleInfo({ handle: "low", offset: e.clientX - e.currentTarget.getBoundingClientRect().left, isMoving: true })
+            }
+          ></button>
+          <button
+            id="high-price-handle"
+            className="price-handle"
+            onMouseDown={(e) =>
+              setPriceHandleInfo({ handle: "high", offset: e.clientX - e.currentTarget.getBoundingClientRect().left, isMoving: true })
+            }
+          ></button>
+        </div>
       </div>
       <button
         className="clear-filters-btn"
