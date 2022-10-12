@@ -163,12 +163,12 @@ export default function Filter(props: FilterProps) {
   function movePriceHandle(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     if (!priceHandleInfo.isMoving) return;
 
-    const handle = document.getElementById(`${priceHandleInfo.handle}-price-handle`) as HTMLElement;
+    const handle = document.getElementById(`${priceHandleInfo.handle}-price-handle-container`) as HTMLElement;
     const barBounds = (document.getElementsByClassName("price-range-slider-container")[0] as HTMLElement).getBoundingClientRect();
 
     const handleBounds = handle.getBoundingClientRect();
     if (priceHandleInfo.handle === "low") {
-      const highPriceHandleBounds = (document.getElementById("high-price-handle") as HTMLElement).getBoundingClientRect();
+      const highPriceHandleBounds = (document.getElementById("high-price-handle-container") as HTMLElement).getBoundingClientRect();
       const lowBar = document.getElementsByClassName("price-range-bar-low")[0] as HTMLElement;
 
       const value = clamp(
@@ -180,7 +180,7 @@ export default function Filter(props: FilterProps) {
       handle.style.left = value + "px";
       lowBar.style.right = barBounds.width - value - handleBounds.width / 2 + "px";
     } else {
-      const lowPriceHandleBounds = (document.getElementById("low-price-handle") as HTMLElement).getBoundingClientRect();
+      const lowPriceHandleBounds = (document.getElementById("low-price-handle-container") as HTMLElement).getBoundingClientRect();
       const highBar = document.getElementsByClassName("price-range-bar-high")[0] as HTMLElement;
 
       const value = clamp(
@@ -223,8 +223,8 @@ export default function Filter(props: FilterProps) {
 
   // resets the price range
   function resetPriceRange(lowPrice: number, highPrice: number) {
-    const lowPriceHandle = document.getElementById("low-price-handle") as HTMLElement;
-    const highPriceHandle = document.getElementById("high-price-handle") as HTMLElement;
+    const lowPriceHandle = document.getElementById("low-price-handle-container") as HTMLElement;
+    const highPriceHandle = document.getElementById("high-price-handle-container") as HTMLElement;
     const barBounds = (document.getElementsByClassName("price-range-slider-container")[0] as HTMLElement).getBoundingClientRect();
     lowPriceHandle.style.left = 0 - lowPriceHandle.getBoundingClientRect().width / 2 + "px";
     highPriceHandle.style.left = barBounds.width - highPriceHandle.getBoundingClientRect().width / 2 + "px";
@@ -234,9 +234,12 @@ export default function Filter(props: FilterProps) {
     lowPriceText.innerHTML = "$" + lowPrice;
     highPriceText.innerHTML = "$" + highPrice;
 
-    const bar = document.getElementsByClassName("price-range-bar")[0] as HTMLElement;
-    bar.style.left = "0";
-    bar.style.width = "100%";
+    const lowBar = document.getElementsByClassName("price-range-bar-low")[0] as HTMLElement;
+    const highBar = document.getElementsByClassName("price-range-bar-high")[0] as HTMLElement;
+    lowBar.style.left = "-100%";
+    lowBar.style.right = "unset";
+    highBar.style.right = "-100%";
+    highBar.style.left = "unset";
   }
 
   return (
@@ -327,20 +330,22 @@ export default function Filter(props: FilterProps) {
             <p className="low-price-text price-text">Low</p>
             <p className="high-price-text price-text">High</p>
           </div>
-          <TiArrowSortedDown
-            id="low-price-handle"
-            className="price-handle"
+          <div
+            id="low-price-handle-container"
             onMouseDown={(e) =>
               setPriceHandleInfo({ handle: "low", offset: e.clientX - e.currentTarget.getBoundingClientRect().left, isMoving: true })
             }
-          ></TiArrowSortedDown>
-          <TiArrowSortedDown
-            id="high-price-handle"
-            className="price-handle"
+          >
+            <TiArrowSortedDown id="low-price-handle" className="price-handle"></TiArrowSortedDown>
+          </div>
+          <div
+            id="high-price-handle-container"
             onMouseDown={(e) =>
               setPriceHandleInfo({ handle: "high", offset: e.clientX - e.currentTarget.getBoundingClientRect().left, isMoving: true })
             }
-          ></TiArrowSortedDown>
+          >
+            <TiArrowSortedDown id="high-price-handle" className="price-handle"></TiArrowSortedDown>
+          </div>
         </div>
       </div>
       <button

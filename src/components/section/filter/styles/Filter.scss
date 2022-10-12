@@ -123,23 +123,45 @@
     user-select: none;
   }
 
+  #low-price-handle-container,
+  #high-price-handle-container {
+    min-width: 2rem;
+    min-height: 2rem;
+    width: fit-content;
+    position: absolute;
+    cursor: pointer;
+  }
+
+  #low-price-handle-container {
+    left: -1rem;
+    top: $price-range-bar-height;
+  }
+
+  #high-price-handle-container {
+    right: -1rem;
+    top: calc(-2rem + $price-range-bar-height / 2);
+  }
+
   // change these so they don't overlap each other
   .price-handle {
     $size: 2.4rem;
     min-width: $size;
     min-height: $size;
     position: absolute;
-    left: 0;
-    top: calc($price-range-bar-height / 2);
-    cursor: pointer;
+    cursor: default;
+    pointer-events: none;
   }
 
   #low-price-handle {
     transform: rotateX(180deg) translateY(30%);
+    left: -0.2rem;
+    top: -1px;
   }
 
   #high-price-handle {
     transform: translateY(-70%);
+    left: -0.2rem;
+    top: 2rem;
   }
 
   .clear-filters-btn {
