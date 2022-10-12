@@ -80,19 +80,20 @@
 .filter .price-range-bar-container {
   width: 100%;
   display: flex;
+  position: relative;
+  overflow: hidden;
 }
 .filter .price-range-bar {
   min-height: 2px;
   width: 100%;
   background-color: black;
-  position: absolute;
-  border-radius: 10rem;
 }
-.filter .price-range-bar-background {
+.filter .price-range-bar-low,
+.filter .price-range-bar-high {
   min-height: 2px;
-  width: 100%;
+  min-width: 100%;
   background-color: var(--secondary-element-colour);
-  border-radius: 10rem;
+  position: absolute;
 }
 .filter .price-ranges-container {
   margin-top: 1rem;

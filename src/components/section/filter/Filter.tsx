@@ -166,27 +166,31 @@ export default function Filter(props: FilterProps) {
     const handle = document.getElementById(`${priceHandleInfo.handle}-price-handle`) as HTMLElement;
     const barBounds = (document.getElementsByClassName("price-range-slider-container")[0] as HTMLElement).getBoundingClientRect();
 
-    const bar = document.getElementsByClassName("price-range-bar")[0] as HTMLElement;
     const handleBounds = handle.getBoundingClientRect();
     if (priceHandleInfo.handle === "low") {
       const highPriceHandleBounds = (document.getElementById("high-price-handle") as HTMLElement).getBoundingClientRect();
+      const lowBar = document.getElementsByClassName("price-range-bar-low")[0] as HTMLElement;
+
       const value = clamp(
         -handleBounds.width / 2,
         highPriceHandleBounds.left - barBounds.left,
         e.clientX - barBounds.left - priceHandleInfo.offset!
       );
+
       handle.style.left = value + "px";
-      bar.style.left = value + handleBounds.width / 2 + "px";
-      bar.style.width = highPriceHandleBounds.left - handleBounds.left + "px";
+      lowBar.style.right = barBounds.width - value - handleBounds.width / 2 + "px";
     } else {
       const lowPriceHandleBounds = (document.getElementById("low-price-handle") as HTMLElement).getBoundingClientRect();
+      const highBar = document.getElementsByClassName("price-range-bar-high")[0] as HTMLElement;
+
       const value = clamp(
         lowPriceHandleBounds.left - barBounds.left,
         barBounds.width - handleBounds.width / 2,
         e.clientX - barBounds.left - priceHandleInfo.offset!
       );
+
       handle.style.left = value + "px";
-      bar.style.width = handleBounds.left - lowPriceHandleBounds.left + "px";
+      highBar.style.left = handleBounds.left + handleBounds.width / 2 - barBounds.left + "px";
     }
 
     const priceText = document.getElementsByClassName(`${priceHandleInfo.handle}-price-text`)[0];
@@ -315,7 +319,8 @@ export default function Filter(props: FilterProps) {
         <p className="price-range-text">Price Range</p>
         <div className="price-range-slider-container">
           <div className="price-range-bar-container">
-            <div className="price-range-bar-background"></div>
+            <div className="price-range-bar-low"></div>
+            <div className="price-range-bar-high"></div>
             <div className="price-range-bar"></div>
           </div>
           <div className="price-ranges-container">

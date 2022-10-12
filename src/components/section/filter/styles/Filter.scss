@@ -95,6 +95,8 @@
   .price-range-bar-container {
     width: 100%;
     display: flex;
+    position: relative;
+    overflow: hidden;
   }
 
   $price-range-bar-height: 2px;
@@ -102,14 +104,13 @@
     min-height: $price-range-bar-height;
     width: 100%;
     background-color: black;
-    position: absolute;
-    border-radius: 10rem;
   }
-  .price-range-bar-background {
+  .price-range-bar-low,
+  .price-range-bar-high {
     min-height: $price-range-bar-height;
-    width: 100%;
+    min-width: 100%;
     background-color: var(--secondary-element-colour);
-    border-radius: 10rem;
+    position: absolute;
   }
 
   .price-ranges-container {
