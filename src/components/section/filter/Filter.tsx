@@ -277,14 +277,26 @@ export default function Filter(props: FilterProps) {
       </div>
       <div className="filter-container">
         <p className="category-text filter-text">Category</p>
-
-        {getEnumValues(CategoryType).map((category, index) => (
-          <input type="checkbox" key={index}></input>
-        ))}
-
-        <div className="subcategories-container">
-          {getEnumValues(Categories.find((x) => x.main === CategoryType.Tops)?.sub).map((subcategory, index) => (
-            <p key={index}>{subcategory}</p>
+        <div className="categories-container">
+          {getEnumValues(CategoryType).map((category, index) => (
+            <div className="category-container" key={index}>
+              <div className="category-checkbox-container">
+                <input id={`${category.toLowerCase()}-category-checkbox`} type="checkbox" key={index} />
+                <label htmlFor={`${category.toLowerCase()}-category-checkbox`} className="checkbox-label">
+                  {category}
+                </label>
+              </div>
+              <div className="subcategories-container">
+                {getEnumValues(Categories.find((x) => CategoryType[x.main].toString() === category)?.sub).map((subcategory, index) => (
+                  <div className="subcategory-checkbox-container">
+                    <input id={`${subcategory.toLowerCase()}-category-checkbox`} type="checkbox" key={index} />
+                    <label htmlFor={`${subcategory.toLowerCase()}-category-checkbox`} className="checkbox-label">
+                      {subcategory}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </div>

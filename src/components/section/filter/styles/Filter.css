@@ -22,6 +22,9 @@
   padding: 1.6rem;
   border-bottom: 1px solid var(--secondary-element-colour);
 }
+.filter .filter-text {
+  margin-bottom: 0.2rem;
+}
 .filter .search-container {
   display: flex;
 }
@@ -59,8 +62,27 @@
   font-size: 1.6rem;
   text-align: center;
 }
-.filter .filter-text {
-  margin-bottom: 0.2rem;
+.filter .categories-container,
+.filter .subcategories-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.filter .categories-container {
+  gap: 0.2rem;
+  left: 5rem;
+}
+.filter .subcategories-container {
+  gap: 0.4rem;
+  left: 2rem;
+  margin: 0.6rem 0;
+}
+.filter .category-checkbox-container,
+.filter .subcategory-checkbox-container {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin-right: auto;
 }
 .filter .checkboxes-container {
   display: grid;
@@ -76,7 +98,7 @@
   left: 3.2rem;
 }
 .filter .checkbox-label {
-  margin-left: 0.4rem;
+  margin-left: 0.6rem;
 }
 .filter .price-range-slider-container {
   width: 90%;

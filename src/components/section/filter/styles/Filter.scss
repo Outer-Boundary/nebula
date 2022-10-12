@@ -25,6 +25,11 @@
     border-bottom: 1px solid var(--secondary-element-colour);
   }
 
+  .filter-text {
+    margin-bottom: 0.2rem;
+  }
+
+  // Search Filter
   .search-container {
     display: flex;
   }
@@ -69,10 +74,32 @@
     text-align: center;
   }
 
-  .filter-text {
-    margin-bottom: 0.2rem;
+  // Category Filter
+  .categories-container,
+  .subcategories-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
   }
 
+  .categories-container {
+    gap: 0.2rem;
+    left: 5rem;
+  }
+
+  .subcategories-container {
+    gap: 0.4rem;
+    left: 2rem;
+    margin: 0.6rem 0;
+  }
+
+  .category-checkbox-container,
+  .subcategory-checkbox-container {
+    width: fit-content;
+    margin-right: auto;
+  }
+
+  // Checkbox Filters
   .checkboxes-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -90,9 +117,10 @@
   }
 
   .checkbox-label {
-    margin-left: 0.4rem;
+    margin-left: 0.6rem;
   }
 
+  // Price Range Filter
   .price-range-slider-container {
     width: 90%;
     margin: 0 auto;
@@ -171,6 +199,7 @@
     top: 1.2rem;
   }
 
+  // Clear Filters
   .clear-filters-btn {
     min-height: 4rem;
     width: 90%;
