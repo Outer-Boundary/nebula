@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { TiArrowSortedDown } from "react-icons/ti";
+import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 
 import { clamp, getEnumValues, lerp } from "../../../helper/Helper";
+import { BottomsSubcategory, Categories, Category, CategoryType, TopsSubcategory } from "../../types/Category";
 import IProduct from "../../types/IProduct";
 import Material from "../../types/Material";
 import { SectionType } from "../../types/SectionType";
@@ -15,11 +16,16 @@ interface FilterProps {
   setFilteredProducts: (products: IProduct[]) => void;
 }
 
+/* to do: 
+- make it so the user can set the highest and lowest price in the range range filter by directly entering an amount
+- give every filte
+*/
 export default function Filter(props: FilterProps) {
   const [priceRange, setPriceRange] = useState({ low: 0, high: 0 });
   const [priceHandleInfo, setPriceHandleInfo] = useState<{ handle?: "low" | "high"; offset?: number; isMoving: boolean }>({
     isMoving: false,
   });
+  const [curCategory, setCurCategory] = useState<CategoryType | "all">(CategoryType.Tops);
 
   useEffect(() => {
     const priceRange = getPriceRange();
@@ -33,6 +39,7 @@ export default function Filter(props: FilterProps) {
     const newFilteredProducts = [...props.products];
     searchFilter(newFilteredProducts);
     sortByFilter(newFilteredProducts);
+    categoryFilter(newFilteredProducts);
     sizeFilter(newFilteredProducts);
     materialFilter(newFilteredProducts);
     priceRangeFilter(newFilteredProducts);
@@ -90,6 +97,8 @@ export default function Filter(props: FilterProps) {
         break;
     }
   }
+
+  function categoryFilter(products: IProduct[]) {}
 
   // filters products based on the selected sizes. shoes products that have either size
   function sizeFilter(products: IProduct[]) {
@@ -258,7 +267,7 @@ export default function Filter(props: FilterProps) {
         </button>
       </form>
       <div className="filter-container">
-        <p className="sort-by-text">Sort By</p>
+        <p className="sort-by-text filter-text">Sort By</p>
         <select name="" id="sort-by-select" onChange={() => filterProducts()}>
           <option value="most-popular">Most Popular</option>
           <option value="newest">Newest</option>
@@ -266,17 +275,24 @@ export default function Filter(props: FilterProps) {
           <option value="price-high-low">Price High to Low</option>
         </select>
       </div>
-      <div className="filter-container category-container">
-        <p className="category-text">Category</p>
+      <div className="filter-container">
+        <p className="category-text filter-text">Category</p>
+
+        {getEnumValues(CategoryType).map((category, index) => (
+          <input type="checkbox" key={index}></input>
+        ))}
+
+        <div className="subcategories-container">
+          {getEnumValues(Categories.find((x) => x.main === CategoryType.Tops)?.sub).map((subcategory, index) => (
+            <p key={index}>{subcategory}</p>
+          ))}
+        </div>
       </div>
       <div className="filter-container">
-        <p className="size-text">Size</p>
+        <p className="size-text filter-text">Size</p>
         <div id="sizes-container" className="checkboxes-container">
           {getEnumValues(Size).map((size, index) => (
             <div className="size-container" key={index}>
-              <label htmlFor={`${size.toLowerCase()}-size-checkbox`} className="checkbox-label">
-                {size}
-              </label>
               <input
                 type="checkbox"
                 name={size}
@@ -284,18 +300,18 @@ export default function Filter(props: FilterProps) {
                 className="checkbox"
                 onChange={() => filterProducts()}
               />
+              <label htmlFor={`${size.toLowerCase()}-size-checkbox`} className="checkbox-label">
+                {size}
+              </label>
             </div>
           ))}
         </div>
       </div>
       <div className="filter-container">
-        <p className="material-text">Material</p>
+        <p className="material-text filter-text">Material</p>
         <div id="materials-container" className="checkboxes-container">
           {getEnumValues(Material).map((material, index) => (
             <div className="material-container" key={index}>
-              <label htmlFor={`${material.toLowerCase()}-material-checkbox`} className="checkbox-label">
-                {material}
-              </label>
               <input
                 type="checkbox"
                 name={material}
@@ -303,6 +319,9 @@ export default function Filter(props: FilterProps) {
                 className="checkbox"
                 onChange={() => filterProducts()}
               />
+              <label htmlFor={`${material.toLowerCase()}-material-checkbox`} className="checkbox-label">
+                {material}
+              </label>
             </div>
           ))}
         </div>
@@ -336,7 +355,7 @@ export default function Filter(props: FilterProps) {
               setPriceHandleInfo({ handle: "low", offset: e.clientX - e.currentTarget.getBoundingClientRect().left, isMoving: true })
             }
           >
-            <TiArrowSortedDown id="low-price-handle" className="price-handle"></TiArrowSortedDown>
+            <TiArrowSortedUp id="low-price-handle" className="price-handle" />
           </div>
           <div
             id="high-price-handle-container"
@@ -344,7 +363,7 @@ export default function Filter(props: FilterProps) {
               setPriceHandleInfo({ handle: "high", offset: e.clientX - e.currentTarget.getBoundingClientRect().left, isMoving: true })
             }
           >
-            <TiArrowSortedDown id="high-price-handle" className="price-handle"></TiArrowSortedDown>
+            <TiArrowSortedDown id="high-price-handle" className="price-handle" />
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 // gets the values of an enum
-export function getEnumValues(enumType: {}): string[] {
+export function getEnumValues(enumType: {} | undefined): string[] {
+  if (!enumType) return [];
   return Object.keys(enumType).filter((x) => {
     return isNaN(Number(x));
   });

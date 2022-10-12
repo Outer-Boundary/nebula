@@ -64,25 +64,33 @@
     gap: 1rem;
   }
 
-  #sort-by-select {
+  select {
     font-size: 1.6rem;
+    text-align: center;
   }
 
-  .size-text {
-    margin-bottom: 0.4rem;
+  .filter-text {
+    margin-bottom: 0.2rem;
   }
 
   .checkboxes-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    position: relative;
+    left: 1.8rem;
+  }
+
+  .checkboxes-container > * {
+    margin-right: auto;
   }
 
   #materials-container {
     grid-template-columns: repeat(2, 1fr);
+    left: 3.2rem;
   }
 
   .checkbox-label {
-    margin-right: 0.4rem;
+    margin-left: 0.4rem;
   }
 
   .price-range-slider-container {
@@ -126,7 +134,7 @@
   #low-price-handle-container,
   #high-price-handle-container {
     min-width: 2rem;
-    min-height: 2rem;
+    min-height: 1.2rem;
     width: fit-content;
     position: absolute;
     cursor: pointer;
@@ -139,10 +147,9 @@
 
   #high-price-handle-container {
     right: -1rem;
-    top: calc(-2rem + $price-range-bar-height / 2);
+    top: calc(-1.2rem + $price-range-bar-height / 2);
   }
 
-  // change these so they don't overlap each other
   .price-handle {
     $size: 2.4rem;
     min-width: $size;
@@ -153,15 +160,15 @@
   }
 
   #low-price-handle {
-    transform: rotateX(180deg) translateY(30%);
+    transform: translateY(30%);
     left: -0.2rem;
-    top: -1px;
+    top: -1.4rem;
   }
 
   #high-price-handle {
     transform: translateY(-70%);
     left: -0.2rem;
-    top: 2rem;
+    top: 1.2rem;
   }
 
   .clear-filters-btn {

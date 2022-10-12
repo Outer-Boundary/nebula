@@ -1,4 +1,4 @@
-import Category from "./Category";
+import { Category } from "./Category";
 import Material from "./Material";
 import { SectionType } from "./SectionType";
 import Size from "./Size";

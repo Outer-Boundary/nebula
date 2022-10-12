@@ -1,4 +1,4 @@
-type Category =
+export type Category =
   | {
       main: CategoryType.Tops;
       sub: TopsSubcategory;
@@ -45,4 +45,8 @@ export enum OuterwearSubcategory {
   Jumper,
 }
 
-export default Category;
+export const Categories = [
+  { main: CategoryType.Tops, sub: TopsSubcategory },
+  { main: CategoryType.Bottoms, sub: BottomsSubcategory },
+  { main: CategoryType.Outerwear, sub: OuterwearSubcategory },
+];
