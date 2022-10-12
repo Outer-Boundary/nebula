@@ -87,7 +87,14 @@
   align-items: center;
 }
 .filter .visibility-icon {
+  min-width: 1.6rem;
+  min-height: 1.6rem;
+  transform: rotate(0deg);
   margin-left: 0.4rem;
+  transition: transform 100ms ease-in-out;
+}
+.filter .visibility-icon.closed {
+  transform: rotate(90deg);
 }
 .filter .checkboxes-container {
   display: grid;
