@@ -83,6 +83,11 @@
   width: -moz-fit-content;
   width: fit-content;
   margin-right: auto;
+  display: flex;
+  align-items: center;
+}
+.filter .visibility-icon {
+  margin-left: 0.4rem;
 }
 .filter .checkboxes-container {
   display: grid;

@@ -18,21 +18,22 @@ interface FilterProps {
 
 /* to do: 
 - make it so the user can set the highest and lowest price in the range range filter by directly entering an amount
-- give every filte
+- give every filter a show hide button
+- fix filters not being reset when going from section all to clothing or vice versa the first time either is clicked
 */
 export default function Filter(props: FilterProps) {
   const [priceRange, setPriceRange] = useState({ low: 0, high: 0 });
   const [priceHandleInfo, setPriceHandleInfo] = useState<{ handle?: "low" | "high"; offset?: number; isMoving: boolean }>({
     isMoving: false,
   });
-  const [curCategory, setCurCategory] = useState<CategoryType | "all">(CategoryType.Tops);
+  const [curCategory, setCurCategory] = useState<CategoryType | "all">("all");
 
   useEffect(() => {
     const priceRange = getPriceRange();
     setPriceRange(priceRange);
     resetFilters();
     resetPriceRange(priceRange.low, priceRange.high);
-  }, [props.products]);
+  }, [props.products, props.section]);
 
   // goes through each filter then sets the products being viewed
   function filterProducts() {
@@ -251,6 +252,18 @@ export default function Filter(props: FilterProps) {
     highBar.style.left = "unset";
   }
 
+  function toggleChildrenVisibility(id: string) {
+    const children = document.getElementById(id)?.children;
+
+    if (!children || children.length === 0) return;
+
+    let display = "none";
+    if ((children[0] as HTMLElement).style.display === "none") display = "unset";
+    for (let i = 0; i < children.length; i++) {
+      (children[i] as HTMLElement).style.display = display;
+    }
+  }
+
   return (
     <div className="filter">
       <form className="filter-container search-container">
@@ -283,15 +296,20 @@ export default function Filter(props: FilterProps) {
               <div className="category-checkbox-container">
                 <input id={`${category.toLowerCase()}-category-checkbox`} type="checkbox" key={index} />
                 <label htmlFor={`${category.toLowerCase()}-category-checkbox`} className="checkbox-label">
-                  {category}
+                  {category.replace(/(?<=[a-z])(?=[A-Z])/g, " ").replace("TS", "T-S")}
                 </label>
+                <TiArrowSortedDown
+                  id={`${category.toLowerCase()}-visibility-icon`}
+                  className="visibility-icon"
+                  onClick={() => toggleChildrenVisibility(`${category.toLowerCase()}-subcategories-container`)}
+                />
               </div>
-              <div className="subcategories-container">
+              <div id={`${category.toLowerCase()}-subcategories-container`} className="subcategories-container">
                 {getEnumValues(Categories.find((x) => CategoryType[x.main].toString() === category)?.sub).map((subcategory, index) => (
                   <div className="subcategory-checkbox-container">
                     <input id={`${subcategory.toLowerCase()}-category-checkbox`} type="checkbox" key={index} />
                     <label htmlFor={`${subcategory.toLowerCase()}-category-checkbox`} className="checkbox-label">
-                      {subcategory}
+                      {subcategory.replace(/(?<=[a-z])(?=[A-Z])/g, " ").replace("TS", "T-S")}
                     </label>
                   </div>
                 ))}
