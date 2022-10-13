@@ -252,22 +252,20 @@ export default function Filter(props: FilterProps) {
     highBar.style.left = "unset";
   }
 
-  function toggleChildrenVisibility(childContainerId: string, iconId: string) {
-    const children = document.getElementById(childContainerId)?.children;
+  function toggleVisibility(childContainerId: string, iconId: string) {
+    const element = document.getElementById(childContainerId);
 
-    if (!children || children.length === 0) return;
+    if (!element) return;
 
     let display = "none";
-    if ((children[0] as HTMLElement).style.display === "none") {
+    if (window.getComputedStyle(element as HTMLElement).display === "none") {
       display = "unset";
       (document.getElementById(iconId) as HTMLElement).classList.remove("closed");
     } else {
       (document.getElementById(iconId) as HTMLElement).classList.add("closed");
     }
 
-    for (let i = 0; i < children.length; i++) {
-      (children[i] as HTMLElement).style.display = display;
-    }
+    element.style.display = display;
   }
 
   return (
@@ -306,12 +304,9 @@ export default function Filter(props: FilterProps) {
                 </label>
                 <TiArrowSortedDown
                   id={`${category.toLowerCase()}-visibility-icon`}
-                  className="visibility-icon"
+                  className="visibility-icon closed"
                   onClick={() =>
-                    toggleChildrenVisibility(
-                      `${category.toLowerCase()}-subcategories-container`,
-                      `${category.toLowerCase()}-visibility-icon`
-                    )
+                    toggleVisibility(`${category.toLowerCase()}-subcategories-container`, `${category.toLowerCase()}-visibility-icon`)
                   }
                 />
               </div>
