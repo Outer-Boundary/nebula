@@ -26,7 +26,6 @@ export default function Filter(props: FilterProps) {
   const [priceHandleInfo, setPriceHandleInfo] = useState<{ handle?: "low" | "high"; offset?: number; isMoving: boolean }>({
     isMoving: false,
   });
-  const [curCategory, setCurCategory] = useState<CategoryType | "all">("all");
 
   useEffect(() => {
     const priceRange = getPriceRange();
@@ -99,7 +98,9 @@ export default function Filter(props: FilterProps) {
     }
   }
 
-  function categoryFilter(products: IProduct[]) {}
+  function categoryFilter(products: IProduct[]) {
+    const checkedCategories = document.getElementById("categories-container")?.querySelectorAll("input:checked");
+  }
 
   // filters products based on the selected sizes. shoes products that have either size
   function sizeFilter(products: IProduct[]) {
@@ -252,6 +253,7 @@ export default function Filter(props: FilterProps) {
     highBar.style.left = "unset";
   }
 
+  // toggles the visibility of an element and adds a class to the specified icon for state changing purposes
   function toggleVisibility(childContainerId: string, iconId: string) {
     const element = document.getElementById(childContainerId);
 
@@ -259,7 +261,7 @@ export default function Filter(props: FilterProps) {
 
     let display = "none";
     if (window.getComputedStyle(element as HTMLElement).display === "none") {
-      display = "unset";
+      display = element.classList[element.classList.length - 1];
       (document.getElementById(iconId) as HTMLElement).classList.remove("closed");
     } else {
       (document.getElementById(iconId) as HTMLElement).classList.add("closed");
@@ -293,8 +295,15 @@ export default function Filter(props: FilterProps) {
         </select>
       </div>
       <div className="filter-container">
-        <p className="category-text filter-text">Category</p>
-        <div className="categories-container">
+        <div className="title-container">
+          <p className="category-text filter-text">Category</p>
+          <TiArrowSortedDown
+            id="category-visibility-icon"
+            className="visibility-icon closed"
+            onClick={() => toggleVisibility(`categories-container`, `category-visibility-icon`)}
+          />
+        </div>
+        <div id="categories-container" className="flex">
           {getEnumValues(CategoryType).map((category, index) => (
             <div className="category-container" key={index}>
               <div className="category-checkbox-container">
@@ -310,10 +319,10 @@ export default function Filter(props: FilterProps) {
                   }
                 />
               </div>
-              <div id={`${category.toLowerCase()}-subcategories-container`} className="subcategories-container">
+              <div id={`${category.toLowerCase()}-subcategories-container`} className="subcategories-container flex">
                 {getEnumValues(Categories.find((x) => CategoryType[x.main].toString() === category)?.sub).map((subcategory, index) => (
-                  <div className="subcategory-checkbox-container">
-                    <input id={`${subcategory.toLowerCase()}-category-checkbox`} type="checkbox" key={index} />
+                  <div className="subcategory-checkbox-container" key={index}>
+                    <input id={`${subcategory.toLowerCase()}-category-checkbox`} type="checkbox" />
                     <label htmlFor={`${subcategory.toLowerCase()}-category-checkbox`} className="checkbox-label">
                       {subcategory.replace(/(?<=[a-z])(?=[A-Z])/g, " ").replace("TS", "T-S")}
                     </label>
@@ -325,8 +334,15 @@ export default function Filter(props: FilterProps) {
         </div>
       </div>
       <div className="filter-container">
-        <p className="size-text filter-text">Size</p>
-        <div id="sizes-container" className="checkboxes-container">
+        <div className="title-container">
+          <p className="size-text filter-text">Size</p>
+          <TiArrowSortedDown
+            id="sizes-visibility-icon"
+            className="visibility-icon closed"
+            onClick={() => toggleVisibility(`sizes-container`, `sizes-visibility-icon`)}
+          />
+        </div>
+        <div id="sizes-container" className="checkboxes-container grid">
           {getEnumValues(Size).map((size, index) => (
             <div className="size-container" key={index}>
               <input
@@ -344,8 +360,15 @@ export default function Filter(props: FilterProps) {
         </div>
       </div>
       <div className="filter-container">
-        <p className="material-text filter-text">Material</p>
-        <div id="materials-container" className="checkboxes-container">
+        <div className="title-container">
+          <p className="material-text filter-text">Material</p>
+          <TiArrowSortedDown
+            id="materials-visibility-icon"
+            className="visibility-icon closed"
+            onClick={() => toggleVisibility(`materials-container`, `materials-visibility-icon`)}
+          />
+        </div>
+        <div id="materials-container" className="checkboxes-container grid">
           {getEnumValues(Material).map((material, index) => (
             <div className="material-container" key={index}>
               <input

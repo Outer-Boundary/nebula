@@ -62,13 +62,19 @@
   font-size: 1.6rem;
   text-align: center;
 }
-.filter .categories-container,
+.filter .title-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.filter #categories-container,
 .filter .subcategories-container {
   display: flex;
   flex-direction: column;
   position: relative;
+  display: none;
 }
-.filter .categories-container {
+.filter #categories-container {
   gap: 0.2rem;
   left: 5rem;
 }
@@ -76,7 +82,6 @@
   gap: 0.4rem;
   left: 2rem;
   margin: 0.6rem 0;
-  display: none;
 }
 .filter .category-checkbox-container,
 .filter .subcategory-checkbox-container {
@@ -112,6 +117,12 @@
 }
 .filter .checkbox-label {
   margin-left: 0.6rem;
+}
+.filter #sizes-container {
+  display: none;
+}
+.filter #materials-container {
+  display: none;
 }
 .filter .price-range-slider-container {
   width: 90%;
