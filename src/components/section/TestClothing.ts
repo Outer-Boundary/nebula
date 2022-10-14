@@ -58,9 +58,9 @@ export const testProducts: IProduct[] = [
     price: 60,
   },
   {
-    name: "Plain Sweatshirt",
+    name: "Plain Jumper",
     section: SectionType.Clothing,
-    category: { main: CategoryType.Tops, sub: TopsSubcategory.TShirt },
+    category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Jumper },
     material: Material.Wool,
     target: "any",
     sizes: [
@@ -99,7 +99,7 @@ export const testProducts: IProduct[] = [
   {
     name: "Renaissance Graphic Hoodie",
     section: SectionType.Clothing,
-    category: { main: CategoryType.Tops, sub: TopsSubcategory.TShirt },
+    category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Hoodie },
     material: Material.Cotton,
     target: "any",
     sizes: [

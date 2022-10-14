@@ -1,4 +1,4 @@
-type Category =
+export type Category =
   | {
       main: CategoryType.Tops;
       sub: TopsSubcategory;
@@ -13,36 +13,40 @@ type Category =
     };
 
 export enum CategoryType {
-  Tops,
-  Bottoms,
-  Outerwear,
-  Underwear,
-  Socks,
-  Hats,
+  Tops = "Tops",
+  Bottoms = "Bottoms",
+  Outerwear = "Outerwear",
+  Underwear = "Underwear",
+  Socks = "Socks",
+  Hats = "Hats",
 }
 
 export enum TopsSubcategory {
-  TShirt,
-  LongSleeveShirt,
-  TankTop,
-  Flannel,
-  PoloShirt,
-  DressShirt,
+  TShirt = "TShirt",
+  LongSleeveShirt = "LongSleeveShirt",
+  TankTop = "TankTop",
+  Flannel = "Flannel",
+  PoloShirt = "PoloShirt",
+  DressShirt = "DressShirt",
 }
 
 export enum BottomsSubcategory {
-  Pants,
-  Shorts,
-  SweatPants,
-  Jeans,
+  Pants = "Pants",
+  Shorts = "Shorts",
+  SweatPants = "SweatPants",
+  Jeans = "Jeans",
 }
 
 export enum OuterwearSubcategory {
-  Jacket,
-  Hoodie,
-  Vest,
-  Coat,
-  Jumper,
+  Jacket = "Jacket",
+  Hoodie = "Hoodie",
+  Vest = "Vest",
+  Coat = "Coat",
+  Jumper = "Jumper",
 }
 
-export default Category;
+export const Categories = [
+  { main: CategoryType.Tops, sub: TopsSubcategory },
+  { main: CategoryType.Bottoms, sub: BottomsSubcategory },
+  { main: CategoryType.Outerwear, sub: OuterwearSubcategory },
+];

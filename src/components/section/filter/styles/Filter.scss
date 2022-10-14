@@ -1,0 +1,249 @@
+.filter {
+  background-color: var(--primary-element-colour);
+  $margin: 3rem;
+  height: calc(100% - $margin * 2);
+  width: 30rem;
+  position: absolute;
+  top: 50%;
+  left: $margin;
+  transform: translateY(-50%);
+  border-radius: var(--primary-border-radius);
+  filter: var(--primary-drop-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-container {
+    width: 100%;
+    padding: 1.6rem;
+    border-bottom: 1px solid var(--secondary-element-colour);
+  }
+
+  .filter-text {
+    margin-bottom: 0.2rem;
+  }
+
+  // Search Filter
+  .search-container {
+    display: flex;
+  }
+
+  .search-input {
+    width: 100%;
+    font-size: 1.6rem;
+    padding: 1rem;
+    padding-right: 0;
+    outline: none;
+    border: 2px solid var(--secondary-element-colour);
+    border-right: none;
+    border-top-left-radius: var(--primary-border-radius);
+    border-bottom-left-radius: var(--primary-border-radius);
+  }
+
+  .search-btn {
+    background-color: var(--primary-element-colour);
+    border: 2px solid var(--secondary-element-colour);
+    border-left: none;
+    border-top-right-radius: var(--primary-border-radius);
+    border-bottom-right-radius: var(--primary-border-radius);
+    cursor: pointer;
+  }
+
+  .search-icon {
+    $size: 4.4rem;
+    width: $size;
+    height: $size;
+    padding: 1rem;
+  }
+
+  .sort-by-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  select {
+    font-size: 1.6rem;
+    text-align: center;
+  }
+
+  // Category Filter
+  .title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #categories-container,
+  .subcategories-container {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    display: none;
+  }
+
+  #categories-container {
+    gap: 0.2rem;
+    left: 5rem;
+  }
+
+  .subcategories-container {
+    gap: 0.4rem;
+    left: 2rem;
+    margin: 0.6rem 0;
+  }
+
+  .category-checkbox-container,
+  .subcategory-checkbox-container {
+    width: fit-content;
+    margin-right: auto;
+    display: flex;
+    align-items: center;
+  }
+
+  .visibility-icon {
+    min-width: 1.6rem;
+    min-height: 1.6rem;
+    transform: rotate(0deg);
+    margin-left: 0.4rem;
+    transition: transform 100ms ease-in-out;
+
+    &.closed {
+      transform: rotate(90deg);
+    }
+  }
+
+  // Checkbox Filters
+  .checkboxes-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    position: relative;
+    left: 1.8rem;
+  }
+
+  .checkboxes-container > * {
+    margin-right: auto;
+  }
+
+  #materials-container {
+    grid-template-columns: repeat(2, 1fr);
+    left: 3.2rem;
+  }
+
+  .checkbox-label {
+    margin-left: 0.6rem;
+  }
+
+  // Sizes Filter
+  #sizes-container {
+    display: none;
+  }
+
+  // Materials Filter
+  #materials-container {
+    display: none;
+  }
+
+  // Price Range Filter
+  .price-range-slider-container {
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 1rem;
+    position: relative;
+  }
+
+  .price-range-bar-container {
+    width: 100%;
+    display: flex;
+    position: relative;
+    overflow: hidden;
+  }
+
+  $price-range-bar-height: 2px;
+  .price-range-bar {
+    min-height: $price-range-bar-height;
+    width: 100%;
+    background-color: black;
+  }
+  .price-range-bar-low,
+  .price-range-bar-high {
+    min-height: $price-range-bar-height;
+    min-width: 100%;
+    background-color: var(--secondary-element-colour);
+    position: absolute;
+  }
+
+  .price-ranges-container {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .price-text {
+    user-select: none;
+  }
+
+  #low-price-handle-container,
+  #high-price-handle-container {
+    min-width: 2rem;
+    min-height: 1.2rem;
+    width: fit-content;
+    position: absolute;
+    cursor: pointer;
+  }
+
+  #low-price-handle-container {
+    left: -1rem;
+    top: $price-range-bar-height;
+  }
+
+  #high-price-handle-container {
+    right: -1rem;
+    top: calc(-1.2rem + $price-range-bar-height / 2);
+  }
+
+  .price-handle {
+    $size: 2.4rem;
+    min-width: $size;
+    min-height: $size;
+    position: absolute;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  #low-price-handle {
+    transform: translateY(30%);
+    left: -0.2rem;
+    top: -1.4rem;
+  }
+
+  #high-price-handle {
+    transform: translateY(-70%);
+    left: -0.2rem;
+    top: 1.2rem;
+  }
+
+  // Clear Filters
+  .clear-filters-btn {
+    min-height: 4rem;
+    width: 90%;
+    font-size: 1.6rem;
+    align-self: center;
+    background-color: var(--primary-element-colour);
+    border: 2px solid var(--secondary-element-colour);
+    border-radius: var(--primary-border-radius);
+    margin: 1.6rem 0;
+    transition: background-color 125ms ease-in-out;
+
+    &:hover {
+      background-color: var(--secondary-element-colour);
+    }
+  }
+}
