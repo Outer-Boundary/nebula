@@ -13,36 +13,36 @@ export type Category =
     };
 
 export enum CategoryType {
-  Tops,
-  Bottoms,
-  Outerwear,
-  Underwear,
-  Socks,
-  Hats,
+  Tops = "Tops",
+  Bottoms = "Bottoms",
+  Outerwear = "Outerwear",
+  Underwear = "Underwear",
+  Socks = "Socks",
+  Hats = "Hats",
 }
 
 export enum TopsSubcategory {
-  TShirt,
-  LongSleeveShirt,
-  TankTop,
-  Flannel,
-  PoloShirt,
-  DressShirt,
+  TShirt = "TShirt",
+  LongSleeveShirt = "LongSleeveShirt",
+  TankTop = "TankTop",
+  Flannel = "Flannel",
+  PoloShirt = "PoloShirt",
+  DressShirt = "DressShirt",
 }
 
 export enum BottomsSubcategory {
-  Pants,
-  Shorts,
-  SweatPants,
-  Jeans,
+  Pants = "Pants",
+  Shorts = "Shorts",
+  SweatPants = "SweatPants",
+  Jeans = "Jeans",
 }
 
 export enum OuterwearSubcategory {
-  Jacket,
-  Hoodie,
-  Vest,
-  Coat,
-  Jumper,
+  Jacket = "Jacket",
+  Hoodie = "Hoodie",
+  Vest = "Vest",
+  Coat = "Coat",
+  Jumper = "Jumper",
 }
 
 export const Categories = [

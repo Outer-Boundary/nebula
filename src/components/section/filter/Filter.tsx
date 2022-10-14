@@ -99,13 +99,29 @@ export default function Filter(props: FilterProps) {
   }
 
   function categoryFilter(products: IProduct[]) {
-    const checkedCategories = Array.from(
-      document.getElementById("categories-container")?.querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>
-    );
+    const checkedCategories = document
+      .getElementById("categories-container")
+      ?.querySelectorAll("input.category-checkbox:checked") as NodeListOf<HTMLInputElement>;
     if (checkedCategories.length === 0) return;
 
     for (let i = 0; i < products.length; i++) {
-      if (checkedCategories.every((category) => category.name !== CategoryType[products[i].category.main].toString())) {
+      let matches = false;
+      for (let ii = 0; ii < checkedCategories.length; ii++) {
+        const checkedSubcategories = Array.from(
+          document
+            .getElementById(`${checkedCategories[ii].name.toLowerCase()}-subcategories-container`)!
+            .querySelectorAll("input.subcategory-checkbox:checked") as NodeListOf<HTMLInputElement>
+        );
+        // if there are subcategories checked and it matches the product or there are no subcategories checked and the category matches the product's
+        if (
+          (checkedSubcategories.length > 0 && checkedSubcategories.some((subcategory) => subcategory.name === products[i].category.sub)) ||
+          (checkedSubcategories.length === 0 && checkedCategories[ii].name === products[i].category.main)
+        ) {
+          matches = true;
+          break;
+        }
+      }
+      if (!matches) {
         products.splice(i, 1);
         i--;
       }
@@ -319,6 +335,7 @@ export default function Filter(props: FilterProps) {
               <div className="category-checkbox-container">
                 <input
                   id={`${category.toLowerCase()}-category-checkbox`}
+                  className="category-checkbox"
                   name={category}
                   type="checkbox"
                   onChange={() => filterProducts()}
@@ -335,9 +352,15 @@ export default function Filter(props: FilterProps) {
                 />
               </div>
               <div id={`${category.toLowerCase()}-subcategories-container`} className="subcategories-container flex">
-                {getEnumValues(Categories.find((x) => CategoryType[x.main].toString() === category)?.sub).map((subcategory, index) => (
+                {getEnumValues(Categories.find((x) => x.main === category)?.sub).map((subcategory, index) => (
                   <div className="subcategory-checkbox-container" key={index}>
-                    <input id={`${subcategory.toLowerCase()}-category-checkbox`} name={subcategory} type="checkbox" />
+                    <input
+                      id={`${subcategory.toLowerCase()}-subcategory-checkbox`}
+                      className="subcategory-checkbox"
+                      name={subcategory}
+                      type="checkbox"
+                      onChange={() => filterProducts()}
+                    />
                     <label htmlFor={`${subcategory.toLowerCase()}-category-checkbox`} className="checkbox-label">
                       {subcategory.replace(/(?<=[a-z])(?=[A-Z])/g, " ").replace("TS", "T-S")}
                     </label>
