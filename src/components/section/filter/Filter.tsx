@@ -77,7 +77,7 @@ export default function Filter(props: FilterProps) {
     }
   }
 
-  // sorts a filter based on the selected sorting option
+  // sorts the products based on the selected sorting option
   function sortByFilter(products: IProduct[]) {
     const option = (document.getElementById("sort-by-select") as HTMLInputElement).value;
 
@@ -98,6 +98,7 @@ export default function Filter(props: FilterProps) {
     }
   }
 
+  // filters products by their category and subcategory. if subcategories are checked by the main category isn't they are ignored
   function categoryFilter(products: IProduct[]) {
     const checkedCategories = document
       .getElementById("categories-container")
@@ -244,15 +245,14 @@ export default function Filter(props: FilterProps) {
     const sortBySelectElement = document.getElementById("sort-by-select") as HTMLInputElement;
     sortBySelectElement.value = (sortBySelectElement.children[0] as HTMLOptionElement).value;
 
+    // resets category and subcategory checkboxes
+    resetCheckboxes("categories-container");
+
     // resets size checkboxes
-    const checkedSizes = document.getElementById("sizes-container")!.querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
-    checkedSizes.forEach((x) => (x.checked = false));
+    resetCheckboxes("sizes-container");
 
     // resets material checkboxes
-    const checkedMaterials = document
-      .getElementById("materials-container")!
-      .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
-    checkedMaterials.forEach((x) => (x.checked = false));
+    resetCheckboxes("materials-container");
 
     // resets price range
     resetPriceRange(priceRange.low, priceRange.high);
@@ -277,6 +277,14 @@ export default function Filter(props: FilterProps) {
     lowBar.style.right = "unset";
     highBar.style.right = "-100%";
     highBar.style.left = "unset";
+  }
+
+  // unchecks all checkboxes that are a child of the specified container
+  function resetCheckboxes(containerId: string) {
+    const container = document.getElementById(containerId);
+    if (container) {
+      (container.querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>).forEach((x) => (x.checked = false));
+    }
   }
 
   // toggles the visibility of an element and adds a class to the specified icon for state changing purposes
