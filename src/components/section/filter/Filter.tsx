@@ -99,7 +99,17 @@ export default function Filter(props: FilterProps) {
   }
 
   function categoryFilter(products: IProduct[]) {
-    const checkedCategories = document.getElementById("categories-container")?.querySelectorAll("input:checked");
+    const checkedCategories = Array.from(
+      document.getElementById("categories-container")?.querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>
+    );
+    if (checkedCategories.length === 0) return;
+
+    for (let i = 0; i < products.length; i++) {
+      if (checkedCategories.every((category) => category.name !== CategoryType[products[i].category.main].toString())) {
+        products.splice(i, 1);
+        i--;
+      }
+    }
   }
 
   // filters products based on the selected sizes. shoes products that have either size
@@ -307,7 +317,12 @@ export default function Filter(props: FilterProps) {
           {getEnumValues(CategoryType).map((category, index) => (
             <div className="category-container" key={index}>
               <div className="category-checkbox-container">
-                <input id={`${category.toLowerCase()}-category-checkbox`} type="checkbox" key={index} />
+                <input
+                  id={`${category.toLowerCase()}-category-checkbox`}
+                  name={category}
+                  type="checkbox"
+                  onChange={() => filterProducts()}
+                />
                 <label htmlFor={`${category.toLowerCase()}-category-checkbox`} className="checkbox-label">
                   {category.replace(/(?<=[a-z])(?=[A-Z])/g, " ").replace("TS", "T-S")}
                 </label>
@@ -322,7 +337,7 @@ export default function Filter(props: FilterProps) {
               <div id={`${category.toLowerCase()}-subcategories-container`} className="subcategories-container flex">
                 {getEnumValues(Categories.find((x) => CategoryType[x.main].toString() === category)?.sub).map((subcategory, index) => (
                   <div className="subcategory-checkbox-container" key={index}>
-                    <input id={`${subcategory.toLowerCase()}-category-checkbox`} type="checkbox" />
+                    <input id={`${subcategory.toLowerCase()}-category-checkbox`} name={subcategory} type="checkbox" />
                     <label htmlFor={`${subcategory.toLowerCase()}-category-checkbox`} className="checkbox-label">
                       {subcategory.replace(/(?<=[a-z])(?=[A-Z])/g, " ").replace("TS", "T-S")}
                     </label>
