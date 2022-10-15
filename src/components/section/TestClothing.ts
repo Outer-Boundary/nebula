@@ -135,7 +135,8 @@ export const testProducts: IProduct[] = [
   },
   {
     name: "Checkered Sweatpants",
-    image: "https://sep.yimg.com/ay/yhst-34028568337573/champion-9-7-oz-90-10-cotton-max-sweatpants-3.gif",
+    image:
+      "https://i5.walmartimages.com/asr/12ce6a06-e148-4524-834b-9e856a869073_1.bc22a7440a4d2c905bb22103400af7cc.jpeg?odnWidth=1000&odnHeight=1000&odnBg=ffffff",
     section: SectionType.Clothing,
     category: { main: CategoryType.Bottoms, sub: BottomsSubcategory.SweatPants },
     material: Material.Cotton,
@@ -149,7 +150,7 @@ export const testProducts: IProduct[] = [
   },
   {
     name: "Striped Jumper",
-    image: "https://sep.yimg.com/ay/yhst-34028568337573/champion-9-7-oz-90-10-cotton-max-sweatpants-3.gif",
+    image: "https://d2wfvd7ei865en.cloudfront.net/product-media/1YM1/800/1130/BereniceStripeJumperoffwhite1.jpg",
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Jumper },
     material: Material.Cotton,
