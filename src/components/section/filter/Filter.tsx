@@ -3,7 +3,7 @@ import { FiSearch } from "react-icons/fi";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 
 import { clamp, getEnumValues, lerp } from "../../../helper/Helper";
-import { BottomsSubcategory, Categories, Category, CategoryType, TopsSubcategory } from "../../types/Category";
+import { Categories, CategoryType } from "../../types/Category";
 import IProduct from "../../types/IProduct";
 import Material from "../../types/Material";
 import { SectionType } from "../../types/SectionType";

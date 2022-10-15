@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
-import { FiSearch } from "react-icons/fi";
 
 import "./styles/Section.css";
 import { testProducts } from "./TestClothing";
 import ProductIcon from "../product-icon/ProductIcon";
 import IProduct from "../types/IProduct";
 import { SectionType } from "../types/SectionType";
-import Size from "../types/Size";
-import { getEnumValues } from "../../helper/Helper";
-import Material from "../types/Material";
 import Filter from "./filter/Filter";
 
 // need this to refresh when clicking on different sections so that the filters reset
