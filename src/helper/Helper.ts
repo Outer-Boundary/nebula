@@ -1,5 +1,3 @@
-import { CategoryType, TopsSubcategory } from "../components/types/Category";
-
 // gets the values of an enum
 export function getEnumValues(enumType: {} | undefined): string[] {
   if (!enumType) return [];
@@ -8,16 +6,9 @@ export function getEnumValues(enumType: {} | undefined): string[] {
   });
 }
 
-// export function getSubcategory(category: CategoryType): {} {
-//   let subcategory: {} = TopsSubcategory;
-//   switch (category) {
-//     case: CategoryType.Tops
-//   }
-// }
-
-// lerps a value linearly interpolated between start and end. if end is lesser than start, it returns -1
+// lerps a value linearly interpolated between start and end. if end is lesser than start, it returns NaN
 export function lerp(start: number, end: number, value: number): number {
-  if (end < start) return -1;
+  if (end < start) return NaN;
   const diff = end - start;
   return diff * value + start;
 }

@@ -7,6 +7,8 @@ import Size from "../types/Size";
 export const testProducts: IProduct[] = [
   {
     name: "Plain TShirt",
+    image:
+      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgildan.my%2Fwp-content%2Fuploads%2F2020%2F02%2F76000B-24C-Gold.png&f=1&nofb=1&ipt=b6cf2017d0b012724ad5f06f3b92fcfb1919c1c771a57c11b61c1360e89b08d1&ipo=images",
     section: SectionType.Clothing,
     category: { main: CategoryType.Tops, sub: TopsSubcategory.TShirt },
     material: Material.Cotton,
@@ -20,6 +22,8 @@ export const testProducts: IProduct[] = [
   },
   {
     name: "Sunset Graphic Tank Top",
+    image:
+      "https://m.media-amazon.com/images/I/A1Ig7DnP6sL._CLa%7C2140%2C2000%7C81alJh2hy2L.png%7C0%2C0%2C2140%2C2000%2B0.0%2C0.0%2C2140.0%2C2000.0_AC_UL1500_.png",
     section: SectionType.Clothing,
     category: { main: CategoryType.Tops, sub: TopsSubcategory.TankTop },
     material: Material.Cotton,
@@ -33,6 +37,7 @@ export const testProducts: IProduct[] = [
   },
   {
     name: "Denim Jeans",
+    image: "https://images.burkesoutlet.com/i/burkesoutlet/236-2296-5500-97-yyy?h=1200&w=627",
     section: SectionType.Clothing,
     category: { main: CategoryType.Bottoms, sub: BottomsSubcategory.Jeans },
     material: Material.Denim,
@@ -46,6 +51,7 @@ export const testProducts: IProduct[] = [
   },
   {
     name: "Plain Coat",
+    image: "https://1.bp.blogspot.com/_NlXLy36jo0g/TGQgxk4kpCI/AAAAAAAAIX8/8LsndlhYqWI/s1600/64F17ACAM_large.jpg",
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Coat },
     material: Material.Wool,
@@ -59,6 +65,7 @@ export const testProducts: IProduct[] = [
   },
   {
     name: "Plain Jumper",
+    image: "https://images.fcwholesale.com/MN/MN0665-02.jpg",
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Jumper },
     material: Material.Wool,
@@ -72,6 +79,7 @@ export const testProducts: IProduct[] = [
   },
   {
     name: "Anime Graphic Hoodie",
+    image: "https://images-na.ssl-images-amazon.com/images/I/61TjewzaBsL._AC_UL1024_.jpg",
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Hoodie },
     material: Material.Cotton,
@@ -85,6 +93,7 @@ export const testProducts: IProduct[] = [
   },
   {
     name: "Anime Graphic TShirt",
+    image: "https://i.etsystatic.com/26956067/r/il/a2352f/3019208592/il_fullxfull.3019208592_p8od.jpg",
     section: SectionType.Clothing,
     category: { main: CategoryType.Tops, sub: TopsSubcategory.TShirt },
     material: Material.Cotton,
@@ -98,6 +107,7 @@ export const testProducts: IProduct[] = [
   },
   {
     name: "Renaissance Graphic Hoodie",
+    image: "https://m.media-amazon.com/images/I/51ChuLnOqLL._AC_UX569_.jpg",
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Hoodie },
     material: Material.Cotton,
@@ -111,6 +121,7 @@ export const testProducts: IProduct[] = [
   },
   {
     name: "Plain Dress Shirt",
+    image: "https://i5.walmartimages.com/asr/1f375da5-4715-4144-9719-b67e18354423_2.31c78210f152a2c7d0040493b78fdadb.jpeg",
     section: SectionType.Clothing,
     category: { main: CategoryType.Tops, sub: TopsSubcategory.DressShirt },
     material: Material.Cotton,
@@ -124,6 +135,7 @@ export const testProducts: IProduct[] = [
   },
   {
     name: "Checkered Sweatpants",
+    image: "https://sep.yimg.com/ay/yhst-34028568337573/champion-9-7-oz-90-10-cotton-max-sweatpants-3.gif",
     section: SectionType.Clothing,
     category: { main: CategoryType.Bottoms, sub: BottomsSubcategory.SweatPants },
     material: Material.Cotton,
@@ -137,6 +149,7 @@ export const testProducts: IProduct[] = [
   },
   {
     name: "Striped Jumper",
+    image: "https://sep.yimg.com/ay/yhst-34028568337573/champion-9-7-oz-90-10-cotton-max-sweatpants-3.gif",
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Jumper },
     material: Material.Cotton,
@@ -150,6 +163,7 @@ export const testProducts: IProduct[] = [
   },
   {
     name: "Two-tone Jumper",
+    image: "https://static.smallable.com/741369-thickbox/two-tone-jumper.jpg",
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Jumper },
     material: Material.Cotton,

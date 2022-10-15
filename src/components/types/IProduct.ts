@@ -5,6 +5,7 @@ import Size from "./Size";
 
 export default interface IProduct {
   name: string;
+  image: string;
   section: SectionType;
   category: Category;
   material: Material;
