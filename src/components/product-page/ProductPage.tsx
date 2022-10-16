@@ -2,13 +2,15 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 
 import { StateType } from "../../redux/reducers";
+import { Colour } from "../types/Colour";
 import Size from "../types/Size";
 import "./styles/ProductPage.css";
 
 export default function ProductPage() {
   const product = useSelector((state: StateType) => state.currentProduct);
   const [curImageIndex, setCurImageIndex] = useState<number>(0);
-  const [size, setSize] = useState<Size | null>(null);
+  const [curSize, setSize] = useState<Size | null>(null);
+  const [curColourIndex, setColourIndex] = useState<number>(0);
 
   return (
     <div className="product-page">
@@ -29,11 +31,20 @@ export default function ProductPage() {
         <p className="price-text">${product?.price}</p>
         <div className="divider"></div>
         <p className="colours-text">Colours</p>
-        <div className="colours-container container"></div>
+        <div className="colours-container container">
+          {product?.colours.map((colour, index) => (
+            <div
+              className={`colour ${curColourIndex === index && "selected"}`}
+              style={{ backgroundColor: colour }}
+              key={index}
+              onClick={() => setColourIndex(index)}
+            ></div>
+          ))}
+        </div>
         <p className="sizes-text">Sizes</p>
         <div className="sizes-container container">
           {product?.sizes.map((sizeInfo, index) => (
-            <button className={`size-btn ${size === sizeInfo.size && "selected"}`} key={index} onClick={() => setSize(sizeInfo.size)}>
+            <button className={`size-btn ${curSize === sizeInfo.size && "selected"}`} key={index} onClick={() => setSize(sizeInfo.size)}>
               {sizeInfo.size}
             </button>
           ))}
@@ -43,9 +54,6 @@ export default function ProductPage() {
           <summary className="details-text">Details</summary>
           <p>Material: {product?.material}</p>
         </details>
-        <button className="asd" style={{ backgroundColor: "hsl(100, 100, 100)" }}>
-          Asd
-        </button>
       </div>
     </div>
   );

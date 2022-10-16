@@ -1,4 +1,5 @@
 import { BottomsSubcategory, CategoryType, OuterwearSubcategory, TopsSubcategory } from "../types/Category";
+import { Colour } from "../types/Colour";
 import IProduct from "../types/IProduct";
 import Material from "../types/Material";
 import { SectionType } from "../types/SectionType";
@@ -15,6 +16,7 @@ export const testProducts: IProduct[] = [
     ],
     section: SectionType.Clothing,
     category: { main: CategoryType.Tops, sub: TopsSubcategory.TShirt },
+    colours: [Colour.Yellow, Colour.Grey, Colour.Blue, Colour.DarkBrown],
     material: Material.Cotton,
     target: "any",
     sizes: [
@@ -31,6 +33,7 @@ export const testProducts: IProduct[] = [
     ],
     section: SectionType.Clothing,
     category: { main: CategoryType.Tops, sub: TopsSubcategory.TankTop },
+    colours: [Colour.Black],
     material: Material.Cotton,
     target: "any",
     sizes: [
@@ -47,6 +50,7 @@ export const testProducts: IProduct[] = [
     ],
     section: SectionType.Clothing,
     category: { main: CategoryType.Bottoms, sub: BottomsSubcategory.Jeans },
+    colours: [Colour.PastelBlue],
     material: Material.Denim,
     target: "any",
     sizes: [
@@ -61,6 +65,7 @@ export const testProducts: IProduct[] = [
     imageUrls: ["https://1.bp.blogspot.com/_NlXLy36jo0g/TGQgxk4kpCI/AAAAAAAAIX8/8LsndlhYqWI/s1600/64F17ACAM_large.jpg"],
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Coat },
+    colours: [Colour.Beige],
     material: Material.Wool,
     target: "any",
     sizes: [
@@ -77,6 +82,7 @@ export const testProducts: IProduct[] = [
     ],
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Jumper },
+    colours: [Colour.LightGrey],
     material: Material.Wool,
     target: "any",
     sizes: [
@@ -93,6 +99,7 @@ export const testProducts: IProduct[] = [
     ],
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Hoodie },
+    colours: [Colour.Pink],
     material: Material.Cotton,
     target: "any",
     sizes: [
@@ -107,6 +114,7 @@ export const testProducts: IProduct[] = [
     imageUrls: ["https://i.etsystatic.com/26956067/r/il/a2352f/3019208592/il_fullxfull.3019208592_p8od.jpg"],
     section: SectionType.Clothing,
     category: { main: CategoryType.Tops, sub: TopsSubcategory.TShirt },
+    colours: [Colour.Black],
     material: Material.Cotton,
     target: "any",
     sizes: [
@@ -123,6 +131,7 @@ export const testProducts: IProduct[] = [
     ],
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Hoodie },
+    colours: [Colour.Black],
     material: Material.Cotton,
     target: "any",
     sizes: [
@@ -137,6 +146,7 @@ export const testProducts: IProduct[] = [
     imageUrls: ["https://i5.walmartimages.com/asr/1f375da5-4715-4144-9719-b67e18354423_2.31c78210f152a2c7d0040493b78fdadb.jpeg"],
     section: SectionType.Clothing,
     category: { main: CategoryType.Tops, sub: TopsSubcategory.DressShirt },
+    colours: [Colour.DarkBlue],
     material: Material.Cotton,
     target: "any",
     sizes: [
@@ -153,6 +163,7 @@ export const testProducts: IProduct[] = [
     ],
     section: SectionType.Clothing,
     category: { main: CategoryType.Bottoms, sub: BottomsSubcategory.SweatPants },
+    colours: [Colour.Red],
     material: Material.Cotton,
     target: "any",
     sizes: [
@@ -167,6 +178,7 @@ export const testProducts: IProduct[] = [
     imageUrls: ["https://d2wfvd7ei865en.cloudfront.net/product-media/1YM1/800/1130/BereniceStripeJumperoffwhite1.jpg"],
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Jumper },
+    colours: [Colour.Cream],
     material: Material.Cotton,
     target: "any",
     sizes: [
@@ -181,6 +193,7 @@ export const testProducts: IProduct[] = [
     imageUrls: ["https://static.smallable.com/741369-thickbox/two-tone-jumper.jpg"],
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Jumper },
+    colours: [Colour.Yellow],
     material: Material.Cotton,
     target: "any",
     sizes: [
