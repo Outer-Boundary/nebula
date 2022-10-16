@@ -43,6 +43,9 @@ export default function ProductPage() {
           <summary className="details-text">Details</summary>
           <p>Material: {product?.material}</p>
         </details>
+        <button className="asd" style={{ backgroundColor: "hsl(100, 100, 100)" }}>
+          Asd
+        </button>
       </div>
     </div>
   );
