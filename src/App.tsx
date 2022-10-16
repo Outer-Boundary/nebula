@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import "./App.css";
 import Header from "./components/header/Header";
+import ProductPage from "./components/product-page/ProductPage";
 import Section from "./components/section/Section";
 import { SectionType } from "./components/types/SectionType";
 
@@ -16,6 +17,7 @@ function App() {
         <Route path="/shoes" element={<Section section={SectionType.Shoes} />} />
         <Route path="/accessories" element={<Section section={SectionType.Accessories} />} />
         <Route path="/sale" element={<Section section={SectionType.Sale} />} />
+        <Route path="/clothing/:id" element={<ProductPage />} />
       </Routes>
     </div>
   );
