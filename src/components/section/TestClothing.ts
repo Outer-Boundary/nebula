@@ -18,6 +18,7 @@ export const testProducts: IProduct[] = [
     category: { main: CategoryType.Tops, sub: TopsSubcategory.TShirt },
     colours: [Colour.Yellow, Colour.Grey, Colour.Blue, Colour.DarkBrown],
     material: Material.Cotton,
+    description: "",
     target: "any",
     sizes: [
       { size: Size.S, amount: 6 },
@@ -35,6 +36,7 @@ export const testProducts: IProduct[] = [
     category: { main: CategoryType.Tops, sub: TopsSubcategory.TankTop },
     colours: [Colour.Black],
     material: Material.Cotton,
+    description: "",
     target: "any",
     sizes: [
       { size: Size.S, amount: 6 },
@@ -52,6 +54,7 @@ export const testProducts: IProduct[] = [
     category: { main: CategoryType.Bottoms, sub: BottomsSubcategory.Jeans },
     colours: [Colour.PastelBlue],
     material: Material.Denim,
+    description: "",
     target: "any",
     sizes: [
       { size: Size.XS, amount: 6 },
@@ -67,6 +70,7 @@ export const testProducts: IProduct[] = [
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Coat },
     colours: [Colour.Beige],
     material: Material.Wool,
+    description: "",
     target: "any",
     sizes: [
       { size: Size.S, amount: 6 },
@@ -84,6 +88,7 @@ export const testProducts: IProduct[] = [
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Jumper },
     colours: [Colour.LightGrey],
     material: Material.Wool,
+    description: "",
     target: "any",
     sizes: [
       { size: Size.XS, amount: 6 },
@@ -99,8 +104,9 @@ export const testProducts: IProduct[] = [
     ],
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Hoodie },
-    colours: [Colour.Pink],
+    colours: [Colour.PastelPink],
     material: Material.Cotton,
+    description: "",
     target: "any",
     sizes: [
       { size: Size.XXS, amount: 6 },
@@ -116,6 +122,7 @@ export const testProducts: IProduct[] = [
     category: { main: CategoryType.Tops, sub: TopsSubcategory.TShirt },
     colours: [Colour.Black],
     material: Material.Cotton,
+    description: "",
     target: "any",
     sizes: [
       { size: Size.S, amount: 6 },
@@ -133,6 +140,7 @@ export const testProducts: IProduct[] = [
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Hoodie },
     colours: [Colour.Black],
     material: Material.Cotton,
+    description: "",
     target: "any",
     sizes: [
       { size: Size.S, amount: 6 },
@@ -148,6 +156,7 @@ export const testProducts: IProduct[] = [
     category: { main: CategoryType.Tops, sub: TopsSubcategory.DressShirt },
     colours: [Colour.DarkBlue],
     material: Material.Cotton,
+    description: "",
     target: "any",
     sizes: [
       { size: Size.S, amount: 6 },
@@ -165,6 +174,7 @@ export const testProducts: IProduct[] = [
     category: { main: CategoryType.Bottoms, sub: BottomsSubcategory.SweatPants },
     colours: [Colour.Red],
     material: Material.Cotton,
+    description: "",
     target: "any",
     sizes: [
       { size: Size.S, amount: 6 },
@@ -180,6 +190,7 @@ export const testProducts: IProduct[] = [
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Jumper },
     colours: [Colour.Cream],
     material: Material.Cotton,
+    description: "",
     target: "any",
     sizes: [
       { size: Size.S, amount: 6 },
@@ -195,6 +206,7 @@ export const testProducts: IProduct[] = [
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Jumper },
     colours: [Colour.Yellow],
     material: Material.Cotton,
+    description: "",
     target: "any",
     sizes: [
       { size: Size.XXS, amount: 6 },

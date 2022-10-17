@@ -11,6 +11,7 @@ export default interface IProduct {
   category: Category;
   colours: Colour[];
   material: Material;
+  description: string;
   target: "men" | "women" | "any";
   onSale?: boolean;
   sizes: { size: Size; amount: number }[];

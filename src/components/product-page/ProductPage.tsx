@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
-import { StateType } from "../../redux/reducers";
-import { Colour } from "../types/Colour";
+import IProduct from "../types/IProduct";
 import Size from "../types/Size";
 import "./styles/ProductPage.css";
 
 export default function ProductPage() {
-  const product = useSelector((state: StateType) => state.currentProduct);
+  const location = useLocation();
+  const product: IProduct = location.state;
+
   const [curImageIndex, setCurImageIndex] = useState<number>(0);
   const [curSize, setSize] = useState<Size | null>(null);
   const [curColourIndex, setColourIndex] = useState<number>(0);
@@ -53,6 +54,10 @@ export default function ProductPage() {
         <details className="product-details">
           <summary className="details-text">Details</summary>
           <p>Material: {product?.material}</p>
+        </details>
+        <details className="product-description">
+          <summary className="description-text">Description</summary>
+          <p>{product?.description}</p>
         </details>
       </div>
     </div>
