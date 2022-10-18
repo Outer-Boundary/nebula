@@ -17,6 +17,7 @@ interface FilterProps {
 }
 
 /* to do: 
+- add colour filter
 - make it so the user can set the highest and lowest price in the range range filter by directly entering an amount
 - give every filter a show hide button
 - fix filters not being reset when going from section all to clothing or vice versa the first time either is clicked
