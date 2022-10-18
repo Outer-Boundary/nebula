@@ -89,4 +89,7 @@
 }
 .product-page .add-to-cart-btn:hover {
   background-color: rgb(70, 70, 70);
+}
+.product-page .product-details {
+  margin-bottom: 1rem;
 }/*# sourceMappingURL=ProductPage.css.map */

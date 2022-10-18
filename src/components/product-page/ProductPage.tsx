@@ -53,7 +53,7 @@ export default function ProductPage() {
         <button className="add-to-cart-btn">Add To Cart</button>
         <details className="product-details">
           <summary className="details-text">Details</summary>
-          <p>Material: {product?.material}</p>
+          <p>Material - {product?.material}</p>
         </details>
         <details className="product-description">
           <summary className="description-text">Description</summary>

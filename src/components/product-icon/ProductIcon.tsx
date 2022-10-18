@@ -4,6 +4,9 @@ import { getKebabStyledString } from "../../helper/Helper";
 import IProduct from "../types/IProduct";
 import "./styles/ProductIcon.css";
 
+/* to do:
+ - save the filter state when opening the product page then reapply it if the user goes back to the previous page
+*/
 export default function ProductIcon({ product }: { product: IProduct }) {
   return (
     <Link to={"/clothing/" + getKebabStyledString(product.name)} state={product} className="product-icon">
