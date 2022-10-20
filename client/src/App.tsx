@@ -9,9 +9,11 @@ import { SectionType } from "./components/types/SectionType";
 
 function App() {
   useEffect(() => {
-    // (async () => {
-    //   await fetch("http://localhost:5000/api/products");
-    // })();
+    (async () => {
+      const response = await fetch("http://localhost:5000/products");
+      const resBody = await response.json();
+      console.log(resBody.products.edges[0].node);
+    })();
   }, []);
 
   return (

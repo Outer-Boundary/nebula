@@ -6,11 +6,20 @@ import ProductIcon from "../product-icon/ProductIcon";
 import IProduct from "../types/IProduct";
 import { SectionType } from "../types/SectionType";
 import Filter from "./filter/Filter";
+import { ProductType } from "../../types/ProductType";
 
 // need this to refresh when clicking on different sections so that the filters reset
 export default function Section({ section }: { section: SectionType }) {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<IProduct[]>([]);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const response = await fetch("http://localhost:5000/api/products");
+  //     const resBody = await response.json();
+  //     console.log(resBody.products[0]);
+  //   })();
+  // }, []);
 
   // gets the products from the selected section
   useEffect(() => {

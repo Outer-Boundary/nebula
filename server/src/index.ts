@@ -1,12 +1,15 @@
 import express from "express";
-import Shopify, { ApiVersion, AuthQuery } from "@shopify/shopify-api";
+import cors from "cors";
+import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 const app = express();
+app.use(cors());
+app.use(express.json());
 
-const { API_KEY, API_SECRET_KEY, SCOPES, SHOP, HOST, HOST_SCHEME } = process.env;
+const { API_KEY, API_SECRET_KEY, API_ACCESS_TOKEN, SCOPES, SHOP, HOST, HOST_SCHEME } = process.env;
 
 Shopify.Context.initialize({
   API_KEY: API_KEY!,
@@ -18,46 +21,34 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.October22,
 });
 
-const ACTIVE_SHOPIFY_SHOPS: { [key: string]: string | undefined } = {};
-
-//Only needed to initially install the app to your store
-app.get("/", async (req, res) => {
-  if (!SHOP || !ACTIVE_SHOPIFY_SHOPS[SHOP]) {
-    res.redirect("/auth");
-  } else {
-    res.send("Access token exists");
-    res.end();
-  }
-});
-
-app.get("/auth", async (req, res) => {
-  let authRoute = await Shopify.Auth.beginAuth(req, res, SHOP!, "/auth/callback", false);
-  return res.redirect(authRoute);
-});
-
-app.get("/auth/callback", async (req, res) => {
-  try {
-    const session = await Shopify.Auth.validateAuthCallback(req, res, req.query as unknown as AuthQuery);
-    console.log(session.shop, session);
-    ACTIVE_SHOPIFY_SHOPS[SHOP!] = session.scope;
-  } catch (error) {
-    console.log(error);
-  }
-  return res.redirect(`/?host=${req.query.host}&shop=${req.query.shop}`);
-});
-
-app.get("/api/products", async (req, res) => {
-  // Load the current session to get the `accessToken`.
-  const session = await Shopify.Utils.loadCurrentSession(req, res);
-  if (!session) return;
+app.get("/products", async (req, res) => {
   // Create a new client for the specified shop.
-  const client = new Shopify.Clients.Rest(session.shop, session.accessToken);
-  // Use `client.get` to request the specified Shopify REST API endpoint, in this case `products`.
-  const response = await client.get({
-    path: "products",
+  if (!SHOP || !API_ACCESS_TOKEN) {
+    console.log("Missing shop url or access token. Check env file");
+    return;
+  }
+  const client = new Shopify.Clients.Graphql(SHOP, API_ACCESS_TOKEN);
+  const response = await client.query<{ data: any[] }>({
+    data: `{
+      products (first: 10) {
+        edges {
+          node {
+            id
+            title
+            variants (first: 10) {
+              edges {
+                node {
+                  id
+                  title
+                }
+              }
+            }
+          }
+        }
+      }
+    }`,
   });
-  // response.body will be of type MyResponseBodyType
-  console.log(response.body);
+  res.json(response.body.data);
 });
 
 app.listen(5000, () => {
