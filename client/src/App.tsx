@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import "./App.css";
@@ -7,6 +8,12 @@ import Section from "./components/section/Section";
 import { SectionType } from "./components/types/SectionType";
 
 function App() {
+  useEffect(() => {
+    // (async () => {
+    //   await fetch("http://localhost:5000/api/products");
+    // })();
+  }, []);
+
   return (
     <div className="app">
       <Header />
