@@ -21,21 +21,16 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.October22,
 });
 
-app.get("/products", async (req, res) => {
-  // Create a new client for the specified shop.
-  if (!SHOP || !API_ACCESS_TOKEN) {
-    console.log("Missing shop url or access token. Check env file");
-    return;
-  }
-  const client = new Shopify.Clients.Graphql(SHOP, API_ACCESS_TOKEN);
+app.get("/products/:category", async (req, res) => {
+  const category = req.params.category;
+
+  const client = new Shopify.Clients.Graphql(SHOP!, API_ACCESS_TOKEN);
   const response = await client.query<{ data: any[] }>({
-    data: `{
-      products (first: 10) {
-        edges {
-          node {
-            id
-            title
-            variants (first: 10) {
+    data: `mutation {
+        bulkOperationRunQuery(
+         query: """
+          {
+            products {
               edges {
                 node {
                   id
@@ -44,13 +39,53 @@ app.get("/products", async (req, res) => {
               }
             }
           }
+          """
+        ) {
+          bulkOperation {
+            id
+            status
+          }
+          userErrors {
+            field
+            message
+          }
         }
-      }
-    }`,
+      }`,
   });
   res.json(response.body.data);
 });
 
-app.listen(5000, () => {
+app.post("/webhooks", async (req, res) => {
+  console.log(req.body);
+});
+
+app.listen(5000, async () => {
   console.log("App is now listening to port 5000");
+
+  if (!SHOP || !API_ACCESS_TOKEN) {
+    console.log("Missing shop url or access token. Check env file");
+    return;
+  }
+
+  // Subscribe to bulk operation finish webhook
+  const client = new Shopify.Clients.Graphql(SHOP, API_ACCESS_TOKEN);
+  const bulkOperationWebhook = await client.query<{ data: any[] }>({
+    data: ` mutation {
+      webhookSubscriptionCreate(
+        topic: BULK_OPERATIONS_FINISH
+        webhookSubscription: {
+          format: JSON,
+          callbackUrl: "http://localhost:3000/webhooks"
+        }
+      ) {
+        userErrors {
+          field
+          message
+        }
+        webhookSubscription {
+          id
+        }
+      }
+    }`,
+  });
 });
