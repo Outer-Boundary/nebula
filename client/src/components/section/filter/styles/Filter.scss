@@ -143,6 +143,18 @@
     display: none;
   }
 
+  // Colours Filter
+  #colours-container {
+    display: none;
+  }
+
+  .colour-container {
+    min-width: 3rem;
+    min-height: 3rem;
+    border: 2px solid var(--secondary-element-colour);
+    border-radius: 100%;
+  }
+
   // Materials Filter
   #materials-container {
     display: none;

@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 
+import { Colour } from "../../../types/Colour";
+import IProduct from "../../../types/IProduct";
+import Material from "../../../types/Material";
+import { SectionType } from "../../../types/SectionType";
+import Size from "../../../types/Size";
 import { clamp, getEnumValues, lerp } from "../../../helper/Helper";
-import { Categories, CategoryType } from "../../types/Category";
-import IProduct from "../../types/IProduct";
-import Material from "../../types/Material";
-import { SectionType } from "../../types/SectionType";
-import Size from "../../types/Size";
+import { Categories, CategoryType } from "../../../types/Category";
 import "./styles/Filter.css";
 
 interface FilterProps {
@@ -26,6 +27,10 @@ export default function Filter(props: FilterProps) {
   const [priceRange, setPriceRange] = useState({ low: 0, high: 0 });
   const [priceHandleInfo, setPriceHandleInfo] = useState<{ handle?: "low" | "high"; offset?: number; isMoving: boolean }>({
     isMoving: false,
+  });
+
+  useEffect(() => {
+    console.log(Colour["White"]);
   });
 
   useEffect(() => {
@@ -403,6 +408,30 @@ export default function Filter(props: FilterProps) {
                 {size}
               </label>
             </div>
+          ))}
+        </div>
+      </div>
+      <div className="filter-container">
+        <div className="title-container">
+          <p className="colour-text">Colour</p>
+          <TiArrowSortedDown
+            id="colour-visibility-icon"
+            className="visibility-icon closed"
+            onClick={() => toggleVisibility(`colours-container`, `colour-visibility-icon`)}
+          />
+        </div>
+        <div id="colours-container" className="checkboxes-container grid">
+          {getEnumValues(Colour).map((colour, index) => (
+            <>
+              <button
+                name={colour}
+                id={`${colour.toLowerCase()}-colour-checkbox`}
+                className="colour-container checkbox"
+                style={{ backgroundColor: Colour[colour as keyof typeof Colour] }}
+                onChange={() => filterProducts()}
+                key={index}
+              />
+            </>
           ))}
         </div>
       </div>

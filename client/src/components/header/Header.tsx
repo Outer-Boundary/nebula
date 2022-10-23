@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { SectionType } from "../types/SectionType";
+import { SectionType } from "../../types/SectionType";
 
 import "./styles/Header.css";
 

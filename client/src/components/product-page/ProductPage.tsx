@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import IProduct from "../../types/IProduct";
+import Size from "../../types/Size";
 
-import IProduct from "../types/IProduct";
-import Size from "../types/Size";
 import "./styles/ProductPage.css";
 
 export default function ProductPage() {

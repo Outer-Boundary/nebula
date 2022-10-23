@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 import { getKebabStyledString } from "../../helper/Helper";
-import IProduct from "../types/IProduct";
+import IProduct from "../../types/IProduct";
 import "./styles/ProductIcon.css";
 
 /* to do:

@@ -5,7 +5,7 @@ import "./App.css";
 import Header from "./components/header/Header";
 import ProductPage from "./components/product-page/ProductPage";
 import Section from "./components/section/Section";
-import { SectionType } from "./components/types/SectionType";
+import { SectionType } from "./types/SectionType";
 
 function App() {
   useEffect(() => {

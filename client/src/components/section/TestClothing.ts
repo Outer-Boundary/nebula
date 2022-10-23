@@ -1,9 +1,9 @@
-import { BottomsSubcategory, CategoryType, OuterwearSubcategory, TopsSubcategory } from "../types/Category";
-import { Colour } from "../types/Colour";
-import IProduct from "../types/IProduct";
-import Material from "../types/Material";
-import { SectionType } from "../types/SectionType";
-import Size from "../types/Size";
+import { Colour } from "../../types/Colour";
+import IProduct from "../../types/IProduct";
+import Material from "../../types/Material";
+import { SectionType } from "../../types/SectionType";
+import Size from "../../types/Size";
+import { BottomsSubcategory, CategoryType, OuterwearSubcategory, TopsSubcategory } from "../../types/Category";
 
 export const testProducts: IProduct[] = [
   {

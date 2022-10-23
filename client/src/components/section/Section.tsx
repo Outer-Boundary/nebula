@@ -3,10 +3,9 @@ import { useState, useEffect } from "react";
 import "./styles/Section.css";
 import { testProducts } from "./TestClothing";
 import ProductIcon from "../product-icon/ProductIcon";
-import IProduct from "../types/IProduct";
-import { SectionType } from "../types/SectionType";
 import Filter from "./filter/Filter";
-import { ProductType } from "../../types/ProductType";
+import { SectionType } from "../../types/SectionType";
+import IProduct from "../../types/IProduct";
 
 // need this to refresh when clicking on different sections so that the filters reset
 export default function Section({ section }: { section: SectionType }) {
