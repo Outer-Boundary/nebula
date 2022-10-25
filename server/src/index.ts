@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import Shopify, { ApiVersion } from "@shopify/shopify-api";
+import { SmartCollection } from "@shopify/shopify-api/dist/rest-resources/2022-10/index.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -14,6 +15,7 @@ const { API_KEY, API_SECRET_KEY, API_ACCESS_TOKEN, SCOPES, SHOP, HOST, HOST_SCHE
 Shopify.Context.initialize({
   API_KEY: API_KEY!,
   API_SECRET_KEY: API_SECRET_KEY!,
+  PRIVATE_APP_STOREFRONT_ACCESS_TOKEN: API_ACCESS_TOKEN,
   SCOPES: [SCOPES!],
   HOST_NAME: HOST!.replace(/https?:\/\//, ""),
   HOST_SCHEME,
@@ -21,71 +23,22 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.October22,
 });
 
-app.get("/products/:category", async (req, res) => {
-  const category = req.params.category;
+app.get("/products", async (req, res) => {
+  // const category = req.params.category;
 
-  const client = new Shopify.Clients.Graphql(SHOP!, API_ACCESS_TOKEN);
-  const response = await client.query<{ data: any[] }>({
-    data: `mutation {
-        bulkOperationRunQuery(
-         query: """
-          {
-            products {
-              edges {
-                node {
-                  id
-                  title
-                }
-              }
-            }
-          }
-          """
-        ) {
-          bulkOperation {
-            id
-            status
-          }
-          userErrors {
-            field
-            message
-          }
-        }
-      }`,
-  });
-  res.json(response.body.data);
-});
+  // const client = new Shopify.Clients.Rest(SHOP!, API_ACCESS_TOKEN);
+  // const response = await client.get({ path: "collections" });
 
-app.post("/webhooks", async (req, res) => {
-  console.log(req.body);
+  const session = await Shopify.Utils.loadCurrentSession(req, res);
+  if (!session) {
+    console.log("session does not exist");
+    return;
+  }
+  const response = await SmartCollection.all({ session: session, handle: "tops" });
+  console.log(response);
+  res.json(response);
 });
 
 app.listen(5000, async () => {
   console.log("App is now listening to port 5000");
-
-  if (!SHOP || !API_ACCESS_TOKEN) {
-    console.log("Missing shop url or access token. Check env file");
-    return;
-  }
-
-  // Subscribe to bulk operation finish webhook
-  const client = new Shopify.Clients.Graphql(SHOP, API_ACCESS_TOKEN);
-  const bulkOperationWebhook = await client.query<{ data: any[] }>({
-    data: ` mutation {
-      webhookSubscriptionCreate(
-        topic: BULK_OPERATIONS_FINISH
-        webhookSubscription: {
-          format: JSON,
-          callbackUrl: "http://localhost:3000/webhooks"
-        }
-      ) {
-        userErrors {
-          field
-          message
-        }
-        webhookSubscription {
-          id
-        }
-      }
-    }`,
-  });
 });
