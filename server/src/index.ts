@@ -15,7 +15,6 @@ const { API_KEY, API_SECRET_KEY, API_ACCESS_TOKEN, SCOPES, SHOP, HOST, HOST_SCHE
 Shopify.Context.initialize({
   API_KEY: API_KEY!,
   API_SECRET_KEY: API_SECRET_KEY!,
-  PRIVATE_APP_STOREFRONT_ACCESS_TOKEN: API_ACCESS_TOKEN,
   SCOPES: [SCOPES!],
   HOST_NAME: HOST!.replace(/https?:\/\//, ""),
   HOST_SCHEME,
@@ -23,20 +22,26 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.October22,
 });
 
-app.get("/products", async (req, res) => {
-  // const category = req.params.category;
+app.get("/collections/:category", async (req, res) => {
+  const category = req.params.category;
 
-  // const client = new Shopify.Clients.Rest(SHOP!, API_ACCESS_TOKEN);
-  // const response = await client.get({ path: "collections" });
-
-  const session = await Shopify.Utils.loadCurrentSession(req, res);
-  if (!session) {
-    console.log("session does not exist");
+  // use getEnumValues with CategoryType from client
+  if (!["tops", "bottoms", "outerwear"].some((x) => x === category)) {
+    res.status(400).json({ error: "Invalid category" });
     return;
   }
-  const response = await SmartCollection.all({ session: session, handle: "tops" });
-  console.log(response);
-  res.json(response);
+
+  const client = new Shopify.Clients.Rest(SHOP!, API_ACCESS_TOKEN);
+  // get the collection id
+  const collectionsResponse = await client.get<{ smart_collections: any[] }>({ path: "/smart_collections", query: { handle: category } });
+  if (collectionsResponse.body.smart_collections.length === 0) {
+    res.status(400).json({ error: "Could not find a collection with the specified handle" });
+    return;
+  }
+  const collectionId = collectionsResponse.body.smart_collections[0].id;
+  // get the products inside that collection
+  const productsResponse = await client.get<{ products: any[] }>({ path: "products", query: { collection_id: collectionId } });
+  res.json(productsResponse);
 });
 
 app.listen(5000, async () => {
