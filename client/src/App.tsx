@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 
 import "./App.css";
@@ -8,14 +7,6 @@ import Section from "./components/section/Section";
 import { SectionType } from "./components/types/SectionType";
 
 function App() {
-  useEffect(() => {
-    (async () => {
-      const response = await fetch("http://localhost:5000/collections/tops");
-      const resBody = await response.json();
-      console.log(resBody);
-    })();
-  }, []);
-
   return (
     <div className="app">
       <Header />

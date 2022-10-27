@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import Shopify, { ApiVersion } from "@shopify/shopify-api";
-import { SmartCollection } from "@shopify/shopify-api/dist/rest-resources/2022-10/index.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -22,26 +21,32 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.October22,
 });
 
-app.get("/collections/:category", async (req, res) => {
-  const category = req.params.category;
+app.get("/category/:category", async (req, res) => {
+  // convert to title case
+  const category = req.params.category.replace(/./, (x) => x.toUpperCase());
 
   // use getEnumValues with CategoryType from client
-  if (!["tops", "bottoms", "outerwear"].some((x) => x === category)) {
+  if (!["Tops", "Bottoms", "Outerwear", "Clothing"].some((x) => x === category)) {
     res.status(400).json({ error: "Invalid category" });
     return;
   }
 
-  const client = new Shopify.Clients.Rest(SHOP!, API_ACCESS_TOKEN);
-  // get the collection id
-  const collectionsResponse = await client.get<{ smart_collections: any[] }>({ path: "/smart_collections", query: { handle: category } });
-  if (collectionsResponse.body.smart_collections.length === 0) {
-    res.status(400).json({ error: "Could not find a collection with the specified handle" });
-    return;
-  }
-  const collectionId = collectionsResponse.body.smart_collections[0].id;
-  // get the products inside that collection
-  const productsResponse = await client.get<{ products: any[] }>({ path: "products", query: { collection_id: collectionId } });
-  res.json(productsResponse);
+  const client = new Shopify.Clients.Graphql(SHOP!, API_ACCESS_TOKEN);
+
+  // get the collection id (use the title not the handle since it doesn't change when renaming)
+  const collectionsResponse = await client.query<{ data: any[] }>({
+    data: `{ 
+      products(first: 50, query: "tag:outerwear OR tag:bottoms") {
+        edges {
+          node {
+            id,
+            title
+          }
+        }
+      }
+    }`,
+  });
+  res.json(collectionsResponse);
 });
 
 app.listen(5000, async () => {

@@ -1,8 +1,8 @@
 export enum SectionType {
-  All,
-  New,
-  Clothing,
-  Shoes,
-  Accessories,
-  Sale,
+  All = "All",
+  New = "New",
+  Clothing = "Clothing",
+  Shoes = "Shoes",
+  Accessories = "Accessories",
+  Sale = "Sale",
 }

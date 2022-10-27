@@ -189,7 +189,7 @@ export const testProducts: IProduct[] = [
     section: SectionType.Clothing,
     category: { main: CategoryType.Outerwear, sub: OuterwearSubcategory.Jumper },
     colours: [Colour.Cream],
-    material: Material.Cotton,
+    material: Material.Wool,
     description: "",
     target: "any",
     sizes: [
