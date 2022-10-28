@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import Shopify, { ApiVersion } from "@shopify/shopify-api";
+import Shopify, { ApiVersion, QueryParams } from "@shopify/shopify-api";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -21,26 +21,30 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.October22,
 });
 
-app.get("/category/:category", async (req, res) => {
-  // convert to title case
-  const category = req.params.category.replace(/./, (x) => x.toUpperCase());
-
-  // use getEnumValues with CategoryType from client
-  if (!["Tops", "Bottoms", "Outerwear", "Clothing"].some((x) => x === category)) {
-    res.status(400).json({ error: "Invalid category" });
-    return;
+app.get("/products", async (req, res) => {
+  let query: {
+    [key: string]: QueryParams;
+  } = {};
+  for (const entry of Object.entries(req.query)) {
+    if (typeof entry[1] === "string") {
+      query[entry[0]] = entry[1];
+    }
   }
+  console.log(query);
 
   const client = new Shopify.Clients.Graphql(SHOP!, API_ACCESS_TOKEN);
 
   // get the collection id (use the title not the handle since it doesn't change when renaming)
   const collectionsResponse = await client.query<{ data: any[] }>({
     data: `{ 
-      products(first: 50, query: "tag:outerwear OR tag:bottoms") {
+      products(first: 40, query: "tag:outerwear OR tag:bottoms") {
         edges {
           node {
             id,
             title
+            options {
+              values
+            }
           }
         }
       }
