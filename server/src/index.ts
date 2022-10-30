@@ -22,28 +22,26 @@ Shopify.Context.initialize({
 });
 
 app.get("/products", async (req, res) => {
-  let query: {
-    [key: string]: QueryParams;
-  } = {};
-  for (const entry of Object.entries(req.query)) {
-    if (typeof entry[1] === "string") {
-      query[entry[0]] = entry[1];
-    }
-  }
-  console.log(query);
-
   const client = new Shopify.Clients.Graphql(SHOP!, API_ACCESS_TOKEN);
+
+  let query = req.url.split("?")[1].replace(/\&/g, "AND").replace(/\|/g, "OR");
 
   // get the collection id (use the title not the handle since it doesn't change when renaming)
   const collectionsResponse = await client.query<{ data: any[] }>({
     data: `{ 
-      products(first: 40, query: "tag:outerwear OR tag:bottoms") {
+      products(first: 40, query: "${query}") {
         edges {
           node {
             id,
-            title
+            title,
+            priceRangeV2 {
+              minVariantPrice {
+                amount
+              }
+            },
             options {
-              values
+              name
+              values 
             }
           }
         }
@@ -51,6 +49,40 @@ app.get("/products", async (req, res) => {
     }`,
   });
   res.json(collectionsResponse);
+});
+
+app.post("/products/update-tags-with-options", async (req, res) => {
+  const restClient = new Shopify.Clients.Rest(SHOP!, API_ACCESS_TOKEN);
+
+  const productsCount = (
+    await restClient.get<{ count: number }>({
+      path: "products/count",
+    })
+  ).body.count;
+
+  const graphqlClient = new Shopify.Clients.Graphql(SHOP!, API_ACCESS_TOKEN);
+
+  let products: any[] = [];
+  let loopAmount = Math.ceil(productsCount / 250);
+  for (let index = 0; index < loopAmount; index++) {
+    let productsQuery = await graphqlClient.query<{ data: any }>({
+      data: `{
+        products(first: ${index + 1 === loopAmount ? productsCount : 250}) {
+          edges {
+            node {
+              id,
+              options {
+                name,
+                values
+              }
+            }
+          }
+        }
+      }`,
+    });
+    products.push(...productsQuery.body.data.products.edges);
+  }
+  console.log(products);
 });
 
 app.listen(5000, async () => {

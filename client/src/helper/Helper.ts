@@ -25,12 +25,3 @@ export function getKebabStyledString(str: string) {
     .replace(/[^A-z ]|[_]/g, "")
     .replace(/ /g, "-");
 }
-
-// export function getConvertedShopifyProduct(product: any) {
-//   const sizes: Size[] =
-//   return {
-//     id: product.id,
-//     title: product.title,
-
-//   };
-// }
