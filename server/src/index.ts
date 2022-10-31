@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import Shopify, { ApiVersion, QueryParams, RequestReturn } from "@shopify/shopify-api";
+import Shopify, { ApiVersion, RequestReturn } from "@shopify/shopify-api";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -24,7 +24,8 @@ Shopify.Context.initialize({
 app.get("/products", async (req, res) => {
   const client = new Shopify.Clients.Graphql(SHOP!, API_ACCESS_TOKEN);
 
-  let query = req.url.split("?").length > 1 ? req.url.split("?")[1].replace(/\&/g, "AND").replace(/\|/g, "OR") : "";
+  let query = req.url.split("?").length > 1 ? req.url.split("?")[1].replace(/\&/g, " AND ").replace(/\|/g, " OR ") : "";
+  console.log(query);
 
   // get the collection id (use the title not the handle since it doesn't change when renaming)
   const collectionsResponse = await client.query<{ data: any[] }>({
@@ -55,6 +56,7 @@ app.get("/products", async (req, res) => {
 app.post("/products/update-tags-with-options", async (req, res) => {
   const restClient = new Shopify.Clients.Rest(SHOP!, API_ACCESS_TOKEN);
 
+  // gets the amount of products
   const productsCount = (
     await restClient.get<{ count: number }>({
       path: "products/count",
@@ -86,6 +88,7 @@ app.post("/products/update-tags-with-options", async (req, res) => {
     products.push(...productsQuery.body.data.products.edges);
   }
 
+  // adds tags to each product based on their options
   const productUpdatePromises: Promise<RequestReturn>[] = [];
   for (const product of products) {
     let tags = (product.node.tags as string[]).join(",").replace(/(color|material|size).*?(,|(?=$))/g, "");
