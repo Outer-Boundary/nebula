@@ -15,9 +15,7 @@ export default function Section({ section }: { section: SectionType }) {
   // gets the products from the selected section
   useEffect(() => {
     (async () => {
-      const response = await fetch(`http://localhost:5000/products/update-tags-with-options`, {
-        method: "POST",
-      });
+      const response = await fetch(`http://localhost:5000/products`);
       const resBody = await response.json();
       console.log(resBody);
     })();
