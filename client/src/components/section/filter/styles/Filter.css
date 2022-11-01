@@ -192,17 +192,34 @@
   left: -0.2rem;
   top: 1.2rem;
 }
-.filter .clear-filters-btn {
-  min-height: 4rem;
-  width: 90%;
+.filter .btn-container {
+  height: 4rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.6rem 0;
+}
+.filter .filter-btn {
+  padding: 0 1rem;
   font-size: 1.6rem;
-  align-self: center;
   background-color: var(--primary-element-colour);
   border: 2px solid var(--secondary-element-colour);
-  border-radius: var(--primary-border-radius);
   margin: 1.6rem 0;
   transition: background-color 125ms ease-in-out;
 }
-.filter .clear-filters-btn:hover {
+.filter .filter-btn:hover {
   background-color: var(--secondary-element-colour);
+}
+.filter .apply-filters-btn {
+  height: 100%;
+  width: 70%;
+  border-top-left-radius: var(--primary-border-radius);
+  border-bottom-left-radius: var(--primary-border-radius);
+}
+.filter .clear-filters-btn {
+  height: 100%;
+  border-top-right-radius: var(--primary-border-radius);
+  border-bottom-right-radius: var(--primary-border-radius);
+  border-left: none;
 }/*# sourceMappingURL=Filter.css.map */

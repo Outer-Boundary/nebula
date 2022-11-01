@@ -91,7 +91,7 @@ app.post("/products/update-tags-with-options", async (req, res) => {
   // adds tags to each product based on their options
   const productUpdatePromises: Promise<RequestReturn>[] = [];
   for (const product of products) {
-    let tags = (product.node.tags as string[]).join(",").replace(/(color|material|size).*?(,|(?=$))/g, "");
+    let tags = (product.node.tags as string[]).join(",").replace(/(color|material|size).*?(,|$)/g, "");
     (product.node.options as { name: string; values: string[] }[]).forEach((option) => {
       option.values.forEach((value) => (tags += `,${option.name.toLowerCase()}-${value.toLowerCase()}`));
     });

@@ -36,46 +36,44 @@ export default function Filter(props: FilterProps) {
   }, [props.products, props.section]);
 
   // goes through each filter then sets the products being viewed
-  function filterProducts() {
-    const newFilteredProducts = [...props.products];
-    searchFilter(newFilteredProducts);
-    sortByFilter(newFilteredProducts);
-    categoryFilter(newFilteredProducts);
-    sizeFilter(newFilteredProducts);
-    materialFilter(newFilteredProducts);
-    priceRangeFilter(newFilteredProducts);
-    props.setFilteredProducts(newFilteredProducts);
+  async function filterProducts() {
+    let filters: string[][] = [];
+    searchFilter(filters);
+    // sortByFilter(newFilteredProducts);
+    // categoryFilter(newFilteredProducts);
+    sizeFilter(filters);
+    materialFilter(filters);
+    // priceRangeFilter(newFilteredProducts);
+
+    let filter = "";
+    for (let i = 0; i < filters.length; i++) {
+      filter += "(" + filters[i].join("|") + ")";
+      if (i !== filter.length - 1) filter += "&";
+    }
+
+    const response = await fetch(`http://localhost:5000/products?${filter}`);
+    const resBody = await response.json();
+    console.log(resBody);
+
+    // props.setFilteredProducts(resBody);
   }
 
   // filters the products based on the search string and the product names. can use a hyphen to negate a search
-  function searchFilter(products: IProduct[]) {
+  function searchFilter(filters: string[][]) {
     const searchString = (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value;
-    if (searchString.replace(/\s/g, "") === "") {
-      props.setFilteredProducts(products);
-      return;
+    if (searchString.replace(/\s/g, "") === "") return;
+
+    const searchFilters = searchString
+      .toLowerCase()
+      .replace(/(?<=\s)\s|\s$|[^\w\s-]|_/g, "")
+      .split(" ");
+
+    let curFilters: string[] = [];
+    for (const searchFilter of searchFilters) {
+      let isNegated = searchFilter.startsWith("-");
+      curFilters.push(`${isNegated ? "-" : ""}title:*${isNegated ? searchFilter.replace("-", "") : searchFilter}*`);
     }
-
-    const searchFilters = searchString.toLowerCase().replace(/\S\W_/g, "").split(" ");
-    console.log(searchFilters);
-
-    for (let i = 0; i < products.length; i++) {
-      const productKeywords = products[i].name
-        .toLowerCase()
-        .replace(/\S\W_|-/g, "")
-        .split(" ");
-
-      for (const searchFilter of searchFilters) {
-        const notIncludesKeyword =
-          !searchFilter.startsWith("-") && productKeywords.every((keyword) => keyword !== searchFilter.replace(/-/g, ""));
-        const includesNegatedKeyword =
-          searchFilter.startsWith("-") && productKeywords.some((keyword) => keyword === searchFilter.replace(/-/g, ""));
-        if ((notIncludesKeyword || includesNegatedKeyword) && searchFilter !== "") {
-          products.splice(i, 1);
-          i--;
-          break;
-        }
-      }
-    }
+    filters.push(curFilters);
   }
 
   // sorts the products based on the selected sorting option
@@ -131,45 +129,29 @@ export default function Filter(props: FilterProps) {
   }
 
   // filters products based on the selected sizes. shoes products that have either size
-  function sizeFilter(products: IProduct[]) {
+  function sizeFilter(filters: string[][]) {
     const checkedSizes = document.getElementById("sizes-container")!.querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
     if (checkedSizes.length === 0) return;
 
-    for (let i = 0; i < products.length; i++) {
-      let matchesOne = false;
-      for (let ii = 0; ii < checkedSizes.length; ii++) {
-        if (products[i].sizes.some((sizeInfo) => sizeInfo.size === checkedSizes[ii].name && sizeInfo.amount > 0)) {
-          matchesOne = true;
-          break;
-        }
-      }
-      if (!matchesOne) {
-        products.splice(i, 1);
-        i--;
-      }
+    let curFilters: string[] = [];
+    for (const size of checkedSizes) {
+      curFilters.push("tag:size-" + size.name);
     }
+    filters.push(curFilters);
   }
 
   // filters products based on the selected materials. shoes products that have either material
-  function materialFilter(products: IProduct[]) {
+  function materialFilter(filters: string[][]) {
     const checkedMaterials = document
       .getElementById("materials-container")!
       .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
     if (checkedMaterials.length === 0) return;
 
-    for (let i = 0; i < products.length; i++) {
-      let matchesOne = false;
-      for (let ii = 0; ii < checkedMaterials.length; ii++) {
-        if (products[i].material === checkedMaterials[ii].name) {
-          matchesOne = true;
-          break;
-        }
-      }
-      if (!matchesOne) {
-        products.splice(i, 1);
-        i--;
-      }
+    let curFilters: string[] = [];
+    for (const material of checkedMaterials) {
+      curFilters.push("tag:material-" + material.name);
     }
+    filters.push(curFilters);
   }
 
   // filters products by the specified price range
@@ -322,7 +304,7 @@ export default function Filter(props: FilterProps) {
       </form>
       <div className="filter-container">
         <p className="sort-by-text filter-text">Sort By</p>
-        <select name="" id="sort-by-select" onChange={() => filterProducts()}>
+        <select name="" id="sort-by-select">
           <option value="most-popular">Most Popular</option>
           <option value="newest">Newest</option>
           <option value="price-low-high">Price Low to High</option>
@@ -342,13 +324,7 @@ export default function Filter(props: FilterProps) {
           {getEnumValues(CategoryType).map((category, index) => (
             <div className="category-container" key={index}>
               <div className="category-checkbox-container">
-                <input
-                  id={`${category.toLowerCase()}-category-checkbox`}
-                  className="category-checkbox"
-                  name={category}
-                  type="checkbox"
-                  onChange={() => filterProducts()}
-                />
+                <input id={`${category.toLowerCase()}-category-checkbox`} className="category-checkbox" name={category} type="checkbox" />
                 <label htmlFor={`${category.toLowerCase()}-category-checkbox`} className="checkbox-label">
                   {category.replace(/(?<=[a-z])(?=[A-Z])/g, " ").replace("TS", "T-S")}
                 </label>
@@ -368,7 +344,6 @@ export default function Filter(props: FilterProps) {
                       className="subcategory-checkbox"
                       name={subcategory}
                       type="checkbox"
-                      onChange={() => filterProducts()}
                     />
                     <label htmlFor={`${subcategory.toLowerCase()}-category-checkbox`} className="checkbox-label">
                       {subcategory.replace(/(?<=[a-z])(?=[A-Z])/g, " ").replace("TS", "T-S")}
@@ -392,13 +367,7 @@ export default function Filter(props: FilterProps) {
         <div id="sizes-container" className="checkboxes-container grid">
           {getEnumValues(Size).map((size, index) => (
             <div className="size-container" key={index}>
-              <input
-                type="checkbox"
-                name={size}
-                id={`${size.toLowerCase()}-size-checkbox`}
-                className="checkbox"
-                onChange={() => filterProducts()}
-              />
+              <input type="checkbox" name={size} id={`${size.toLowerCase()}-size-checkbox`} className="checkbox" />
               <label htmlFor={`${size.toLowerCase()}-size-checkbox`} className="checkbox-label">
                 {size}
               </label>
@@ -418,13 +387,7 @@ export default function Filter(props: FilterProps) {
         <div id="materials-container" className="checkboxes-container grid">
           {getEnumValues(Material).map((material, index) => (
             <div className="material-container" key={index}>
-              <input
-                type="checkbox"
-                name={material}
-                id={`${material.toLowerCase()}-material-checkbox`}
-                className="checkbox"
-                onChange={() => filterProducts()}
-              />
+              <input type="checkbox" name={material} id={`${material.toLowerCase()}-material-checkbox`} className="checkbox" />
               <label htmlFor={`${material.toLowerCase()}-material-checkbox`} className="checkbox-label">
                 {material}
               </label>
@@ -436,11 +399,9 @@ export default function Filter(props: FilterProps) {
         className="filter-container"
         onMouseUp={() => {
           setPriceHandleInfo({ isMoving: false });
-          filterProducts();
         }}
         onMouseLeave={() => {
           setPriceHandleInfo({ isMoving: false });
-          filterProducts();
         }}
         onMouseMove={(e) => movePriceHandle(e)}
       >
@@ -473,15 +434,20 @@ export default function Filter(props: FilterProps) {
           </div>
         </div>
       </div>
-      <button
-        className="clear-filters-btn"
-        onClick={() => {
-          resetFilters();
-          filterProducts();
-        }}
-      >
-        Clear Filters
-      </button>
+      <div className="btn-container">
+        <button className="apply-filters-btn filter-btn" onClick={() => filterProducts()}>
+          Apply Filters
+        </button>
+        <button
+          className="clear-filters-btn filter-btn"
+          onClick={() => {
+            resetFilters();
+            filterProducts();
+          }}
+        >
+          Clear
+        </button>
+      </div>
     </div>
   );
 }

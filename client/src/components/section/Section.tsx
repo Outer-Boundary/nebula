@@ -14,12 +14,6 @@ export default function Section({ section }: { section: SectionType }) {
 
   // gets the products from the selected section
   useEffect(() => {
-    (async () => {
-      const response = await fetch(`http://localhost:5000/products?tag:color-blue|tag:color-cream`);
-      const resBody = await response.json();
-      console.log(resBody);
-    })();
-
     let newProducts = [...testProducts];
     newProducts = newProducts.filter(
       (x) => x.section === section || section === SectionType.All || (section === SectionType.Sale && x.onSale)
