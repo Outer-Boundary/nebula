@@ -40,15 +40,15 @@ export default function Filter(props: FilterProps) {
     let filters: string[][] = [];
     searchFilter(filters);
     // sortByFilter(newFilteredProducts);
-    // categoryFilter(newFilteredProducts);
+    categoryFilter(filters);
     sizeFilter(filters);
     materialFilter(filters);
-    // priceRangeFilter(newFilteredProducts);
+    priceRangeFilter(filters);
 
     let filter = "";
     for (let i = 0; i < filters.length; i++) {
       filter += "(" + filters[i].join("|") + ")";
-      if (i !== filter.length - 1) filter += "&";
+      if (i !== filters.length - 1) filter += "&";
     }
 
     const response = await fetch(`http://localhost:5000/products?${filter}`);
@@ -98,34 +98,30 @@ export default function Filter(props: FilterProps) {
   }
 
   // filters products by their category and subcategory. if subcategories are checked by the main category isn't they are ignored
-  function categoryFilter(products: IProduct[]) {
+  function categoryFilter(filters: string[][]) {
     const checkedCategories = document
       .getElementById("categories-container")
       ?.querySelectorAll("input.category-checkbox:checked") as NodeListOf<HTMLInputElement>;
     if (checkedCategories.length === 0) return;
 
-    for (let i = 0; i < products.length; i++) {
-      let matches = false;
-      for (let ii = 0; ii < checkedCategories.length; ii++) {
-        const checkedSubcategories = Array.from(
-          document
-            .getElementById(`${checkedCategories[ii].name.toLowerCase()}-subcategories-container`)!
-            .querySelectorAll("input.subcategory-checkbox:checked") as NodeListOf<HTMLInputElement>
-        );
-        // if there are subcategories checked and it matches the product or there are no subcategories checked and the category matches the product's
-        if (
-          (checkedSubcategories.length > 0 && checkedSubcategories.some((subcategory) => subcategory.name === products[i].category.sub)) ||
-          (checkedSubcategories.length === 0 && checkedCategories[ii].name === products[i].category.main)
-        ) {
-          matches = true;
-          break;
+    let newFilters: string[] = [];
+    for (let i = 0; i < checkedCategories.length; i++) {
+      const checkedSubcategories = Array.from(
+        document
+          .getElementById(`${checkedCategories[i].name.toLowerCase()}-subcategories-container`)!
+          .querySelectorAll("input.subcategory-checkbox:checked") as NodeListOf<HTMLInputElement>
+      );
+      // if there are subcategories checked and it matches the product or there are no subcategories checked and the category matches the product's
+      if (checkedCategories[i].checked) {
+        if (checkedSubcategories.length > 0) {
+          checkedSubcategories.forEach((x) => newFilters.push(`product_type:${x.name}`));
+        } else {
+          newFilters.push(`tag:${checkedCategories[i].name}`);
         }
       }
-      if (!matches) {
-        products.splice(i, 1);
-        i--;
-      }
     }
+
+    filters.push(newFilters);
   }
 
   // filters products based on the selected sizes. shoes products that have either size
@@ -155,15 +151,10 @@ export default function Filter(props: FilterProps) {
   }
 
   // filters products by the specified price range
-  function priceRangeFilter(products: IProduct[]) {
+  function priceRangeFilter(filters: string[][]) {
     const lowPrice = parseInt(document.getElementsByClassName("low-price-text")[0].innerHTML.replace(/\$/g, ""));
     const highPrice = parseInt(document.getElementsByClassName("high-price-text")[0].innerHTML.replace(/\$/g, ""));
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].price < lowPrice || products[i].price > highPrice) {
-        products.splice(i, 1);
-        i--;
-      }
-    }
+    filters.push([`price:>=${lowPrice}&price:<=${highPrice}`]);
   }
 
   // gets the highest and lowest price of the products

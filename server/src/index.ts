@@ -24,8 +24,10 @@ Shopify.Context.initialize({
 app.get("/products", async (req, res) => {
   const client = new Shopify.Clients.Graphql(SHOP!, API_ACCESS_TOKEN);
 
-  let query = req.url.split("?").length > 1 ? req.url.split("?")[1].replace(/\&/g, " AND ").replace(/\|/g, " OR ") : "";
-  console.log(query);
+  let query =
+    req.url.split("?").length > 1
+      ? req.url.split("?")[1].replace(/\&/g, " AND ").replace(/\|/g, " OR ").replace("%3C", "<").replace("%3E", ">")
+      : "";
 
   // get the collection id (use the title not the handle since it doesn't change when renaming)
   const collectionsResponse = await client.query<{ data: any[] }>({
@@ -35,16 +37,11 @@ app.get("/products", async (req, res) => {
           node {
             id,
             title,
-            tags,
             priceRangeV2 {
               minVariantPrice {
                 amount
               }
             },
-            options {
-              name
-              values 
-            }
           }
         }
       }
