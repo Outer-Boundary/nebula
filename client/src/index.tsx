@@ -5,15 +5,12 @@ import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import FirebaseProvider from "./managers/FirebaseContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <FirebaseProvider>
-        <App />
-      </FirebaseProvider>
+      <App />
     </BrowserRouter>
   </React.StrictMode>
 );
