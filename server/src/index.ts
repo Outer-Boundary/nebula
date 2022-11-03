@@ -1,11 +1,9 @@
-import express from "express";
+import express, { response } from "express";
 import cors from "cors";
 import Shopify, { ApiVersion, RequestReturn } from "@shopify/shopify-api";
 import dotenv from "dotenv";
-
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, setDoc, doc } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 dotenv.config();
@@ -46,6 +44,44 @@ const firebaseConfig = {
 const firestoreApp = initializeApp(firebaseConfig);
 const db = getFirestore(firestoreApp);
 const storage = getStorage(firestoreApp);
+
+app.post("/products/upload-to-database", async (req, res) => {
+  const client = new Shopify.Clients.Rest(SHOPIFY_SHOP!, SHOPIFY_API_ACCESS_TOKEN);
+
+  // gets the amount of products
+  const productsCount = (
+    await client.get<{ count: number }>({
+      path: "products/count",
+    })
+  ).body.count;
+
+  // get every product
+  const products: any[] = [];
+  const loopCount = Math.ceil(productsCount / 250);
+  for (let i = 0; i < loopCount; i++) {
+    const productsResponse = await client.get<{ products: any[] }>({
+      path: "products",
+      query: { limit: i === loopCount - 1 ? productsCount % 250 : 250 },
+    });
+
+    // check that the call limit hasn't been reached. if it has, retry after the time specified in the header has elapsed
+    const retryAfterSeconds = parseInt(productsResponse.headers.get("Retry-After") ?? "NaN");
+    if (retryAfterSeconds) {
+      await new Promise((resolve) => setTimeout(resolve, retryAfterSeconds * 1000));
+    }
+
+    products.push(...productsResponse.body.products);
+  }
+
+  // add every product to the database
+  // maybe make each variant a sub collection instead of an array
+  for (let i = 0; i < products.length; i++) {
+    const productRef = doc(db, "products", (products[i].id as number).toString());
+    await setDoc(productRef, products[i]);
+  }
+
+  res.status(200).send("Upload completed");
+});
 
 app.get("/products", async (req, res) => {
   const client = new Shopify.Clients.Graphql(SHOPIFY_SHOP!, SHOPIFY_API_ACCESS_TOKEN);

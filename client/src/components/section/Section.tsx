@@ -14,6 +14,13 @@ export default function Section({ section }: { section: SectionType }) {
 
   // gets the products from the selected section
   useEffect(() => {
+    (async () => {
+      const response = await fetch("http://localhost:5000/products/upload-to-database", {
+        method: "POST",
+      });
+      console.log(response.body);
+    })();
+
     let newProducts = [...testProducts];
     newProducts = newProducts.filter(
       (x) => x.section === section || section === SectionType.All || (section === SectionType.Sale && x.onSale)
