@@ -3,26 +3,52 @@ import cors from "cors";
 import Shopify, { ApiVersion, RequestReturn } from "@shopify/shopify-api";
 import dotenv from "dotenv";
 
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
+
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const { API_KEY, API_SECRET_KEY, API_ACCESS_TOKEN, SCOPES, SHOP, HOST, HOST_SCHEME } = process.env;
+const {
+  SHOPIFY_API_KEY,
+  SHOPIFY_API_SECRET_KEY,
+  SHOPIFY_API_ACCESS_TOKEN,
+  SHOPIFY_SCOPES,
+  SHOPIFY_SHOP,
+  SHOPIFY_HOST,
+  SHOPIFY_HOST_SCHEME,
+} = process.env;
 
 Shopify.Context.initialize({
-  API_KEY: API_KEY!,
-  API_SECRET_KEY: API_SECRET_KEY!,
-  SCOPES: [SCOPES!],
-  HOST_NAME: HOST!.replace(/https?:\/\//, ""),
-  HOST_SCHEME,
+  API_KEY: SHOPIFY_API_KEY!,
+  API_SECRET_KEY: SHOPIFY_API_SECRET_KEY!,
+  SCOPES: [SHOPIFY_SCOPES!],
+  HOST_NAME: SHOPIFY_HOST!.replace(/https?:\/\//, ""),
+  HOST_SCHEME: SHOPIFY_HOST_SCHEME!,
   IS_EMBEDDED_APP: false,
   API_VERSION: ApiVersion.October22,
 });
 
+const firebaseConfig = {
+  apiKey: process.env.FIRESTORE_API_KEY,
+  authDomain: "nebula-ecommerce.firebaseapp.com",
+  projectId: "nebula-ecommerce",
+  storageBucket: "nebula-ecommerce.appspot.com",
+  messagingSenderId: "1070658532796",
+  appId: "1:1070658532796:web:ef3c36ad0cc9a431bc27b9",
+};
+
+const firestoreApp = initializeApp(firebaseConfig);
+const db = getFirestore(firestoreApp);
+const storage = getStorage(firestoreApp);
+
 app.get("/products", async (req, res) => {
-  const client = new Shopify.Clients.Graphql(SHOP!, API_ACCESS_TOKEN);
+  const client = new Shopify.Clients.Graphql(SHOPIFY_SHOP!, SHOPIFY_API_ACCESS_TOKEN);
 
   let query =
     req.url.split("?").length > 1
@@ -51,7 +77,7 @@ app.get("/products", async (req, res) => {
 });
 
 app.post("/products/update-tags-with-options", async (req, res) => {
-  const restClient = new Shopify.Clients.Rest(SHOP!, API_ACCESS_TOKEN);
+  const restClient = new Shopify.Clients.Rest(SHOPIFY_SHOP!, SHOPIFY_API_ACCESS_TOKEN);
 
   // gets the amount of products
   const productsCount = (
@@ -60,7 +86,7 @@ app.post("/products/update-tags-with-options", async (req, res) => {
     })
   ).body.count;
 
-  const graphqlClient = new Shopify.Clients.Graphql(SHOP!, API_ACCESS_TOKEN);
+  const graphqlClient = new Shopify.Clients.Graphql(SHOPIFY_SHOP!, SHOPIFY_API_ACCESS_TOKEN);
 
   // get every product (need to factor in hitting the limit and waiting for it to recharge)
   let products: any[] = [];
