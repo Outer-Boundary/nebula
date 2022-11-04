@@ -1,10 +1,9 @@
-import express, { response } from "express";
+import express from "express";
 import cors from "cors";
 import Shopify, { ApiVersion, RequestReturn } from "@shopify/shopify-api";
 import dotenv from "dotenv";
-import { initializeApp } from "firebase/app";
-import { getFirestore, setDoc, doc } from "firebase/firestore";
-import { getStorage } from "firebase/storage";
+import { doc } from "firebase/firestore";
+import { database } from "shared/firestore";
 
 dotenv.config();
 
@@ -32,20 +31,12 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.October22,
 });
 
-const firebaseConfig = {
-  apiKey: process.env.FIRESTORE_API_KEY,
-  authDomain: "nebula-ecommerce.firebaseapp.com",
-  projectId: "nebula-ecommerce",
-  storageBucket: "nebula-ecommerce.appspot.com",
-  messagingSenderId: "1070658532796",
-  appId: "1:1070658532796:web:ef3c36ad0cc9a431bc27b9",
-};
-
-const firestoreApp = initializeApp(firebaseConfig);
-const db = getFirestore(firestoreApp);
-const storage = getStorage(firestoreApp);
-
+// can upload only certain products using the ?ids=[id1,id2] syntax
 app.post("/products/upload-to-database", async (req, res) => {
+  console.log("hi");
+  let ids = "";
+  if (req.query.ids) ids = req.query.ids.toString().replace(/\[\]/g, "");
+
   const client = new Shopify.Clients.Rest(SHOPIFY_SHOP!, SHOPIFY_API_ACCESS_TOKEN);
 
   // gets the amount of products
@@ -61,7 +52,7 @@ app.post("/products/upload-to-database", async (req, res) => {
   for (let i = 0; i < loopCount; i++) {
     const productsResponse = await client.get<{ products: any[] }>({
       path: "products",
-      query: { limit: i === loopCount - 1 ? productsCount % 250 : 250 },
+      query: { limit: i === loopCount - 1 ? productsCount % 250 : 250, ids: ids },
     });
 
     // check that the call limit hasn't been reached. if it has, retry after the time specified in the header has elapsed
@@ -76,8 +67,26 @@ app.post("/products/upload-to-database", async (req, res) => {
   // add every product to the database
   // maybe make each variant a sub collection instead of an array
   for (let i = 0; i < products.length; i++) {
-    const productRef = doc(db, "products", (products[i].id as number).toString());
-    await setDoc(productRef, products[i]);
+    const productRef = doc(database, "products", (products[i].id as number).toString());
+
+    // const product: Product = {
+    //   id: products[i].id,
+    //   title: products[i].title,
+    //   type: products[i].product_type,
+    //   createdAt: products[i].created_at,
+    //   updatedAt: products[i].updated_at,
+    //   active: products[i].status === "active" ? true : false,
+    //   tags: products[i].tags,
+    //   options: products[i].options.map((option: any) => ({ name: option.name, values: option.values })),
+    //   imageCardId;
+    //   vendor: products[i].vendor,
+    // };
+    //
+    const variants = products[i].variants;
+    console.log(products[i]);
+
+    // await setDoc(productRef, products[i]);
+    // await setDoc(d
   }
 
   res.status(200).send("Upload completed");

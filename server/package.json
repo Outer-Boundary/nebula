@@ -2,13 +2,9 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "watch": "tsc -w",
-    "run": "node .",
-    "start": "concurrently \"tsc -w\" \"nodemon .\""
+    "start": "nodemon --watch src/index.ts --exec ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +16,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "shared": "^1.0.0",
+    "ts-node": "^10.9.1"
   }
 }

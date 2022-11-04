@@ -1,20 +1,8 @@
 import { createContext, ReactNode, useContext } from "react";
-import { FirebaseApp, initializeApp } from "firebase/app";
-import { Firestore, getFirestore } from "firebase/firestore";
-import { FirebaseStorage, getStorage } from "firebase/storage";
-
-const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIRESTORE_API_KEY,
-  authDomain: "nebula-ecommerce.firebaseapp.com",
-  projectId: "nebula-ecommerce",
-  storageBucket: "nebula-ecommerce.appspot.com",
-  messagingSenderId: "1070658532796",
-  appId: "1:1070658532796:web:ef3c36ad0cc9a431bc27b9",
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const storage = getStorage(app);
+import { FirebaseApp } from "firebase/app";
+import { Firestore } from "firebase/firestore";
+import { FirebaseStorage } from "firebase/storage";
+import { app, database, storage } from "shared/firestore";
 
 interface IFirebaseContext {
   app: FirebaseApp;
@@ -33,7 +21,7 @@ const FirebaseProvider = ({ children }: FirebaseProviderProps) => {
     <FirebaseContext.Provider
       value={{
         app: app,
-        db: db,
+        db: database,
         storage: storage,
       }}
     >
