@@ -1,5 +1,5 @@
 export interface Product {
-  id: number;
+  id: string;
   title: string;
   type: string;
   createdAt: string;
@@ -8,15 +8,15 @@ export interface Product {
   tags: string[];
   vendor: string;
   options: { name: string; values: string[] }[];
-  imageCardId: number;
+  imageCardId: string;
   totalQuantity: number;
   timesSold: number;
   price: number;
 }
 
 export interface ProductVariant {
-  id: number;
+  id: string;
   quantity: number;
   options: { name: string; value: string }[];
-  imageIds: number[];
+  imageIds: string[];
 }

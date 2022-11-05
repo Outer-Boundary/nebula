@@ -2,8 +2,9 @@ import express from "express";
 import cors from "cors";
 import Shopify, { ApiVersion, RequestReturn } from "@shopify/shopify-api";
 import dotenv from "dotenv";
-import { doc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { database } from "shared/firestore";
+import { Product, ProductVariant } from "shared/types";
 
 dotenv.config();
 
@@ -33,7 +34,6 @@ Shopify.Context.initialize({
 
 // can upload only certain products using the ?ids=[id1,id2] syntax
 app.post("/products/upload-to-database", async (req, res) => {
-  console.log("hi");
   let ids = "";
   if (req.query.ids) ids = req.query.ids.toString().replace(/\[\]/g, "");
 
@@ -66,28 +66,43 @@ app.post("/products/upload-to-database", async (req, res) => {
 
   // add every product to the database
   // maybe make each variant a sub collection instead of an array
+  const uploadPromises: Promise<any>[] = [];
   for (let i = 0; i < products.length; i++) {
+    const product: Omit<Product, "id" | "timesSold"> = {
+      title: products[i].title,
+      type: products[i].product_type,
+      createdAt: products[i].created_at,
+      updatedAt: products[i].updated_at,
+      active: products[i].status === "active" ? true : false,
+      tags: products[i].tags,
+      options: products[i].options.map((option: any) => ({ name: option.name, values: option.values })),
+      imageCardId: (products[i].image.id as number).toString(),
+      vendor: products[i].vendor,
+      totalQuantity: (products[i].variants as any[]).reduce((acc, cur) => acc + cur.inventory_quantity, 0),
+      price: products[i].variants[0].price,
+    };
+
+    const productVariants: Omit<ProductVariant, "id">[] = (products[i].variants as any[]).map((variant, index) => ({
+      quantity: variant.inventory_quantity,
+      options: product.options.map((option) => ({
+        name: option.name,
+        value: option.values.find((value) => (products[i].variants[0].title as string).replace(/\s/g, "").split("/").includes(value))!,
+      })),
+      imageIds: (products[i].images as any[])
+        .filter((image) => (image.variant_ids as any[]).includes(variant.id))
+        .reduce((acc, cur) => acc.push((cur as number).toString()), [] as string[]),
+    }));
+
     const productRef = doc(database, "products", (products[i].id as number).toString());
+    uploadPromises.push(setDoc(productRef, product));
 
-    // const product: Product = {
-    //   id: products[i].id,
-    //   title: products[i].title,
-    //   type: products[i].product_type,
-    //   createdAt: products[i].created_at,
-    //   updatedAt: products[i].updated_at,
-    //   active: products[i].status === "active" ? true : false,
-    //   tags: products[i].tags,
-    //   options: products[i].options.map((option: any) => ({ name: option.name, values: option.values })),
-    //   imageCardId;
-    //   vendor: products[i].vendor,
-    // };
-    //
-    const variants = products[i].variants;
-    console.log(products[i]);
-
-    // await setDoc(productRef, products[i]);
-    // await setDoc(d
+    for (let ii = 0; ii < productVariants.length; ii++) {
+      const productVariantRef = doc(database, "products", productRef.id, "variants", (products[i].variants[ii].id as number).toString());
+      uploadPromises.push(setDoc(productVariantRef, productVariants[ii]));
+    }
   }
+
+  await Promise.all(uploadPromises);
 
   res.status(200).send("Upload completed");
 });
