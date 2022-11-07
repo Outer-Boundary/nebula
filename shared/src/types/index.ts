@@ -1,2 +1,4 @@
-export * from "./Product";
-export * from "./Category";
+// export * from "./product";
+// export * from "./category";
+
+export default {};

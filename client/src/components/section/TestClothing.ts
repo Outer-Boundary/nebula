@@ -1,4 +1,4 @@
-import { BottomsSubcategory, CategoryType, OuterwearSubcategory, TopsSubcategory } from "shared/types";
+import { BottomsSubcategory, CategoryType, OuterwearSubcategory, TopsSubcategory } from "../types/category";
 import { Colour } from "../types/Colour";
 import IProduct from "../types/IProduct";
 import Material from "../types/Material";
