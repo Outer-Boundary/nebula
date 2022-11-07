@@ -2,9 +2,10 @@ import express from "express";
 import cors from "cors";
 import Shopify, { ApiVersion, RequestReturn } from "@shopify/shopify-api";
 import dotenv from "dotenv";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, addDoc, collection } from "firebase/firestore";
 import { database } from "shared/firestore";
-import { Product, ProductVariant } from "./types/product";
+import { Product, ProductVariant, CategoryType } from "shared/types";
+import { getEnumValues } from "./helper/Helper";
 
 dotenv.config();
 
@@ -64,17 +65,27 @@ app.post("/products/upload-to-database", async (req, res) => {
     products.push(...productsResponse.body.products);
   }
 
+  const productTitles: { id: string; title: string }[] = [];
+
   // add every product to the database
-  // maybe make each variant a sub collection instead of an array
   const uploadPromises: Promise<any>[] = [];
   for (let i = 0; i < products.length; i++) {
+    const tags = (products[i].tags as string).replace(/\s/g, "").split(",");
+    const type = tags.find((tag) => getEnumValues(CategoryType).some((type) => type.toLowerCase() === tag.toLowerCase()));
+    // add main and sub category too
+
+    if (!type) {
+      console.error("Missing product type in tags for product " + products[i].id);
+      continue;
+    }
+
     const product: Omit<Product, "id" | "timesSold"> = {
       title: products[i].title,
-      type: products[i].product_type,
+      type: type,
       createdAt: products[i].created_at,
       updatedAt: products[i].updated_at,
       active: products[i].status === "active" ? true : false,
-      tags: products[i].tags,
+      tags: (products[i].title as string).toLowerCase().split(" "),
       options: products[i].options.map((option: any) => ({ name: option.name, values: option.values })),
       imageCardId: (products[i].image.id as number).toString(),
       vendor: products[i].vendor,
@@ -93,47 +104,19 @@ app.post("/products/upload-to-database", async (req, res) => {
         .reduce((acc, cur) => acc.push((cur as number).toString()), [] as string[]),
     }));
 
+    productTitles.push({ id: products[i].id, title: product.title });
+
     const productRef = doc(database, "products", (products[i].id as number).toString());
     uploadPromises.push(setDoc(productRef, product));
-
     for (let ii = 0; ii < productVariants.length; ii++) {
       const productVariantRef = doc(database, "products", productRef.id, "variants", (products[i].variants[ii].id as number).toString());
       uploadPromises.push(setDoc(productVariantRef, productVariants[ii]));
     }
   }
 
-  await Promise.all(uploadPromises);
+  await Promise.all([...uploadPromises, addDoc(collection(database, "productTitles"), { titles: productTitles })]);
 
   res.status(200).send("Upload completed");
-});
-
-app.get("/products", async (req, res) => {
-  const client = new Shopify.Clients.Graphql(SHOPIFY_SHOP!, SHOPIFY_API_ACCESS_TOKEN);
-
-  let query =
-    req.url.split("?").length > 1
-      ? req.url.split("?")[1].replace(/\&/g, " AND ").replace(/\|/g, " OR ").replace("%3C", "<").replace("%3E", ">")
-      : "";
-
-  // get the collection id (use the title not the handle since it doesn't change when renaming)
-  const collectionsResponse = await client.query<{ data: any[] }>({
-    data: `{ 
-      products(first: 40, query: "${query}") {
-        edges {
-          node {
-            id,
-            title,
-            priceRangeV2 {
-              minVariantPrice {
-                amount
-              }
-            },
-          }
-        }
-      }
-    }`,
-  });
-  res.json(collectionsResponse);
 });
 
 app.post("/products/update-tags-with-options", async (req, res) => {
