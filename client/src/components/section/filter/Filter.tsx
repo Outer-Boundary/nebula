@@ -1,6 +1,8 @@
+import { collection, getDoc, getDocs, orderBy, QueryConstraint } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
+import { database } from "shared/firestore";
 
 import { clamp, getEnumValues, lerp } from "../../../helper/Helper";
 import { Categories, CategoryType } from "../../types/category";
@@ -37,29 +39,26 @@ export default function Filter(props: FilterProps) {
 
   // goes through each filter then sets the products being viewed
   async function filterProducts() {
-    let filters: string[][] = [];
-    searchFilter(filters);
-    // sortByFilter(newFilteredProducts);
-    categoryFilter(filters);
-    sizeFilter(filters);
-    materialFilter(filters);
-    priceRangeFilter(filters);
+    const filters: QueryConstraint[] = [];
+    const searchFilterIds: string[] = [];
+    searchFilter(searchFilterIds);
+    sortByFilter(filters);
+    // categoryFilter(filters);
+    // sizeFilter(filters);
+    // materialFilter(filters);
+    // priceRangeFilter(filters);
 
-    let filter = "";
-    for (let i = 0; i < filters.length; i++) {
-      filter += "(" + filters[i].join("|") + ")";
-      if (i !== filters.length - 1) filter += "&";
-    }
-
-    const response = await fetch(`http://localhost:5000/products?${filter}`);
-    const resBody = await response.json();
-    console.log(resBody);
+    // let filter = "";
+    // for (let i = 0; i < filters.length; i++) {
+    //   filter += "(" + filters[i].join("|") + ")";
+    //   if (i !== filters.length - 1) filter += "&";
+    // }
 
     // props.setFilteredProducts(resBody);
   }
 
   // filters the products based on the search string and the product names. can use a hyphen to negate a search
-  function searchFilter(filters: string[][]) {
+  async function searchFilter(searchFilterIds: string[]) {
     const searchString = (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value;
     if (searchString.replace(/\s/g, "") === "") return;
 
@@ -68,16 +67,22 @@ export default function Filter(props: FilterProps) {
       .replace(/(?<=\s)\s|\s$|[^\w\s-]|_/g, "")
       .split(" ");
 
-    let curFilters: string[] = [];
+    let productTitles = [
+      ...((await getDocs(collection(database, "productTitles"))).docs[0].get("titles") as { id: string; title: string }[]),
+    ];
+
     for (const searchFilter of searchFilters) {
       let isNegated = searchFilter.startsWith("-");
-      curFilters.push(`${isNegated ? "-" : ""}title:*${isNegated ? searchFilter.replace("-", "") : searchFilter}*`);
+      productTitles = productTitles.filter((x) =>
+        isNegated ? !x.title.toLowerCase().includes(searchFilter.replace("-", "")) : x.title.toLowerCase().includes(searchFilter)
+      );
     }
-    filters.push(curFilters);
+
+    searchFilterIds.push(...productTitles.map((x) => x.id));
   }
 
   // sorts the products based on the selected sorting option
-  function sortByFilter(products: IProduct[]) {
+  function sortByFilter(filters: QueryConstraint[]) {
     const option = (document.getElementById("sort-by-select") as HTMLInputElement).value;
 
     // for now while popularity and item release dates don't exist
@@ -85,10 +90,10 @@ export default function Filter(props: FilterProps) {
 
     switch (option) {
       case "price-low-high":
-        products.sort((a, b) => a.price - b.price);
+        filters.push(orderBy("price", "asc"));
         break;
       case "price-high-low":
-        products.sort((a, b) => b.price - a.price);
+        filters.push(orderBy("price", "desc"));
         break;
       default:
         // make sure each case matches the value in each option

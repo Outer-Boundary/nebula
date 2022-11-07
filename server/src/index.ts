@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import { doc, setDoc, addDoc, collection } from "firebase/firestore";
 import { database } from "shared/firestore";
 import { Product, ProductVariant, CategoryType } from "shared/types";
-import { getEnumValues } from "./helper/Helper";
+import { getEnumValues } from "shared/helper";
 
 dotenv.config();
 
