@@ -2,10 +2,9 @@ import express from "express";
 import cors from "cors";
 import Shopify, { ApiVersion, RequestReturn } from "@shopify/shopify-api";
 import dotenv from "dotenv";
-import { doc, setDoc, addDoc, collection } from "firebase/firestore";
-import { database } from "shared/firestore";
 import { Product, ProductVariant, CategoryType } from "shared/types";
 import { getEnumValues } from "shared/helper";
+import { database } from "shared/mongodb";
 
 dotenv.config();
 
@@ -33,7 +32,13 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.October22,
 });
 
-// can upload only certain products using the ?ids=[id1,id2] syntax
+app.get("/products/test", async (req, res) => {
+  const products = database.collection("products").find({ title: { $regex: /plain/i }, "category.main": { $regex: /outerwear|tops/i } });
+  products.forEach((doc) => console.log(doc));
+  res.send("Completed");
+});
+
+// only certain products can be uploaded using the ?ids=[id1,id2] syntax
 app.post("/products/upload-to-database", async (req, res) => {
   let ids = "";
   if (req.query.ids) ids = req.query.ids.toString().replace(/\[\]/g, "");
@@ -65,35 +70,37 @@ app.post("/products/upload-to-database", async (req, res) => {
     products.push(...productsResponse.body.products);
   }
 
-  const productTitles: { id: string; title: string }[] = [];
-
   // add every product to the database
   const uploadPromises: Promise<any>[] = [];
   for (let i = 0; i < products.length; i++) {
     const tags = (products[i].tags as string).replace(/\s/g, "").split(",");
-    const type = tags.find((tag) => getEnumValues(CategoryType).some((type) => type.toLowerCase() === tag.toLowerCase()));
+    const category = tags
+      .find((tag) => getEnumValues(CategoryType).some((type) => type.toLowerCase() === tag.toLowerCase()))
+      ?.toLowerCase();
+    const subcategory = (products[i].product_type as string).replace(/[^A-z]/g, "").toLowerCase();
     // add main and sub category too
 
-    if (!type) {
+    if (!category || !subcategory) {
       console.error("Missing product type in tags for product " + products[i].id);
       continue;
     }
 
     const product: Omit<Product, "id" | "timesSold"> = {
       title: products[i].title,
-      type: type,
+      category: { main: category, sub: subcategory },
       createdAt: products[i].created_at,
       updatedAt: products[i].updated_at,
       active: products[i].status === "active" ? true : false,
-      tags: (products[i].title as string).toLowerCase().split(" "),
+      tags: tags,
       options: products[i].options.map((option: any) => ({ name: option.name, values: option.values })),
       imageCardId: (products[i].image.id as number).toString(),
       vendor: products[i].vendor,
       totalQuantity: (products[i].variants as any[]).reduce((acc, cur) => acc + cur.inventory_quantity, 0),
       price: products[i].variants[0].price,
+      variants: [],
     };
 
-    const productVariants: Omit<ProductVariant, "id">[] = (products[i].variants as any[]).map((variant, index) => ({
+    const productVariants: ProductVariant[] = (products[i].variants as any[]).map((variant, index) => ({
       quantity: variant.inventory_quantity,
       options: product.options.map((option) => ({
         name: option.name,
@@ -103,18 +110,15 @@ app.post("/products/upload-to-database", async (req, res) => {
         .filter((image) => (image.variant_ids as any[]).includes(variant.id))
         .reduce((acc, cur) => acc.push((cur as number).toString()), [] as string[]),
     }));
+    product.variants = productVariants;
 
-    productTitles.push({ id: products[i].id, title: product.title });
+    const productsCollection = database.collection<Omit<Product, "id" | "timesSold">>("products");
+    const insertResult = productsCollection.updateOne({ _id: products[i].id }, { $set: product }, { upsert: true });
 
-    const productRef = doc(database, "products", (products[i].id as number).toString());
-    uploadPromises.push(setDoc(productRef, product));
-    for (let ii = 0; ii < productVariants.length; ii++) {
-      const productVariantRef = doc(database, "products", productRef.id, "variants", (products[i].variants[ii].id as number).toString());
-      uploadPromises.push(setDoc(productVariantRef, productVariants[ii]));
-    }
+    uploadPromises.push(insertResult);
   }
 
-  await Promise.all([...uploadPromises, addDoc(collection(database, "productTitles"), { titles: productTitles })]);
+  await Promise.all([...uploadPromises]);
 
   res.status(200).send("Upload completed");
 });
