@@ -7,7 +7,9 @@ export interface Product {
   active: boolean;
   tags: string[];
   vendor: string;
-  options: { name: string; values: string[] }[];
+  sizes: string[];
+  colours: string[];
+  material: string;
   imageCardId: string;
   totalQuantity: number;
   timesSold: number;
@@ -18,6 +20,8 @@ export interface Product {
 export interface ProductVariant {
   // id: string;
   quantity: number;
-  options: { name: string; value: string }[];
+  size: string;
+  colour: string;
+  material: string;
   imageIds: string[];
 }

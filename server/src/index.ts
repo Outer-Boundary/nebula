@@ -33,7 +33,16 @@ Shopify.Context.initialize({
 });
 
 app.get("/products/test", async (req, res) => {
-  const products = database.collection("products").find({ title: { $regex: /plain/i }, "category.main": { $regex: /outerwear|tops/i } });
+  const products = database.collection("products").find(
+    {
+      title: { $regex: /plain/i },
+      "category.sub": { $in: ["tshirt", "tanktop", "coat", "hoodie"] },
+      colours: { $in: ["yellow", "beige", "pastelblue"] },
+      sizes: { $in: ["s", "xs", "xxl"] },
+      material: "cotton",
+    },
+    { projection: { variants: 0 } }
+  );
   products.forEach((doc) => console.log(doc));
   res.send("Completed");
 });
@@ -85,6 +94,10 @@ app.post("/products/upload-to-database", async (req, res) => {
       continue;
     }
 
+    const sizes = (products[i].options as any[]).filter((option) => option.name.toLowerCase() === "size")[0].values as string[];
+    const colours = (products[i].options as any[]).filter((option) => option.name.toLowerCase() === "color")[0].values as string[];
+    const material = (products[i].options as any[]).filter((option) => option.name.toLowerCase() === "material")[0].values[0].toLowerCase();
+
     const product: Omit<Product, "id" | "timesSold"> = {
       title: products[i].title,
       category: { main: category, sub: subcategory },
@@ -92,7 +105,9 @@ app.post("/products/upload-to-database", async (req, res) => {
       updatedAt: products[i].updated_at,
       active: products[i].status === "active" ? true : false,
       tags: tags,
-      options: products[i].options.map((option: any) => ({ name: option.name, values: option.values })),
+      sizes: sizes.map((x) => x.toLowerCase()),
+      colours: colours.map((x) => x.toLowerCase()),
+      material: material,
       imageCardId: (products[i].image.id as number).toString(),
       vendor: products[i].vendor,
       totalQuantity: (products[i].variants as any[]).reduce((acc, cur) => acc + cur.inventory_quantity, 0),
@@ -100,16 +115,19 @@ app.post("/products/upload-to-database", async (req, res) => {
       variants: [],
     };
 
-    const productVariants: ProductVariant[] = (products[i].variants as any[]).map((variant, index) => ({
-      quantity: variant.inventory_quantity,
-      options: product.options.map((option) => ({
-        name: option.name,
-        value: option.values.find((value) => (products[i].variants[0].title as string).replace(/\s/g, "").split("/").includes(value))!,
-      })),
-      imageIds: (products[i].images as any[])
-        .filter((image) => (image.variant_ids as any[]).includes(variant.id))
-        .reduce((acc, cur) => acc.push((cur as number).toString()), [] as string[]),
-    }));
+    const productVariants: ProductVariant[] = [];
+    for (const variant of products[i].variants) {
+      const variantProperties = (variant.title as string).toLowerCase().replace(/\s/g, "").split("/");
+      productVariants.push({
+        quantity: variant.inventory_quantity,
+        size: variantProperties.find((x) => product.sizes.includes(x))!,
+        colour: variantProperties.find((x) => product.colours.includes(x))!,
+        material: product.material,
+        imageIds: (products[i].images as any[])
+          .filter((image) => (image.variant_ids as any[]).includes(variant.id))
+          .reduce((acc, cur) => acc.push((cur as number).toString()), [] as string[]),
+      });
+    }
     product.variants = productVariants;
 
     const productsCollection = database.collection<Omit<Product, "id" | "timesSold">>("products");
