@@ -1,3 +1,4 @@
+import e from "express";
 import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
@@ -37,14 +38,18 @@ export default function Filter(props: FilterProps) {
 
   // goes through each filter then sets the products being viewed
   async function filterProducts() {
-    // const filters: QueryConstraint[] = [];
-    // const searchFilterIds: string[] = [];
-    // searchFilter(searchFilterIds);
-    // sortByFilter(filters);
-    // categoryFilter(filters);
-    // sizeFilter(filters);
-    // materialFilter(filters);
-    // priceRangeFilter(filters);
+    const filters: string[] = [];
+    searchFilter(filters);
+    sortByFilter(filters);
+    categoryFilter(filters);
+    sizeFilter(filters);
+    materialFilter(filters);
+    priceRangeFilter(filters);
+
+    const response = await fetch(`http://localhost:5000/products?${filters.join("&")}`);
+
+    console.log(await response.json());
+
     // let filter = "";
     // for (let i = 0; i < filters.length; i++) {
     //   filter += "(" + filters[i].join("|") + ")";
@@ -54,106 +59,122 @@ export default function Filter(props: FilterProps) {
   }
 
   // filters the products based on the search string and the product names. can use a hyphen to negate a search
-  // async function searchFilter(searchFilterIds: string[]) {
-  //   const searchString = (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value;
-  //   if (searchString.replace(/\s/g, "") === "") return;
+  async function searchFilter(filters: string[]) {
+    const searchString = (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value;
+    if (searchString.replace(/\s/g, "") === "") return;
 
-  //   const searchFilters = searchString
-  //     .toLowerCase()
-  //     .replace(/(?<=\s)\s|\s$|[^\w\s-]|_/g, "")
-  //     .split(" ");
+    const searchFilters = searchString
+      .toLowerCase()
+      .replace(/(?<=\s)\s|\s$|[^\w\s-]|_/g, "")
+      .split(" ");
 
-  //   let productTitles = [
-  //     ...((await getDocs(collection(database, "productTitles"))).docs[0].get("titles") as { id: string; title: string }[]),
-  //   ];
+    let positiveSearchFilters: string[] = [];
+    let negativeSearchFilters: string[] = [];
+    for (const searchFilter of searchFilters) {
+      let isNegated = searchFilter.startsWith("-");
+      if (!isNegated) {
+        positiveSearchFilters.push(searchFilter);
+      } else {
+        negativeSearchFilters.push(searchFilter.replace("-", ""));
+      }
+    }
 
-  //   for (const searchFilter of searchFilters) {
-  //     let isNegated = searchFilter.startsWith("-");
-  //     productTitles = productTitles.filter((x) =>
-  //       isNegated ? !x.title.toLowerCase().includes(searchFilter.replace("-", "")) : x.title.toLowerCase().includes(searchFilter)
-  //     );
-  //   }
-
-  //   searchFilterIds.push(...productTitles.map((x) => x.id));
-  // }
+    let filter = "";
+    if (positiveSearchFilters.length > 0) {
+      filter += positiveSearchFilters.join();
+    }
+    if (negativeSearchFilters.length > 0) {
+      filter += "!" + negativeSearchFilters.join();
+    }
+    if (filter.length > 0) filters.push(`title=${filter}`);
+  }
 
   // // sorts the products based on the selected sorting option
-  // function sortByFilter(filters: QueryConstraint[]) {
-  //   const option = (document.getElementById("sort-by-select") as HTMLInputElement).value;
+  function sortByFilter(filters: string[]) {
+    const option = (document.getElementById("sort-by-select") as HTMLInputElement).value;
 
-  //   // for now while popularity and item release dates don't exist
-  //   if (option !== "price-low-high" && option !== "price-high-low") return;
+    // for now while popularity and item release dates don't exist
+    if (option !== "price-low-high" && option !== "price-high-low") return;
 
-  //   switch (option) {
-  //     case "price-low-high":
-  //       filters.push(orderBy("price", "asc"));
-  //       break;
-  //     case "price-high-low":
-  //       filters.push(orderBy("price", "desc"));
-  //       break;
-  //     default:
-  //       // make sure each case matches the value in each option
-  //       console.error("Invalid sorting option");
-  //       break;
-  //   }
-  // }
+    switch (option) {
+      case "price-low-high":
+        filters.push("$sort=price:1");
+        break;
+      case "price-high-low":
+        filters.push("$sort=price:-1");
+        break;
+      default:
+        // make sure each case matches the value in each option
+        console.error("Invalid sorting option");
+        break;
+    }
+  }
 
   // // filters products by their category and subcategory. if subcategories are checked by the main category isn't they are ignored
-  // function categoryFilter(filters: QueryConstraint[]) {
-  //   const checkedCategories = document
-  //     .getElementById("categories-container")
-  //     ?.querySelectorAll("input.category-checkbox:checked") as NodeListOf<HTMLInputElement>;
-  //   if (checkedCategories.length === 0) return;
+  function categoryFilter(filters: string[]) {
+    const checkedCategories = document
+      .getElementById("categories-container")
+      ?.querySelectorAll("input.category-checkbox:checked") as NodeListOf<HTMLInputElement>;
+    if (checkedCategories.length === 0) return;
 
-  //   for (let i = 0; i < checkedCategories.length; i++) {
-  //     const checkedSubcategories = Array.from(
-  //       document
-  //         .getElementById(`${checkedCategories[i].name.toLowerCase()}-subcategories-container`)!
-  //         .querySelectorAll("input.subcategory-checkbox:checked") as NodeListOf<HTMLInputElement>
-  //     );
-  //     // if there are subcategories checked and it matches the product or there are no subcategories checked and the category matches the product's
-  //     if (checkedCategories[i].checked) {
-  //       if (checkedSubcategories.length > 0) {
-  //         checkedSubcategories.forEach((subcategory) => filters.push(where("category.sub", "==", subcategory.name)));
-  //       } else {
-  //         filters.push(where("category.main", "==", checkedCategories[i].name));
-  //       }
-  //     }
-  //   }
-  // }
+    let categoryFilters: string[] = [];
+    let subcategoryFilters: string[] = [];
+    for (let i = 0; i < checkedCategories.length; i++) {
+      const checkedSubcategories = Array.from(
+        document
+          .getElementById(`${checkedCategories[i].name.toLowerCase()}-subcategories-container`)!
+          .querySelectorAll("input.subcategory-checkbox:checked") as NodeListOf<HTMLInputElement>
+      );
+      // if there are subcategories checked and it matches the product or there are no subcategories checked and the category matches the product's
+      if (checkedCategories[i].checked) {
+        if (checkedSubcategories.length > 0) {
+          checkedSubcategories.forEach((subcategory) => subcategoryFilters.push(subcategory.name));
+        } else {
+          categoryFilters.push(checkedCategories[i].name);
+        }
+      }
+    }
+    if (categoryFilters.length > 0 && subcategoryFilters.length > 0) {
+      filters.push(`category.main=${categoryFilters.join()}|category.sub=${subcategoryFilters.join()}`);
+    } else if (categoryFilters.length > 0) {
+      filters.push(`category.main=${categoryFilters.join()}`);
+    } else if (subcategoryFilters.length > 0) {
+      filters.push(`category.sub=${subcategoryFilters.join()}`);
+    }
+  }
 
   // filters products based on the selected sizes. shoes products that have either size
-  // function sizeFilter(filters: string[][]) {
-  //   const checkedSizes = document.getElementById("sizes-container")!.querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
-  //   if (checkedSizes.length === 0) return;
+  function sizeFilter(filters: string[]) {
+    const checkedSizes = document.getElementById("sizes-container")!.querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
+    if (checkedSizes.length === 0) return;
 
-  //   let curFilters: string[] = [];
-  //   for (const size of checkedSizes) {
-  //     curFilters.push("tag:size-" + size.name);
-  //   }
-  //   filters.push(curFilters);
-  // }
+    let sizeFilters: string[] = [];
+    for (const size of checkedSizes) {
+      sizeFilters.push(size.name);
+    }
+    filters.push(`sizes=${sizeFilters.join()}`);
+  }
 
-  // // filters products based on the selected materials. shoes products that have either material
-  // function materialFilter(filters: string[][]) {
-  //   const checkedMaterials = document
-  //     .getElementById("materials-container")!
-  //     .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
-  //   if (checkedMaterials.length === 0) return;
+  // filters products based on the selected materials. shoes products that have either material
+  function materialFilter(filters: string[]) {
+    const checkedMaterials = document
+      .getElementById("materials-container")!
+      .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
+    if (checkedMaterials.length === 0) return;
 
-  //   let curFilters: string[] = [];
-  //   for (const material of checkedMaterials) {
-  //     curFilters.push("tag:material-" + material.name);
-  //   }
-  //   filters.push(curFilters);
-  // }
+    let materialFilters: string[] = [];
+    for (const material of checkedMaterials) {
+      materialFilters.push(material.name);
+    }
+    filters.push(`material=${materialFilters.join()}`);
+  }
 
   // // filters products by the specified price range
-  // function priceRangeFilter(filters: string[][]) {
-  //   const lowPrice = parseInt(document.getElementsByClassName("low-price-text")[0].innerHTML.replace(/\$/g, ""));
-  //   const highPrice = parseInt(document.getElementsByClassName("high-price-text")[0].innerHTML.replace(/\$/g, ""));
-  //   filters.push([`price:>=${lowPrice}&price:<=${highPrice}`]);
-  // }
+  function priceRangeFilter(filters: string[]) {
+    const lowPrice = parseInt(document.getElementsByClassName("low-price-text")[0].innerHTML.replace(/\$/g, ""));
+    const highPrice = parseInt(document.getElementsByClassName("high-price-text")[0].innerHTML.replace(/\$/g, ""));
+    filters.push(`price=${lowPrice}-${highPrice}`);
+  }
 
   // gets the highest and lowest price of the products
   function getPriceRange(): { low: number; high: number } {

@@ -32,12 +32,17 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.October22,
 });
 
+/*
+!!!!! if debugging this and nothing's working don't to forget to update your ip address in mongodb !!!!!
+*/
+
+// proof of concept to mess around with the different ways I can structure a query in mongodb
 app.get("/products/test", async (req, res) => {
   const products = database.collection("products").find(
     {
       title: { $regex: /plain/i },
       "category.sub": { $in: ["tshirt", "tanktop", "coat", "hoodie"] },
-      colours: { $in: ["yellow", "beige", "pastelblue"] },
+      $and: [{ colours: { $in: ["blue", "yellow"] } }, { colours: { $nin: ["darkbrown", "grey"] } }],
       sizes: { $in: ["s", "xs", "xxl"] },
       material: "cotton",
     },
@@ -45,6 +50,42 @@ app.get("/products/test", async (req, res) => {
   );
   products.forEach((doc) => console.log(doc));
   res.send("Completed");
+});
+
+// add more strict validation
+app.get("/products", async (req, res) => {
+  const allowedFields = ["$sort", "category.main", "category.sub", "sizes", "material", "price"];
+
+  const filter: { [key: string]: {} | string } = {};
+  const options: { [key: string]: {} } = {};
+  for (const [key, value] of Object.entries(req.query) as [string, string][]) {
+    if (!allowedFields.includes(key)) {
+      return res.json("Invalid field, check that the allowed fields are correct");
+    }
+    if (key.startsWith("$")) {
+      const optionParams = (value as string).split(":");
+      options[key.replace("$", "")] = { [optionParams[0]]: parseInt(optionParams[1]) ?? optionParams[1] };
+    } else {
+      if (value.split("|")) {
+        
+      }
+      if (value.split(",").length > 1) {
+        const values = value.split(",").map((value) => value.toLowerCase());
+        filter[key] = { $in: values };
+      } else if (value.split("-").length === 2) {
+        const values = value.split("-");
+        filter[key] = { $gte: parseInt(values[0]), $lte: parseInt(values[1]) };
+      } else {
+        filter[key] = value.toLowerCase();
+      }
+    }
+  }
+
+  console.log(req.query);
+
+  // const products = database.collection("products").find(filter, options);
+  // products.forEach((doc) => console.log(doc));
+  // res.send("Completed");
 });
 
 // only certain products can be uploaded using the ?ids=[id1,id2] syntax
@@ -111,7 +152,7 @@ app.post("/products/upload-to-database", async (req, res) => {
       imageCardId: (products[i].image.id as number).toString(),
       vendor: products[i].vendor,
       totalQuantity: (products[i].variants as any[]).reduce((acc, cur) => acc + cur.inventory_quantity, 0),
-      price: products[i].variants[0].price,
+      price: parseInt(products[i].variants[0].price),
       variants: [],
     };
 
