@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { Product, ProductVariant, CategoryType } from "shared/types";
 import { getEnumValues } from "shared/helper";
 import { database } from "shared/mongodb";
+import getMongoDBQueryFromUrl from "./helper/GetMongoDBQueryFromUrl";
 
 dotenv.config();
 
@@ -54,38 +55,12 @@ app.get("/products/test", async (req, res) => {
 
 // add more strict validation
 app.get("/products", async (req, res) => {
-  const allowedFields = ["$sort", "category.main", "category.sub", "sizes", "material", "price"];
+  const allowedFields = ["$sort", "title", "category.main", "category.sub", "sizes", "material", "price"];
+  const queryUrl = req.url.split("?").length === 2 ? req.url.split("?")[1] : "";
+  const query = getMongoDBQueryFromUrl(queryUrl, allowedFields);
 
-  const filter: { [key: string]: {} | string } = {};
-  const options: { [key: string]: {} } = {};
-  for (const [key, value] of Object.entries(req.query) as [string, string][]) {
-    if (!allowedFields.includes(key)) {
-      return res.json("Invalid field, check that the allowed fields are correct");
-    }
-    if (key.startsWith("$")) {
-      const optionParams = (value as string).split(":");
-      options[key.replace("$", "")] = { [optionParams[0]]: parseInt(optionParams[1]) ?? optionParams[1] };
-    } else {
-      if (value.split("|")) {
-        
-      }
-      if (value.split(",").length > 1) {
-        const values = value.split(",").map((value) => value.toLowerCase());
-        filter[key] = { $in: values };
-      } else if (value.split("-").length === 2) {
-        const values = value.split("-");
-        filter[key] = { $gte: parseInt(values[0]), $lte: parseInt(values[1]) };
-      } else {
-        filter[key] = value.toLowerCase();
-      }
-    }
-  }
-
-  console.log(req.query);
-
-  // const products = database.collection("products").find(filter, options);
-  // products.forEach((doc) => console.log(doc));
-  // res.send("Completed");
+  const products = database.collection("products").find(query?.filter || {}, { ...(query?.options || {}), limit: 40 });
+  res.json(await products.toArray());
 });
 
 // only certain products can be uploaded using the ?ids=[id1,id2] syntax
@@ -141,6 +116,7 @@ app.post("/products/upload-to-database", async (req, res) => {
 
     const product: Omit<Product, "id" | "timesSold"> = {
       title: products[i].title,
+      description: products[i].description,
       category: { main: category, sub: subcategory },
       createdAt: products[i].created_at,
       updatedAt: products[i].updated_at,
@@ -153,13 +129,12 @@ app.post("/products/upload-to-database", async (req, res) => {
       vendor: products[i].vendor,
       totalQuantity: (products[i].variants as any[]).reduce((acc, cur) => acc + cur.inventory_quantity, 0),
       price: parseInt(products[i].variants[0].price),
-      variants: [],
     };
 
-    const productVariants: ProductVariant[] = [];
     for (const variant of products[i].variants) {
       const variantProperties = (variant.title as string).toLowerCase().replace(/\s/g, "").split("/");
-      productVariants.push({
+      const productVariant = {
+        productId: products[i].id,
         quantity: variant.inventory_quantity,
         size: variantProperties.find((x) => product.sizes.includes(x))!,
         colour: variantProperties.find((x) => product.colours.includes(x))!,
@@ -167,91 +142,31 @@ app.post("/products/upload-to-database", async (req, res) => {
         imageIds: (products[i].images as any[])
           .filter((image) => (image.variant_ids as any[]).includes(variant.id))
           .reduce((acc, cur) => acc.push((cur as number).toString()), [] as string[]),
-      });
+      };
+
+      const productVariantsCollection = database.collection<ProductVariant>("productVariants");
+      const productVariantUpsert = productVariantsCollection.updateOne(
+        {
+          productId: productVariant.productId,
+          size: productVariant.size,
+          colour: productVariant.colour,
+          material: productVariant.material,
+        },
+        { $set: productVariant },
+        { upsert: true }
+      );
+      uploadPromises.push(productVariantUpsert);
     }
-    product.variants = productVariants;
 
     const productsCollection = database.collection<Omit<Product, "id" | "timesSold">>("products");
-    const insertResult = productsCollection.updateOne({ _id: products[i].id }, { $set: product }, { upsert: true });
+    const productUpsert = productsCollection.updateOne({ _id: products[i].id }, { $set: product }, { upsert: true });
 
-    uploadPromises.push(insertResult);
+    uploadPromises.push(productUpsert);
   }
 
   await Promise.all([...uploadPromises]);
 
   res.status(200).send("Upload completed");
-});
-
-app.post("/products/update-tags-with-options", async (req, res) => {
-  const restClient = new Shopify.Clients.Rest(SHOPIFY_SHOP!, SHOPIFY_API_ACCESS_TOKEN);
-
-  // gets the amount of products
-  const productsCount = (
-    await restClient.get<{ count: number }>({
-      path: "products/count",
-    })
-  ).body.count;
-
-  const graphqlClient = new Shopify.Clients.Graphql(SHOPIFY_SHOP!, SHOPIFY_API_ACCESS_TOKEN);
-
-  // get every product (need to factor in hitting the limit and waiting for it to recharge)
-  let products: any[] = [];
-  let loopAmount = Math.ceil(productsCount / 250);
-  for (let index = 0; index < loopAmount; index++) {
-    let productsQuery = await graphqlClient.query<{ data: any }>({
-      data: `{
-        products(first: ${index + 1 === loopAmount ? productsCount % 250 : 250}) {
-          edges {
-            node {
-              id,
-              tags,
-              options {
-                name,
-                values
-              }
-            }
-          }
-        }
-      }`,
-    });
-    products.push(...productsQuery.body.data.products.edges);
-  }
-
-  // adds tags to each product based on their options
-  const productUpdatePromises: Promise<RequestReturn>[] = [];
-  for (const product of products) {
-    let tags = (product.node.tags as string[]).join(",").replace(/(color|material|size).*?(,|$)/g, "");
-    (product.node.options as { name: string; values: string[] }[]).forEach((option) => {
-      option.values.forEach((value) => (tags += `,${option.name.toLowerCase()}-${value.toLowerCase()}`));
-    });
-
-    let updateQuery = graphqlClient.query<{ data: any }>({
-      data: {
-        query: `mutation productUpdate($input: ProductInput!){
-          productUpdate(input: $input) {
-            product {
-              tags
-            }
-            userErrors {
-              message
-            }
-          }
-        }`,
-        variables: {
-          input: {
-            id: product.node.id,
-            tags: tags.split(","),
-          },
-        },
-      },
-    });
-
-    productUpdatePromises.push(updateQuery);
-  }
-
-  await Promise.all([...productUpdatePromises]);
-
-  res.status(200).json("Update complete");
 });
 
 app.listen(5000, async () => {

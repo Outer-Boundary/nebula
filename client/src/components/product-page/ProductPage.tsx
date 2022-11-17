@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import { Product } from "../types/product";
 
-import IProduct from "../types/IProduct";
 import Size from "../types/Size";
 import "./styles/ProductPage.css";
 
 export default function ProductPage() {
   const location = useLocation();
-  const product: IProduct = location.state;
+  const product: Product = location.state;
 
   const [curImageIndex, setCurImageIndex] = useState<number>(0);
   const [curSize, setSize] = useState<Size | null>(null);
@@ -28,7 +28,7 @@ export default function ProductPage() {
       </div>
       <img className="product-image" src={product?.imageUrls[curImageIndex]} alt="" />
       <div className="right-container">
-        <p className="name-text">{product?.name}</p>
+        <p className="name-text">{product?.title}</p>
         <p className="price-text">${product?.price}</p>
         <div className="divider"></div>
         <p className="colours-text">Colours</p>

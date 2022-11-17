@@ -1,6 +1,7 @@
 export interface Product {
   id: string;
   title: string;
+  description: string;
   category: { main: string; sub: string };
   createdAt: string;
   updatedAt: string;
@@ -14,11 +15,10 @@ export interface Product {
   totalQuantity: number;
   timesSold: number;
   price: number;
-  variants: ProductVariant[];
 }
 
 export interface ProductVariant {
-  // id: string;
+  productId: string;
   quantity: number;
   size: string;
   colour: string;

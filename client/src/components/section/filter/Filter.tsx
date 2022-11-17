@@ -1,20 +1,19 @@
-import e from "express";
 import { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 
 import { clamp, getEnumValues, lerp } from "../../../helper/Helper";
 import { Categories, CategoryType } from "../../types/category";
-import IProduct from "../../types/IProduct";
 import Material from "../../types/Material";
+import { Product } from "../../types/product";
 import { SectionType } from "../../types/SectionType";
 import Size from "../../types/Size";
 import "./styles/Filter.css";
 
 interface FilterProps {
   section: SectionType;
-  products: IProduct[];
-  setFilteredProducts: (products: IProduct[]) => void;
+  products: Product[];
+  setProducts: (products: Product[]) => void;
 }
 
 /* to do: 
@@ -47,15 +46,10 @@ export default function Filter(props: FilterProps) {
     priceRangeFilter(filters);
 
     const response = await fetch(`http://localhost:5000/products?${filters.join("&")}`);
+    const products: Product[] = await response.json();
+    console.log(products);
 
-    console.log(await response.json());
-
-    // let filter = "";
-    // for (let i = 0; i < filters.length; i++) {
-    //   filter += "(" + filters[i].join("|") + ")";
-    //   if (i !== filters.length - 1) filter += "&";
-    // }
-    // props.setFilteredProducts(resBody);
+    props.setProducts(products);
   }
 
   // filters the products based on the search string and the product names. can use a hyphen to negate a search
@@ -135,7 +129,7 @@ export default function Filter(props: FilterProps) {
       }
     }
     if (categoryFilters.length > 0 && subcategoryFilters.length > 0) {
-      filters.push(`category.main=${categoryFilters.join()}|category.sub=${subcategoryFilters.join()}`);
+      filters.push(`(category.main=${categoryFilters.join()}|category.sub=${subcategoryFilters.join()})`);
     } else if (categoryFilters.length > 0) {
       filters.push(`category.main=${categoryFilters.join()}`);
     } else if (subcategoryFilters.length > 0) {
