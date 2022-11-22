@@ -1,4 +1,4 @@
-import express from "express";
+import express, { query } from "express";
 import cors from "cors";
 import Shopify, { ApiVersion, RequestReturn } from "@shopify/shopify-api";
 import dotenv from "dotenv";
@@ -55,11 +55,11 @@ app.get("/products/test", async (req, res) => {
 
 // add more strict validation
 app.get("/products", async (req, res) => {
-  const allowedFields = ["$sort", "title", "category.main", "category.sub", "sizes", "material", "price"];
+  const allowedFields = ["$sort", "$limit", "title", "category.main", "category.sub", "sizes", "material", "price"];
   const queryUrl = req.url.split("?").length === 2 ? req.url.split("?")[1] : "";
   const query = getMongoDBQueryFromUrl(queryUrl, allowedFields);
 
-  const products = database.collection("products").find(query?.filter || {}, { ...(query?.options || {}), limit: 40 });
+  const products = database.collection("products").find(query?.filter || {}, query?.options);
   res.json(await products.toArray());
 });
 
@@ -112,9 +112,10 @@ app.post("/products/upload-to-database", async (req, res) => {
 
     const sizes = (products[i].options as any[]).filter((option) => option.name.toLowerCase() === "size")[0].values as string[];
     const colours = (products[i].options as any[]).filter((option) => option.name.toLowerCase() === "color")[0].values as string[];
-    const material = (products[i].options as any[]).filter((option) => option.name.toLowerCase() === "material")[0].values[0].toLowerCase();
+    const material = (products[i].options as any[]).filter((option) => option.name.toLowerCase() === "material")[0].values[0];
 
-    const product: Omit<Product, "id" | "timesSold"> = {
+    const product: Omit<Product, "timesSold"> = {
+      _id: products[i].id,
       title: products[i].title,
       description: products[i].description,
       category: { main: category, sub: subcategory },
@@ -122,10 +123,11 @@ app.post("/products/upload-to-database", async (req, res) => {
       updatedAt: products[i].updated_at,
       active: products[i].status === "active" ? true : false,
       tags: tags,
-      sizes: sizes.map((x) => x.toLowerCase()),
-      colours: colours.map((x) => x.toLowerCase()),
+      sizes: sizes,
+      colours: colours,
       material: material,
-      imageCardId: (products[i].image.id as number).toString(),
+      imageCardUrl: products[i].image.src as string,
+      imageUrls: (products[i].images as any[]).map((url) => url.src),
       vendor: products[i].vendor,
       totalQuantity: (products[i].variants as any[]).reduce((acc, cur) => acc + cur.inventory_quantity, 0),
       price: parseInt(products[i].variants[0].price),
@@ -167,6 +169,13 @@ app.post("/products/upload-to-database", async (req, res) => {
   await Promise.all([...uploadPromises]);
 
   res.status(200).send("Upload completed");
+});
+
+app.get("/product-variants/:productId", async (req, res) => {
+  const productId = req.params.productId;
+
+  const productVariants = database.collection("productVariants").find({ productId: productId });
+  res.json(await productVariants.toArray());
 });
 
 app.listen(5000, async () => {

@@ -10,7 +10,7 @@ import "./styles/ProductIcon.css";
 export default function ProductIcon({ product }: { product: Product }) {
   return (
     <Link to={"/clothing/" + getKebabStyledString(product.title)} state={product} className="product-icon">
-      <img src={product.imageUrls[0]} alt="" className="product-image" />
+      <img src={product.imageCardUrl} alt="" className="product-image" />
       <div className="product-details">
         <p className="name-text">{product.title}</p>
         <p className="price-text">${product.price}</p>

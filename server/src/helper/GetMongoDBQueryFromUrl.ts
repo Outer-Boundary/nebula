@@ -15,6 +15,7 @@ export default function getMongoDBQueryFromUrl(
         const queryParts = orQuery.split("=");
         queries[queryParts[0]] = queryParts[1];
       }
+      orFilters[orFilterIndex] = [];
     } else {
       const queryParts = query.split("=");
       queries[queryParts[0]] = queryParts[1];
@@ -27,7 +28,6 @@ export default function getMongoDBQueryFromUrl(
       }
       const queryInfo = getIndividualMongoDBQueryFromKeyValue(key, value);
       if (Object.entries(queries).length > 1) {
-        if (!orFilters[orFilterIndex]) orFilters[orFilterIndex] = [];
         orFilters[orFilterIndex].push(queryInfo.query);
       } else {
         if (queryInfo.isOption) {
@@ -37,7 +37,7 @@ export default function getMongoDBQueryFromUrl(
         }
       }
     }
-    orFilterIndex++;
+    if (Object.entries(queries).length > 1) orFilterIndex++;
   }
 
   if (orFilters.length > 0) filter["$and"] = orFilters.map((orFilter) => ({ $or: [...orFilter] }));
@@ -50,10 +50,10 @@ function getIndividualMongoDBQueryFromKeyValue(key: string, value: string): { qu
   let isOption = false;
   if (key.startsWith("$")) {
     const optionParams = (value as string).split(":");
-    if (optionParams.length === 1) {
+    if (optionParams.length === 2) {
       query[key.replace("$", "")] = { [optionParams[0]]: parseInt(optionParams[1]) ?? optionParams[1] };
     } else {
-      query[key.replace("$", "")] = optionParams[0];
+      query[key.replace("$", "")] = parseInt(optionParams[0]);
     }
     isOption = true;
   } else {

@@ -14,11 +14,11 @@ export default function Section({ section }: { section: SectionType }) {
   useEffect(() => {
     let newProducts: Product[] = [];
     (async () => {
-      const response = await fetch("http://localhost:5000/products?$limit:40");
+      const response = await fetch("http://localhost:5000/products?$limit=40");
       newProducts = await response.json();
-    })();
 
-    setProducts(newProducts);
+      setProducts(newProducts);
+    })();
   }, [section]);
 
   return (

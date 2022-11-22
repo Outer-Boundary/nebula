@@ -1,5 +1,5 @@
 export interface Product {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   category: { main: string; sub: string };
@@ -11,7 +11,8 @@ export interface Product {
   sizes: string[];
   colours: string[];
   material: string;
-  imageCardId: string;
+  imageCardUrl: string;
+  imageUrls: string[];
   totalQuantity: number;
   timesSold: number;
   price: number;
@@ -23,5 +24,5 @@ export interface ProductVariant {
   size: string;
   colour: string;
   material: string;
-  imageIds: string[];
+  imageUrls: string[];
 }
