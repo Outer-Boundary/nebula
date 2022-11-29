@@ -17,12 +17,24 @@ interface FilterProps {
 }
 
 interface FilterData {
+  searchText: string;
   sortBy: number;
-  category: { main: boolean; sub?: number[] }[];
-  size: number[];
-  material: number[];
+  categories: { main: boolean; sub: number[] }[];
+  sizes: number[];
+  materials: number[];
   priceRange: { low: number; high: number };
 }
+
+const filterDataInitState: FilterData = {
+  searchText: "",
+  sortBy: 0,
+  categories: getEnumValues(CategoryType).map(() => ({ main: false, sub: [] })),
+  sizes: [],
+  materials: [],
+  priceRange: { low: 0, high: 0 },
+};
+
+const sortByOptions = ["Most Popular", "Newest", "Price Low to High", "Price High to Low"];
 
 /* to do: 
 - add colour filter
@@ -35,14 +47,7 @@ export default function Filter(props: FilterProps) {
   const [priceHandleInfo, setPriceHandleInfo] = useState<{ handle?: "low" | "high"; offset?: number; isMoving: boolean }>({
     isMoving: false,
   });
-
-  const filterData: FilterData = {
-    sortBy: 0,
-    category: [],
-    size: [],
-    material: [],
-    priceRange: { low: 0, high: 0 },
-  };
+  const [filterData, setFilterData] = useState<FilterData>(filterDataInitState);
 
   useEffect(() => {
     resetFilters();
@@ -59,24 +64,27 @@ export default function Filter(props: FilterProps) {
 
   // goes through each filter then sets the products being viewed
   async function filterProducts() {
-    const filters: string[] = [];
-    searchFilter(filters);
-    sortByFilter(filters);
-    categoryFilter(filters);
-    sizeFilter(filters);
-    materialFilter(filters);
-    priceRangeFilter(filters);
+    const newFilterData = filterDataInitState;
+    const urlFilters: string[] = [];
+    searchFilter(urlFilters, newFilterData);
+    sortByFilter(urlFilters, newFilterData);
+    categoryFilter(urlFilters, newFilterData);
+    sizeFilter(urlFilters, newFilterData);
+    materialFilter(urlFilters, newFilterData);
+    priceRangeFilter(urlFilters, newFilterData);
 
-    const response = await fetch(`http://localhost:5000/products?${filters.join("&")}`);
+    const response = await fetch(`http://localhost:5000/products?${urlFilters.join("&")}`);
     const products: Product[] = await response.json();
 
     props.setProducts(products);
   }
 
   // filters the products based on the search string and the product names. can use a hyphen to negate a search
-  async function searchFilter(filters: string[]) {
+  async function searchFilter(urlFilters: string[], filterData: FilterData) {
     const searchString = (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value;
     if (searchString.replace(/\s/g, "") === "") return;
+
+    filterData.searchText = searchString;
 
     const searchFilters = searchString
       .toLowerCase()
@@ -101,22 +109,25 @@ export default function Filter(props: FilterProps) {
     if (negativeSearchFilters.length > 0) {
       filter += "!" + negativeSearchFilters.join();
     }
-    if (filter.length > 0) filters.push(`title=${filter}`);
+    if (filter.length > 0) urlFilters.push(`title=${filter}`);
   }
 
   // // sorts the products based on the selected sorting option
-  function sortByFilter(filters: string[]) {
+  function sortByFilter(urlFilters: string[], filterData: FilterData) {
     const option = (document.getElementById("sort-by-select") as HTMLInputElement).value;
 
     // for now while popularity and item release dates don't exist
-    if (option !== "price-low-high" && option !== "price-high-low") return;
+    if (option !== "price-low-to-high" && option !== "price-high-to-low") return;
+
+    const index = sortByOptions.findIndex((x) => x.toLowerCase().replace(/\s/g, "-") === option);
+    filterData.sortBy = index === -1 ? 0 : index;
 
     switch (option) {
-      case "price-low-high":
-        filters.push("$sort=price:1");
+      case "price-low-to-high":
+        urlFilters.push("$sort=price:1");
         break;
-      case "price-high-low":
-        filters.push("$sort=price:-1");
+      case "price-high-to-low":
+        urlFilters.push("$sort=price:-1");
         break;
       default:
         // make sure each case matches the value in each option
@@ -126,7 +137,7 @@ export default function Filter(props: FilterProps) {
   }
 
   // // filters products by their category and subcategory. if subcategories are checked by the main category isn't they are ignored
-  function categoryFilter(filters: string[]) {
+  function categoryFilter(urlFilters: string[], filterData: FilterData) {
     const checkedCategories = document
       .getElementById("categories-container")
       ?.querySelectorAll("input.category-checkbox:checked") as NodeListOf<HTMLInputElement>;
@@ -143,52 +154,59 @@ export default function Filter(props: FilterProps) {
       // if there are subcategories checked and it matches the product or there are no subcategories checked and the category matches the product's
       if (checkedCategories[i].checked) {
         if (checkedSubcategories.length > 0) {
-          checkedSubcategories.forEach((subcategory) => subcategoryFilters.push(subcategory.name));
+          for (let ii = 0; ii < checkedSubcategories.length; ii++) {
+            subcategoryFilters.push(checkedSubcategories[ii].name);
+            filterData.categories[i].sub.push(ii);
+          }
         } else {
           categoryFilters.push(checkedCategories[i].name);
+          filterData.categories[i].main = true;
         }
       }
     }
     if (categoryFilters.length > 0 && subcategoryFilters.length > 0) {
-      filters.push(`(category.main=${categoryFilters.join()}|category.sub=${subcategoryFilters.join()})`);
+      urlFilters.push(`(category.main=${categoryFilters.join()}|category.sub=${subcategoryFilters.join()})`);
     } else if (categoryFilters.length > 0) {
-      filters.push(`category.main=${categoryFilters.join()}`);
+      urlFilters.push(`category.main=${categoryFilters.join()}`);
     } else if (subcategoryFilters.length > 0) {
-      filters.push(`category.sub=${subcategoryFilters.join()}`);
+      urlFilters.push(`category.sub=${subcategoryFilters.join()}`);
     }
   }
 
   // filters products based on the selected sizes. shoes products that have either size
-  function sizeFilter(filters: string[]) {
+  function sizeFilter(urlFilters: string[], filterData: FilterData) {
     const checkedSizes = document.getElementById("sizes-container")!.querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
     if (checkedSizes.length === 0) return;
 
     let sizeFilters: string[] = [];
-    for (const size of checkedSizes) {
-      sizeFilters.push(size.name);
+    for (let i = 0; i < checkedSizes.length; i++) {
+      sizeFilters.push(checkedSizes[i].name);
+      filterData.sizes.push(i);
     }
-    filters.push(`sizes=${sizeFilters.join()}`);
+    urlFilters.push(`sizes=${sizeFilters.join()}`);
   }
 
   // filters products based on the selected materials. shoes products that have either material
-  function materialFilter(filters: string[]) {
+  function materialFilter(urlFilters: string[], filterData: FilterData) {
     const checkedMaterials = document
       .getElementById("materials-container")!
       .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
     if (checkedMaterials.length === 0) return;
 
     let materialFilters: string[] = [];
-    for (const material of checkedMaterials) {
-      materialFilters.push(material.name);
+    for (let i = 0; i < checkedMaterials.length; i++) {
+      materialFilters.push(checkedMaterials[i].name);
+      filterData.materials.push(i);
     }
-    filters.push(`material=${materialFilters.join()}`);
+    urlFilters.push(`material=${materialFilters.join()}`);
   }
 
-  // // filters products by the specified price range
-  function priceRangeFilter(filters: string[]) {
+  // filters products by the specified price range
+  function priceRangeFilter(urlFilters: string[], filterData: FilterData) {
     const lowPrice = parseInt(document.getElementsByClassName("low-price-text")[0].innerHTML.replace(/\$/g, ""));
     const highPrice = parseInt(document.getElementsByClassName("high-price-text")[0].innerHTML.replace(/\$/g, ""));
-    filters.push(`price=${lowPrice}-${highPrice}`);
+    urlFilters.push(`price=${lowPrice}-${highPrice}`);
+    filterData.priceRange = { low: lowPrice, high: highPrice };
   }
 
   // gets the highest and lowest price of the products
@@ -323,10 +341,9 @@ export default function Filter(props: FilterProps) {
       <div className="filter-container">
         <p className="sort-by-text filter-text">Sort By</p>
         <select name="" id="sort-by-select">
-          <option value="most-popular">Most Popular</option>
-          <option value="newest">Newest</option>
-          <option value="price-low-high">Price Low to High</option>
-          <option value="price-high-low">Price High to Low</option>
+          {sortByOptions.map((option) => (
+            <option value={option.toLowerCase().replace(/\s/g, "-")}>{option}</option>
+          ))}
         </select>
       </div>
       <div className="filter-container">
