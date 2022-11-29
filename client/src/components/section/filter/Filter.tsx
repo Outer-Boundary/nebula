@@ -3,7 +3,7 @@ import { FiSearch } from "react-icons/fi";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 
 import { clamp, getEnumValues, lerp } from "../../../helper/Helper";
-import { Categories, CategoryType } from "../../types/category";
+import { Categories, Category, CategoryType } from "../../types/category";
 import Material from "../../types/Material";
 import { Product } from "../../types/product";
 import { SectionType } from "../../types/SectionType";
@@ -14,6 +14,14 @@ interface FilterProps {
   section: SectionType;
   products: Product[];
   setProducts: (products: Product[]) => void;
+}
+
+interface FilterData {
+  sortBy: number;
+  category: { main: boolean; sub?: number[] }[];
+  size: number[];
+  material: number[];
+  priceRange: { low: number; high: number };
 }
 
 /* to do: 
@@ -28,12 +36,26 @@ export default function Filter(props: FilterProps) {
     isMoving: false,
   });
 
+  const filterData: FilterData = {
+    sortBy: 0,
+    category: [],
+    size: [],
+    material: [],
+    priceRange: { low: 0, high: 0 },
+  };
+
   useEffect(() => {
-    const priceRange = getPriceRange();
-    setPriceRange(priceRange);
     resetFilters();
     resetPriceRange(priceRange.low, priceRange.high);
-  }, [props.products, props.section]);
+  }, [props.section]);
+
+  useEffect(() => {
+    (async () => {
+      const priceRange = await getPriceRange();
+      setPriceRange(priceRange);
+      resetPriceRange(priceRange.low, priceRange.high);
+    })();
+  }, []);
 
   // goes through each filter then sets the products being viewed
   async function filterProducts() {
@@ -47,7 +69,6 @@ export default function Filter(props: FilterProps) {
 
     const response = await fetch(`http://localhost:5000/products?${filters.join("&")}`);
     const products: Product[] = await response.json();
-    console.log(products);
 
     props.setProducts(products);
   }
@@ -171,17 +192,10 @@ export default function Filter(props: FilterProps) {
   }
 
   // gets the highest and lowest price of the products
-  function getPriceRange(): { low: number; high: number } {
-    let low = -1;
-    let high = -1;
-    for (const product of props.products) {
-      if (product.price < low || low === -1) {
-        low = product.price;
-      } else if (product.price > high || high === -1) {
-        high = product.price;
-      }
-    }
-    return { low: low, high: high };
+  async function getPriceRange(): Promise<{ low: number; high: number }> {
+    const response = await fetch("http://localhost:5000/products/metadata");
+    const metadata: { priceRange: { low: number; high: number } } = await response.json();
+    return { low: metadata.priceRange.low, high: metadata.priceRange.high };
   }
 
   // moves the price range handles. need to figure out why the bar width doesn't snap

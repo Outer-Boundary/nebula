@@ -55,11 +55,11 @@ export default function ProductPage() {
         </div>
         <p className="sizes-text">Sizes</p>
         <div className="sizes-container container">
-          {/* {product?.sizes.map((sizeInfo, index) => (
-            <button className={`size-btn ${curSize === sizeInfo.size && "selected"}`} key={index} onClick={() => setSize(sizeInfo.size)}>
-              {sizeInfo.size}
+          {product?.sizes.map((size, index) => (
+            <button className={`size-btn ${curSize === size && "selected"}`} key={index} onClick={() => setSize(Size[size as keyof typeof Size])}>
+              {size}
             </button>
-          ))} */}
+          ))}
         </div>
         <button className="add-to-cart-btn">Add To Cart</button>
         <details className="product-details">

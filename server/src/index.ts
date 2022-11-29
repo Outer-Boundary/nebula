@@ -33,10 +33,6 @@ Shopify.Context.initialize({
   API_VERSION: ApiVersion.October22,
 });
 
-/*
-!!!!! if debugging this and nothing's working don't to forget to update your ip address in mongodb !!!!!
-*/
-
 // proof of concept to mess around with the different ways I can structure a query in mongodb
 app.get("/products/test", async (req, res) => {
   const products = database.collection("products").find(
@@ -61,6 +57,11 @@ app.get("/products", async (req, res) => {
 
   const products = database.collection("products").find(query?.filter || {}, query?.options);
   res.json(await products.toArray());
+});
+
+app.get("/products/metadata", async (req, res) => {
+  const metadata = await database.collection("metadata").findOne({ _id: "productMetadata" });
+  res.json(metadata);
 });
 
 // only certain products can be uploaded using the ?ids=[id1,id2] syntax
@@ -95,6 +96,8 @@ app.post("/products/upload-to-database", async (req, res) => {
     products.push(...productsResponse.body.products);
   }
 
+  let priceRange: { low: number; high: number } = { low: Infinity, high: 0 };
+
   // add every product to the database
   const uploadPromises: Promise<any>[] = [];
   for (let i = 0; i < products.length; i++) {
@@ -108,6 +111,14 @@ app.post("/products/upload-to-database", async (req, res) => {
     if (!category || !subcategory) {
       console.error("Missing product type in tags for product " + products[i].id);
       continue;
+    }
+
+    const price = parseInt(products[i].variants[0].price);
+    if (price < priceRange.low) {
+      priceRange.low = price;
+    }
+    if (price > priceRange.high) {
+      priceRange.high = price;
     }
 
     const sizes = (products[i].options as any[]).filter((option) => option.name.toLowerCase() === "size")[0].values as string[];
@@ -130,7 +141,7 @@ app.post("/products/upload-to-database", async (req, res) => {
       imageUrls: (products[i].images as any[]).map((url) => url.src),
       vendor: products[i].vendor,
       totalQuantity: (products[i].variants as any[]).reduce((acc, cur) => acc + cur.inventory_quantity, 0),
-      price: parseInt(products[i].variants[0].price),
+      price: price,
     };
 
     for (const variant of products[i].variants) {
@@ -166,9 +177,17 @@ app.post("/products/upload-to-database", async (req, res) => {
     uploadPromises.push(productUpsert);
   }
 
-  await Promise.all([...uploadPromises]);
+  const metadataCollection = database.collection("metadata");
+  const metadataUpsert = metadataCollection.updateOne({ _id: "productMetadata" }, { $set: { priceRange: priceRange } }, { upsert: true });
+
+  await Promise.all([...uploadPromises, metadataUpsert]);
 
   res.status(200).send("Upload completed");
+});
+
+app.get("/products/:id", async (req, res) => {
+  const product = await database.collection("products").findOne({ _id: req.params.id });
+  res.json(product);
 });
 
 app.get("/product-variants/:productId", async (req, res) => {
