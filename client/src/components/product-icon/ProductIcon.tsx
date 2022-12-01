@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 
-import { getKebabStyledString } from "../../helper/Helper";
 import { Product } from "../types/product";
 import "./styles/ProductIcon.css";
 
@@ -9,7 +8,7 @@ import "./styles/ProductIcon.css";
 */
 export default function ProductIcon({ product }: { product: Product }) {
   return (
-    <Link to={"/clothing/" + getKebabStyledString(product.title)} state={product} className="product-icon">
+    <Link to={"/clothing/" + product._id} state={product} className="product-icon">
       <img src={product.imageCardUrl} alt="" className="product-image" />
       <div className="product-details">
         <p className="name-text">{product.title}</p>

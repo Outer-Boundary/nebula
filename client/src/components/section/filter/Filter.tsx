@@ -3,7 +3,7 @@ import { FiSearch } from "react-icons/fi";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 
 import { clamp, getEnumValues, lerp } from "../../../helper/Helper";
-import { Categories, Category, CategoryType } from "../../types/category";
+import { Categories, CategoryType } from "../../types/category";
 import Material from "../../types/Material";
 import { Product } from "../../types/product";
 import { SectionType } from "../../types/SectionType";
@@ -47,7 +47,7 @@ export default function Filter(props: FilterProps) {
   const [priceHandleInfo, setPriceHandleInfo] = useState<{ handle?: "low" | "high"; offset?: number; isMoving: boolean }>({
     isMoving: false,
   });
-  const [filterData, setFilterData] = useState<FilterData>(filterDataInitState);
+  // const [filterData, setFilterData] = useState<FilterData>(filterDataInitState);
 
   useEffect(() => {
     resetFilters();
@@ -59,24 +59,38 @@ export default function Filter(props: FilterProps) {
       const priceRange = await getPriceRange();
       setPriceRange(priceRange);
       resetPriceRange(priceRange.low, priceRange.high);
+
+      const filterDataString = localStorage.getItem("filterData");
+      if (filterDataString) {
+        setFiltersFromFilterData(JSON.parse(filterDataString) as FilterData);
+        filterProducts();
+      }
     })();
   }, []);
 
+  function setFiltersFromFilterData(filterData: FilterData) {
+    (document.getElementById("sort-by-select") as HTMLInputElement).value = sortByOptions[filterData.sortBy]
+      .toLowerCase()
+      .replace(/\s/g, "-");
+  }
+
   // goes through each filter then sets the products being viewed
   async function filterProducts() {
-    const newFilterData = filterDataInitState;
+    const filterData = filterDataInitState;
     const urlFilters: string[] = [];
-    searchFilter(urlFilters, newFilterData);
-    sortByFilter(urlFilters, newFilterData);
-    categoryFilter(urlFilters, newFilterData);
-    sizeFilter(urlFilters, newFilterData);
-    materialFilter(urlFilters, newFilterData);
-    priceRangeFilter(urlFilters, newFilterData);
+    searchFilter(urlFilters, filterData);
+    sortByFilter(urlFilters, filterData);
+    categoryFilter(urlFilters, filterData);
+    sizeFilter(urlFilters, filterData);
+    materialFilter(urlFilters, filterData);
+    priceRangeFilter(urlFilters, filterData);
 
     const response = await fetch(`http://localhost:5000/products?${urlFilters.join("&")}`);
     const products: Product[] = await response.json();
 
     props.setProducts(products);
+    localStorage.setItem("filterData", JSON.stringify(filterData));
+    console.log(filterData);
   }
 
   // filters the products based on the search string and the product names. can use a hyphen to negate a search
@@ -341,8 +355,10 @@ export default function Filter(props: FilterProps) {
       <div className="filter-container">
         <p className="sort-by-text filter-text">Sort By</p>
         <select name="" id="sort-by-select">
-          {sortByOptions.map((option) => (
-            <option value={option.toLowerCase().replace(/\s/g, "-")}>{option}</option>
+          {sortByOptions.map((option, index) => (
+            <option value={option.toLowerCase().replace(/\s/g, "-")} key={index}>
+              {option}
+            </option>
           ))}
         </select>
       </div>

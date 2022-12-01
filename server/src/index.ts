@@ -1,6 +1,6 @@
-import express, { query } from "express";
+import express from "express";
 import cors from "cors";
-import Shopify, { ApiVersion, RequestReturn } from "@shopify/shopify-api";
+import Shopify, { ApiVersion } from "@shopify/shopify-api";
 import dotenv from "dotenv";
 import { Product, ProductVariant, CategoryType } from "shared/types";
 import { getEnumValues } from "shared/helper";
@@ -186,7 +186,8 @@ app.post("/products/upload-to-database", async (req, res) => {
 });
 
 app.get("/products/:id", async (req, res) => {
-  const product = await database.collection("products").findOne({ _id: req.params.id });
+  const product = await database.collection("products").findOne({ _id: parseInt(req.params.id) });
+  console.log(product);
   res.json(product);
 });
 
