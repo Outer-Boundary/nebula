@@ -54,9 +54,9 @@ app.get("/products", async (req, res) => {
   const allowedFields = ["$sort", "$limit", "title", "category.main", "category.sub", "sizes", "material", "price"];
   const queryUrl = req.url.split("?").length === 2 ? req.url.split("?")[1] : "";
   const query = getMongoDBQueryFromUrl(queryUrl, allowedFields);
-
   const products = database.collection("products").find(query?.filter || {}, query?.options);
   res.json(await products.toArray());
+  // res.json([]);
 });
 
 app.get("/products/metadata", async (req, res) => {

@@ -6,6 +6,8 @@ export default function getMongoDBQueryFromUrl(
   let filter: { [key: string]: string | {} | {}[] } = {};
   let options: { [key: string]: {} } = {};
   const orFilters: {}[][] = [];
+  const andFilters: { [key: string]: [] }[] = [];
+
   let orFilterIndex = 0;
   for (const query of urlQueries) {
     let queries: { [key: string]: string } = {};
@@ -29,6 +31,8 @@ export default function getMongoDBQueryFromUrl(
       const queryInfo = getIndividualMongoDBQueryFromKeyValue(key, value);
       if (Object.entries(queries).length > 1) {
         orFilters[orFilterIndex].push(queryInfo.query);
+      } else if ((Object.values(queryInfo.query)[0] as any[]).length > 1) {
+        andFilters.push(queryInfo.query as { [key: string]: [] });
       } else {
         if (queryInfo.isOption) {
           options = { ...options, ...queryInfo.query };
@@ -40,12 +44,21 @@ export default function getMongoDBQueryFromUrl(
     if (Object.entries(queries).length > 1) orFilterIndex++;
   }
 
-  if (orFilters.length > 0) filter["$and"] = orFilters.map((orFilter) => ({ $or: [...orFilter] }));
+  const combined = [];
+  if (orFilters.length > 0) combined.push(...orFilters.map((orFilter) => ({ $or: [...orFilter] })));
+  if (andFilters.length > 0)
+    andFilters.forEach((andFilter) =>
+      combined.push(...(Object.values(andFilter)[0] as any[]).map((value) => ({ [Object.keys(andFilter)[0]]: value })))
+    );
+  filter["$and"] = combined;
 
   return { filter: filter, options: options };
 }
 
-function getIndividualMongoDBQueryFromKeyValue(key: string, value: string): { query: { [key: string]: string | {} }; isOption: boolean } {
+function getIndividualMongoDBQueryFromKeyValue(
+  key: string,
+  value: string
+): { query: { [key: string]: string | {} | [] }; isOption: boolean } {
   const query: { [key: string]: string | {} } = {};
   let isOption = false;
   if (key.startsWith("$")) {
@@ -63,6 +76,17 @@ function getIndividualMongoDBQueryFromKeyValue(key: string, value: string): { qu
     } else if (value.split("-").length === 2) {
       const values = value.split("-");
       query[key] = { $gte: parseInt(values[0]), $lte: parseInt(values[1]) };
+    } else if (value.split(":").length === 2) {
+      const values = value.split(":");
+      const posNegValues = values[1].split("!");
+      if (values[0] === "$regex") {
+        query[key] = [
+          { [values[0]]: posNegValues[0].split("/")[1], $options: posNegValues[0].split("/")[2] },
+          posNegValues[1] && { $not: { [values[0]]: posNegValues[1].split("/")[1], $options: posNegValues[1].split("/")[2] } },
+        ];
+      } else {
+        query[key] = [{ [values[0]]: posNegValues[0] }, posNegValues[1] && { $not: { [values[0]]: posNegValues[1] } }];
+      }
     } else {
       query[key] = value.toLowerCase();
     }

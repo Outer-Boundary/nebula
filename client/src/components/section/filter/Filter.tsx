@@ -69,6 +69,7 @@ export default function Filter(props: FilterProps) {
   }, []);
 
   function setFiltersFromFilterData(filterData: FilterData) {
+    (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value = filterData.searchText;
     (document.getElementById("sort-by-select") as HTMLInputElement).value = sortByOptions[filterData.sortBy]
       .toLowerCase()
       .replace(/\s/g, "-");
@@ -90,15 +91,15 @@ export default function Filter(props: FilterProps) {
 
     props.setProducts(products);
     localStorage.setItem("filterData", JSON.stringify(filterData));
-    console.log(filterData);
   }
 
   // filters the products based on the search string and the product names. can use a hyphen to negate a search
   async function searchFilter(urlFilters: string[], filterData: FilterData) {
     const searchString = (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value;
-    if (searchString.replace(/\s/g, "") === "") return;
 
     filterData.searchText = searchString;
+
+    if (searchString.replace(/\s/g, "") === "") return;
 
     const searchFilters = searchString
       .toLowerCase()
@@ -118,12 +119,12 @@ export default function Filter(props: FilterProps) {
 
     let filter = "";
     if (positiveSearchFilters.length > 0) {
-      filter += positiveSearchFilters.join();
+      filter += `/${positiveSearchFilters.join("|")}/i`;
     }
     if (negativeSearchFilters.length > 0) {
-      filter += "!" + negativeSearchFilters.join();
+      filter += `!/${negativeSearchFilters.join("|")}/i`;
     }
-    if (filter.length > 0) urlFilters.push(`title=${filter}`);
+    if (filter.length > 0) urlFilters.push(`title=$regex:${filter}`);
   }
 
   // // sorts the products based on the selected sorting option

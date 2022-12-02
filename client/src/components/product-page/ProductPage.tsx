@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { Colour } from "../types/Colour";
-import { Product, ProductVariant } from "../types/product";
+import { Product } from "../types/product";
 
 import Size from "../types/Size";
 import "./styles/ProductPage.css";
