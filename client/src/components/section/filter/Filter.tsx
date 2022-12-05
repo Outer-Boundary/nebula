@@ -25,15 +25,6 @@ interface FilterData {
   priceRange: { low: number; high: number };
 }
 
-const filterDataInitState: FilterData = {
-  searchText: "",
-  sortBy: 0,
-  categories: getEnumValues(CategoryType).map(() => ({ main: false, sub: [] })),
-  sizes: [],
-  materials: [],
-  priceRange: { low: 0, high: 0 },
-};
-
 const sortByOptions = ["Most Popular", "Newest", "Price Low to High", "Price High to Low"];
 
 /* to do: 
@@ -73,15 +64,39 @@ export default function Filter(props: FilterProps) {
   }, []);
 
   function setFiltersFromFilterData(filterData: FilterData) {
+    // search bar
     (document.getElementsByClassName("search-input")[0] as HTMLInputElement).value = filterData.searchText;
+    // sort by
     (document.getElementById("sort-by-select") as HTMLInputElement).value = sortByOptions[filterData.sortBy]
       .toLowerCase()
       .replace(/\s/g, "-");
+    // categories
+    const categories = document
+      .getElementById("categories-container")
+      ?.querySelectorAll("input.category-checkbox") as NodeListOf<HTMLInputElement>;
+    for (let i = 0; i < categories.length; i++) {
+      if (filterData.categories[i].main) {
+        categories[i].checked = true;
+      }
+      const subcategories = document
+        .getElementById(`${categories[i].name.toLowerCase()}-subcategories-container`)!
+        .querySelectorAll("input.subcategory-checkbox") as NodeListOf<HTMLInputElement>;
+      for (let ii = 0; ii < filterData.categories[i].sub.length; ii++) {
+        subcategories[filterData.categories[i].sub[ii]].checked = true;
+      }
+    }
   }
 
   // goes through each filter then sets the products being viewed
   async function filterProducts() {
-    const filterData = filterDataInitState;
+    const filterData = {
+      searchText: "",
+      sortBy: 0,
+      categories: getEnumValues(CategoryType).map(() => ({ main: false, sub: [] })),
+      sizes: [],
+      materials: [],
+      priceRange: { low: 0, high: 0 },
+    };
     const urlFilters: string[] = [];
     searchFilter(urlFilters, filterData);
     sortByFilter(urlFilters, filterData);
@@ -157,30 +172,31 @@ export default function Filter(props: FilterProps) {
 
   // // filters products by their category and subcategory. if subcategories are checked by the main category isn't they are ignored
   function categoryFilter(urlFilters: string[], filterData: FilterData) {
-    const checkedCategories = document
+    const categories = document
       .getElementById("categories-container")
-      ?.querySelectorAll("input.category-checkbox:checked") as NodeListOf<HTMLInputElement>;
-    if (checkedCategories.length === 0) return;
+      ?.querySelectorAll("input.category-checkbox") as NodeListOf<HTMLInputElement>;
+    if (categories.length === 0) return;
 
     let categoryFilters: string[] = [];
     let subcategoryFilters: string[] = [];
-    for (let i = 0; i < checkedCategories.length; i++) {
-      const checkedSubcategories = Array.from(
+    for (let i = 0; i < categories.length; i++) {
+      const subcategories = Array.from(
         document
-          .getElementById(`${checkedCategories[i].name.toLowerCase()}-subcategories-container`)!
-          .querySelectorAll("input.subcategory-checkbox:checked") as NodeListOf<HTMLInputElement>
+          .getElementById(`${categories[i].name.toLowerCase()}-subcategories-container`)!
+          .querySelectorAll("input.subcategory-checkbox") as NodeListOf<HTMLInputElement>
       );
       // if there are subcategories checked and it matches the product or there are no subcategories checked and the category matches the product's
-      if (checkedCategories[i].checked) {
-        if (checkedSubcategories.length > 0) {
-          for (let ii = 0; ii < checkedSubcategories.length; ii++) {
-            subcategoryFilters.push(checkedSubcategories[ii].name);
-            filterData.categories[i].sub.push(ii);
-          }
-        } else {
-          categoryFilters.push(checkedCategories[i].name);
+      if (categories[i].checked) {
+        for (let ii = 0; ii < subcategories.length; ii++) {
+          if (subcategories[ii].checked) subcategoryFilters.push(subcategories[ii].name);
+        }
+        if (subcategoryFilters.length === 0) {
+          categoryFilters.push(categories[i].name);
           filterData.categories[i].main = true;
         }
+      }
+      for (let ii = 0; ii < subcategories.length; ii++) {
+        if (subcategories[ii].checked) filterData.categories[i].sub.push(ii);
       }
     }
     if (categoryFilters.length > 0 && subcategoryFilters.length > 0) {
