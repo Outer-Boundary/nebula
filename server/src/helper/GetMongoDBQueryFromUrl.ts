@@ -31,7 +31,7 @@ export default function getMongoDBQueryFromUrl(
       const queryInfo = getIndividualMongoDBQueryFromKeyValue(key, value);
       if (Object.entries(queries).length > 1) {
         orFilters[orFilterIndex].push(queryInfo.query);
-      } else if ((Object.values(queryInfo.query)[0] as any[]).length > 1) {
+      } else if (Array.isArray(Object.values(queryInfo.query)[0])) {
         andFilters.push(queryInfo.query as { [key: string]: [] });
       } else {
         if (queryInfo.isOption) {
@@ -45,12 +45,15 @@ export default function getMongoDBQueryFromUrl(
   }
 
   const combined = [];
-  if (orFilters.length > 0) combined.push(...orFilters.map((orFilter) => ({ $or: [...orFilter] })));
-  if (andFilters.length > 0)
+  if (orFilters.length > 0) {
+    combined.push(...orFilters.map((orFilter) => ({ $or: [...orFilter] })));
+  }
+  if (andFilters.length > 0) {
     andFilters.forEach((andFilter) =>
       combined.push(...(Object.values(andFilter)[0] as any[]).map((value) => ({ [Object.keys(andFilter)[0]]: value })))
     );
-  filter["$and"] = combined;
+  }
+  if (combined.length > 0) filter["$and"] = combined;
 
   return { filter: filter, options: options };
 }

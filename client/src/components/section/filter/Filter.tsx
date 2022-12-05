@@ -66,6 +66,10 @@ export default function Filter(props: FilterProps) {
         filterProducts();
       }
     })();
+
+    window.onunload = () => {
+      localStorage.removeItem("filterData");
+    };
   }, []);
 
   function setFiltersFromFilterData(filterData: FilterData) {
