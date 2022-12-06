@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
+import { getEnumValues, getTitleCaseStyledString } from "../../helper/Helper";
 import { Colour } from "../types/Colour";
 import { Product } from "../types/product";
 
@@ -41,7 +42,7 @@ export default function ProductPage() {
       </div>
       <img className="product-image" src={product?.imageUrls[curImageIndex]} alt="" />
       <div className="right-container">
-        <p className="name-text">{product?.title}</p>
+        <p className="name-text">{getTitleCaseStyledString(product?.title || "")}</p>
         <p className="price-text">${product?.price}</p>
         <div className="divider"></div>
         <p className="colours-text">Colours</p>
@@ -49,7 +50,9 @@ export default function ProductPage() {
           {product?.colours.map((colour, index) => (
             <div
               className={`colour ${curColourIndex === index && "selected"}`}
-              style={{ backgroundColor: Colour[colour as keyof typeof Colour] ?? "" }}
+              style={{
+                backgroundColor: Colour[getEnumValues(Colour).find((x) => x.toLowerCase() === colour) as keyof typeof Colour] ?? "",
+              }}
               key={index}
               onClick={() => setColourIndex(index)}
             ></div>
@@ -61,16 +64,16 @@ export default function ProductPage() {
             <button
               className={`size-btn ${curSize === size && "selected"}`}
               key={index}
-              onClick={() => setSize(Size[size as keyof typeof Size])}
+              onClick={() => setSize(Size[getEnumValues(Size).find((x) => x.toLowerCase() === size) as keyof typeof Size])}
             >
-              {size}
+              {size.toUpperCase()}
             </button>
           ))}
         </div>
         <button className="add-to-cart-btn">Add To Cart</button>
         <details className="product-details">
           <summary className="details-text">Details</summary>
-          <p>Material - {product?.material}</p>
+          <p>Material - {getTitleCaseStyledString(product?.material || "")}</p>
         </details>
         <details className="product-description">
           <summary className="description-text">Description</summary>

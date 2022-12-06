@@ -85,6 +85,16 @@ export default function Filter(props: FilterProps) {
         subcategories[filterData.categories[i].sub[ii]].checked = true;
       }
     }
+    // sizes
+    const sizes = document.getElementById("sizes-container")!.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
+    for (let i = 0; i < filterData.sizes.length; i++) {
+      sizes[filterData.sizes[i]].checked = true;
+    }
+    // materials
+    const materials = document.getElementById("materials-container")!.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
+    for (let i = 0; i < filterData.materials.length; i++) {
+      materials[filterData.materials[i]].checked = true;
+    }
   }
 
   // goes through each filter then sets the products being viewed
@@ -130,18 +140,18 @@ export default function Filter(props: FilterProps) {
     for (const searchFilter of searchFilters) {
       let isNegated = searchFilter.startsWith("-");
       if (!isNegated) {
-        positiveSearchFilters.push(searchFilter);
+        positiveSearchFilters.push(searchFilter.toLowerCase());
       } else {
-        negativeSearchFilters.push(searchFilter.replace("-", ""));
+        negativeSearchFilters.push(searchFilter.replace("-", "").toLowerCase());
       }
     }
 
     let filter = "";
     if (positiveSearchFilters.length > 0) {
-      filter += `/${positiveSearchFilters.join("|")}/i`;
+      filter += `/${positiveSearchFilters.join("|")}/`;
     }
     if (negativeSearchFilters.length > 0) {
-      filter += `!/${negativeSearchFilters.join("|")}/i`;
+      filter += `!/${negativeSearchFilters.join("|")}/`;
     }
     if (filter.length > 0) urlFilters.push(`title=$regex:${filter}`);
   }
@@ -175,7 +185,6 @@ export default function Filter(props: FilterProps) {
     const categories = document
       .getElementById("categories-container")
       ?.querySelectorAll("input.category-checkbox") as NodeListOf<HTMLInputElement>;
-    if (categories.length === 0) return;
 
     let categoryFilters: string[] = [];
     let subcategoryFilters: string[] = [];
@@ -188,10 +197,10 @@ export default function Filter(props: FilterProps) {
       // if there are subcategories checked and it matches the product or there are no subcategories checked and the category matches the product's
       if (categories[i].checked) {
         for (let ii = 0; ii < subcategories.length; ii++) {
-          if (subcategories[ii].checked) subcategoryFilters.push(subcategories[ii].name);
+          if (subcategories[ii].checked) subcategoryFilters.push(subcategories[ii].name.toLowerCase());
         }
         if (subcategoryFilters.length === 0) {
-          categoryFilters.push(categories[i].name);
+          categoryFilters.push(categories[i].name.toLowerCase());
           filterData.categories[i].main = true;
         }
       }
@@ -210,30 +219,30 @@ export default function Filter(props: FilterProps) {
 
   // filters products based on the selected sizes. shoes products that have either size
   function sizeFilter(urlFilters: string[], filterData: FilterData) {
-    const checkedSizes = document.getElementById("sizes-container")!.querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
-    if (checkedSizes.length === 0) return;
+    const sizes = document.getElementById("sizes-container")!.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
 
     let sizeFilters: string[] = [];
-    for (let i = 0; i < checkedSizes.length; i++) {
-      sizeFilters.push(checkedSizes[i].name);
-      filterData.sizes.push(i);
+    for (let i = 0; i < sizes.length; i++) {
+      if (sizes[i].checked) {
+        sizeFilters.push(sizes[i].name.toLowerCase());
+        filterData.sizes.push(i);
+      }
     }
-    urlFilters.push(`sizes=${sizeFilters.join()}`);
+    if (sizeFilters.length > 0) urlFilters.push(`sizes=${sizeFilters.join()}`);
   }
 
   // filters products based on the selected materials. shoes products that have either material
   function materialFilter(urlFilters: string[], filterData: FilterData) {
-    const checkedMaterials = document
-      .getElementById("materials-container")!
-      .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
-    if (checkedMaterials.length === 0) return;
+    const materials = document.getElementById("materials-container")!.querySelectorAll("input") as NodeListOf<HTMLInputElement>;
 
     let materialFilters: string[] = [];
-    for (let i = 0; i < checkedMaterials.length; i++) {
-      materialFilters.push(checkedMaterials[i].name);
-      filterData.materials.push(i);
+    for (let i = 0; i < materials.length; i++) {
+      if (materials[i].checked) {
+        materialFilters.push(materials[i].name.toLowerCase());
+        filterData.materials.push(i);
+      }
     }
-    urlFilters.push(`material=${materialFilters.join()}`);
+    if (materialFilters.length > 0) urlFilters.push(`material=${materialFilters.join()}`);
   }
 
   // filters products by the specified price range

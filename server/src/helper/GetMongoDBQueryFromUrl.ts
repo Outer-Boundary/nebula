@@ -74,7 +74,7 @@ function getIndividualMongoDBQueryFromKeyValue(
     isOption = true;
   } else {
     if (value.split(",").length > 1) {
-      const values = value.split(",").map((value) => value.toLowerCase());
+      const values = value.split(",");
       query[key] = { $in: values };
     } else if (value.split("-").length === 2) {
       const values = value.split("-");
@@ -83,15 +83,15 @@ function getIndividualMongoDBQueryFromKeyValue(
       const values = value.split(":");
       const posNegValues = values[1].split("!");
       if (values[0] === "$regex") {
-        query[key] = [
-          { [values[0]]: posNegValues[0].split("/")[1], $options: posNegValues[0].split("/")[2] },
-          posNegValues[1] && { $not: { [values[0]]: posNegValues[1].split("/")[1], $options: posNegValues[1].split("/")[2] } },
-        ];
+        let curValues = [];
+        if (posNegValues[0]) curValues.push({ [values[0]]: posNegValues[0].split("/")[1] });
+        if (posNegValues[1]) curValues.push({ $not: { [values[0]]: posNegValues[1].split("/")[1] } });
+        query[key] = curValues;
       } else {
         query[key] = [{ [values[0]]: posNegValues[0] }, posNegValues[1] && { $not: { [values[0]]: posNegValues[1] } }];
       }
     } else {
-      query[key] = value.toLowerCase();
+      query[key] = value;
     }
   }
   return { query: query, isOption: isOption };

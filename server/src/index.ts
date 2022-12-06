@@ -53,7 +53,7 @@ app.get("/products/test", async (req, res) => {
 app.get("/products", async (req, res) => {
   const allowedFields = ["$sort", "$limit", "title", "category.main", "category.sub", "sizes", "material", "price"];
   const queryUrl = req.url.split("?").length === 2 ? req.url.split("?")[1] : "";
-  const query = getMongoDBQueryFromUrl(queryUrl, allowedFields);
+  const query = getMongoDBQueryFromUrl(queryUrl, allowedFields)
   const products = database.collection("products").find(query?.filter || {}, query?.options);
   res.json(await products.toArray());
   // res.json([]);
@@ -98,6 +98,8 @@ app.post("/products/upload-to-database", async (req, res) => {
 
   let priceRange: { low: number; high: number } = { low: Infinity, high: 0 };
 
+  let startTime = performance.now();
+
   // add every product to the database
   const uploadPromises: Promise<any>[] = [];
   for (let i = 0; i < products.length; i++) {
@@ -123,20 +125,20 @@ app.post("/products/upload-to-database", async (req, res) => {
 
     const sizes = (products[i].options as any[]).filter((option) => option.name.toLowerCase() === "size")[0].values as string[];
     const colours = (products[i].options as any[]).filter((option) => option.name.toLowerCase() === "color")[0].values as string[];
-    const material = (products[i].options as any[]).filter((option) => option.name.toLowerCase() === "material")[0].values[0];
+    const material = (products[i].options as any[]).filter((option) => option.name.toLowerCase() === "material")[0].values[0] as string;
 
     const product: Omit<Product, "timesSold"> = {
       _id: products[i].id,
-      title: products[i].title,
+      title: (products[i].title as string).toLowerCase(),
       description: products[i].description,
       category: { main: category, sub: subcategory },
       createdAt: products[i].created_at,
       updatedAt: products[i].updated_at,
       active: products[i].status === "active" ? true : false,
       tags: tags,
-      sizes: sizes,
-      colours: colours,
-      material: material,
+      sizes: sizes.map((x) => x.toLowerCase()),
+      colours: colours.map((x) => x.toLowerCase()),
+      material: material.toLowerCase(),
       imageCardUrl: products[i].image.src as string,
       imageUrls: (products[i].images as any[]).map((url) => url.src),
       vendor: products[i].vendor,
@@ -182,7 +184,9 @@ app.post("/products/upload-to-database", async (req, res) => {
 
   await Promise.all([...uploadPromises, metadataUpsert]);
 
-  res.status(200).send("Upload completed");
+  let endTime = performance.now();
+
+  res.status(200).send("Upload completed. The process took " + Math.round(((endTime - startTime) / 1000) * 100) / 100 + " seconds");
 });
 
 app.get("/products/:id", async (req, res) => {

@@ -25,3 +25,15 @@ export function getKebabStyledString(str: string) {
     .replace(/[^A-z ]|[_]/g, "")
     .replace(/ /g, "-");
 }
+
+export function getTitleCaseStyledString(str: string) {
+  let newStr = str.substring(0, 1).toUpperCase();
+  for (let i = 1; i < str.length; i++) {
+    let letter = str[i];
+    if (str[i - 1] === " " || str[i - 1] === "-") {
+      letter = letter.toUpperCase();
+    }
+    newStr += letter;
+  }
+  return newStr;
+}
