@@ -10,6 +10,22 @@
   gap: 1rem;
   margin-right: 1rem;
 }
+@-webkit-keyframes pulse {
+  0% {
+    background-color: var(--secondary-element-colour);
+  }
+  50% {
+    background-color: rgb(214, 214, 214);
+  }
+}
+@keyframes pulse {
+  0% {
+    background-color: var(--secondary-element-colour);
+  }
+  50% {
+    background-color: rgb(214, 214, 214);
+  }
+}
 .product-page .image-card {
   width: 6rem;
   height: 7.5rem;
@@ -42,6 +58,17 @@
 }
 .product-page .name-text {
   font-size: 2rem;
+}
+.product-page .name-text-suspense {
+  width: 16rem;
+  height: 2.3rem;
+  border-radius: var(--primary-border-radius);
+  margin-bottom: 0.4rem;
+}
+.product-page .price-text-suspense {
+  width: 3.6rem;
+  height: 2.05rem;
+  border-radius: var(--primary-border-radius);
 }
 .product-page .container {
   margin-bottom: 2rem;
@@ -92,4 +119,11 @@
 }
 .product-page .product-details {
   margin-bottom: 1rem;
+}
+.product-page .suspense {
+  border: none;
+  background-color: var(--secondary-element-colour);
+  -webkit-animation: pulse 1.25s linear infinite;
+          animation: pulse 1.25s linear infinite;
+  pointer-events: none;
 }/*# sourceMappingURL=ProductPage.css.map */
