@@ -55,8 +55,8 @@ export default function Filter(props: FilterProps) {
       const filterDataString = localStorage.getItem("filterData");
       if (filterDataString) {
         setFiltersFromFilterData(JSON.parse(filterDataString) as FilterData);
-        filterProducts();
       }
+      filterProducts();
     })();
 
     window.onunload = () => {
@@ -124,10 +124,6 @@ export default function Filter(props: FilterProps) {
 
     props.setProducts(products);
     localStorage.setItem("filterData", JSON.stringify(filterData));
-
-    // await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    props.setIsLoading(false);
   }
 
   // filters the products based on the search string and the product names. can use a hyphen to negate a search

@@ -12,15 +12,21 @@ export default function Section({ section }: { section: SectionType }) {
   const [isLoading, setIsLoading] = useState(false);
 
   // gets the products from the selected section
-  useEffect(() => {
-    let newProducts: Product[] = [];
-    (async () => {
-      const response = await fetch("http://localhost:5000/products?$limit=40");
-      newProducts = await response.json();
+  // useEffect(() => {
+  //   if (!isLoading) {
+  //     let newProducts: Product[] = [];
+  //     (async () => {
+  //       const response = await fetch("http://localhost:5000/products?$limit=40");
+  //       newProducts = await response.json();
 
-      setProducts(newProducts);
-    })();
-  }, [section]);
+  //       setProducts(newProducts);
+  //     })();
+  //   }
+  // }, [section]);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, [products]);
 
   return (
     <div className="section">
@@ -28,7 +34,7 @@ export default function Section({ section }: { section: SectionType }) {
       <div className="products-container">
         {!isLoading
           ? products.map((product, index) => <ProductIcon product={product} key={index} />)
-          : [...Array(20)].map((x) => <div className="product-suspense-icon"></div>)}
+          : [...Array(20)].map((x, index) => <div className="product-suspense-icon" key={index}></div>)}
       </div>
     </div>
   );
