@@ -14,6 +14,7 @@ interface FilterProps {
   section: SectionType;
   products: Product[];
   setProducts: (products: Product[]) => void;
+  setIsLoading: (state: boolean) => void;
 }
 
 interface FilterData {
@@ -95,10 +96,13 @@ export default function Filter(props: FilterProps) {
     for (let i = 0; i < filterData.materials.length; i++) {
       materials[filterData.materials[i]].checked = true;
     }
+    resetPriceRange(filterData.priceRange.low, filterData.priceRange.high);
   }
 
   // goes through each filter then sets the products being viewed
   async function filterProducts() {
+    props.setIsLoading(true);
+
     const filterData = {
       searchText: "",
       sortBy: 0,
@@ -120,6 +124,10 @@ export default function Filter(props: FilterProps) {
 
     props.setProducts(products);
     localStorage.setItem("filterData", JSON.stringify(filterData));
+
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    props.setIsLoading(false);
   }
 
   // filters the products based on the search string and the product names. can use a hyphen to negate a search

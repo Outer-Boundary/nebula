@@ -13,4 +13,19 @@
     overflow-y: scroll;
     padding: 2rem;
   }
+
+  .product-suspense-icon {
+    background-color: var(--secondary-element-colour);
+    border-radius: var(--primary-border-radius);
+    animation: pulse 1.25s linear infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      background-color: var(--secondary-element-colour);
+    }
+    50% {
+      background-color: rgb(210, 210, 210);
+    }
+  }
 }

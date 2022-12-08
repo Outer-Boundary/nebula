@@ -12,4 +12,26 @@
   gap: 2rem;
   overflow-y: scroll;
   padding: 2rem;
+}
+.section .product-suspense-icon {
+  background-color: var(--secondary-element-colour);
+  border-radius: var(--primary-border-radius);
+  -webkit-animation: pulse 1.25s linear infinite;
+          animation: pulse 1.25s linear infinite;
+}
+@-webkit-keyframes pulse {
+  0% {
+    background-color: var(--secondary-element-colour);
+  }
+  50% {
+    background-color: rgb(210, 210, 210);
+  }
+}
+@keyframes pulse {
+  0% {
+    background-color: var(--secondary-element-colour);
+  }
+  50% {
+    background-color: rgb(210, 210, 210);
+  }
 }/*# sourceMappingURL=Section.css.map */
