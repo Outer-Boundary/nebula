@@ -11,19 +11,6 @@ export default function Section({ section }: { section: SectionType }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // gets the products from the selected section
-  // useEffect(() => {
-  //   if (!isLoading) {
-  //     let newProducts: Product[] = [];
-  //     (async () => {
-  //       const response = await fetch("http://localhost:5000/products?$limit=40");
-  //       newProducts = await response.json();
-
-  //       setProducts(newProducts);
-  //     })();
-  //   }
-  // }, [section]);
-
   useEffect(() => {
     setIsLoading(false);
   }, [products]);
@@ -32,9 +19,9 @@ export default function Section({ section }: { section: SectionType }) {
     <div className="section">
       <Filter section={section} products={products} setProducts={setProducts} setIsLoading={setIsLoading} />
       <div className="products-container">
-        {!isLoading
-          ? products.map((product, index) => <ProductIcon product={product} key={index} />)
-          : [...Array(20)].map((x, index) => <div className="product-suspense-icon" key={index}></div>)}
+        {isLoading || products.length === 0
+          ? [...Array(20)].map((x, index) => <div className="product-suspense-icon" key={index}></div>)
+          : products.map((product, index) => <ProductIcon product={product} key={index} />)}
       </div>
     </div>
   );

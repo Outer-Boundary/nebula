@@ -24,7 +24,7 @@
     background-color: var(--secondary-element-colour);
   }
   50% {
-    background-color: rgb(210, 210, 210);
+    background-color: rgb(214, 214, 214);
   }
 }
 @keyframes pulse {
@@ -32,6 +32,6 @@
     background-color: var(--secondary-element-colour);
   }
   50% {
-    background-color: rgb(210, 210, 210);
+    background-color: rgb(214, 214, 214);
   }
 }/*# sourceMappingURL=Section.css.map */
