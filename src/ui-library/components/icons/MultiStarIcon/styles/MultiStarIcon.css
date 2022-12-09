@@ -1,0 +1,26 @@
+.multi-star-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.multi-star-icon .star-icon {
+  position: absolute;
+  min-width: 3rem;
+  min-height: 3rem;
+}
+.multi-star-icon .star-icon:nth-child(1) {
+  left: -0.75rem;
+  top: -1.75rem;
+  scale: 0.25 0.5;
+}
+.multi-star-icon .star-icon:nth-child(2) {
+  left: 0;
+  top: -1rem;
+  scale: 0.5 1;
+}
+.multi-star-icon .star-icon:nth-child(3) {
+  left: 0.65rem;
+  top: -2.25rem;
+  scale: 0.3 0.6;
+}/*# sourceMappingURL=MultiStarIcon.css.map */

@@ -1,26 +1,184 @@
 .header {
-  width: 100%;
-  min-height: 6rem;
+  width: 100vw;
+  position: absolute;
+  background-image: url("../../../../public/images/bTQQmdDt.jpg");
+  background-size: 100% 100%;
+  filter: saturate(150%);
+}
+.header > * {
+  width: 100vw;
+  border-bottom: 1px solid black;
+}
+.header .main-section {
+  height: 7rem;
   display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+.header .categories {
+  height: 4.5rem;
+}
+.header .styles {
+  height: 2.5rem;
+}
+.header .groups {
+  display: flex;
+  align-items: center;
   justify-content: center;
-  box-shadow: 0 0 8px 0px rgb(200, 200, 200);
-  z-index: 100;
 }
-.header .section-title {
-  color: var(--primary-text-colour);
-  font-size: 1.7rem;
-  padding: 2rem;
-  border: none;
-  background-color: var(--primary-element-colour);
-  transition: background-color 125ms ease-in-out;
+.header .groups > * {
+  width: 8rem;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
   text-decoration: none;
+  border-right: 1px solid black;
+  position: relative;
 }
-.header .section-title:hover {
-  background-color: var(--secondary-element-colour);
+.header .groups > *::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("../../../../public/images/SEr42QI-.jpg");
+  background-size: 100% 100%;
+  filter: hue-rotate(300deg) blur(2rem);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 250ms ease, background-color 250ms ease;
 }
-.header #sale-section {
-  color: rgb(233, 39, 39);
+.header .groups > *:hover, .header .groups > *:focus-visible {
+  outline: none;
 }
-.header .selected {
-  background-color: var(--secondary-element-colour);
+.header .groups > *:hover::before, .header .groups > *:focus-visible::before {
+  opacity: 1;
+  transition: opacity 250ms ease, background-color 250ms ease;
+}
+.header .groups > *:focus-visible {
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: opacity 250ms ease, background-color 250ms ease;
+}
+.header .groups > *:nth-child(2n)::before {
+  filter: hue-rotate(50deg) blur(2rem);
+}
+.header .groups > *:nth-child(3n)::before {
+  filter: hue-rotate(120deg) blur(2rem);
+}
+.header .logo {
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  left: 50%;
+  right: 50%;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  translate: -50% -50%;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  font-weight: 600;
+  color: black;
+  text-decoration: none;
+  transition: opacity 250ms ease, background-color 250ms ease;
+}
+.header .logo::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("../../../../public/images/SEr42QI-.jpg");
+  background-size: 100% 100%;
+  filter: blur(2rem);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 250ms ease, background-color 250ms ease;
+}
+.header .logo:hover, .header .logo:focus-visible {
+  outline: none;
+}
+.header .logo:hover::before, .header .logo:focus-visible::before {
+  opacity: 1;
+  transition: opacity 250ms ease, background-color 250ms ease;
+}
+.header .logo:hover > .star-icon, .header .logo:focus-visible > .star-icon {
+  rotate: 180deg;
+  transition: rotate 500ms ease;
+}
+.header .logo:focus-visible {
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: opacity 250ms ease, background-color 250ms ease;
+}
+.header .star-icon {
+  min-width: 3rem;
+  min-height: 3rem;
+  scale: 0.5 1;
+  position: relative;
+}
+.header .categories {
+  width: 100vw;
+  display: flex;
+  overflow-x: scroll;
+  scrollbar-width: none;
+}
+.header .categories > :first-child {
+  border-left: 1px solid black;
+  margin-left: auto;
+}
+.header .categories > :last-child {
+  margin-right: auto;
+}
+.header .categories > * {
+  min-width: 8.5rem;
+  height: 100%;
+  color: black;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  border-right: 1px solid black;
+  position: relative;
+}
+.header .categories > *::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("../../../../public/images/SEr42QI-.jpg");
+  background-size: 100% 100%;
+  filter: hue-rotate(300deg) blur(2rem);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 250ms ease, background-color 250ms ease;
+}
+.header .categories > *:hover, .header .categories > *:focus-visible {
+  outline: none;
+}
+.header .categories > *:hover::before, .header .categories > *:focus-visible::before {
+  opacity: 1;
+  transition: opacity 250ms ease, background-color 250ms ease;
+}
+.header .categories > *:focus-visible {
+  background-color: rgba(0, 0, 0, 0.1);
+  transition: opacity 250ms ease, background-color 250ms ease;
+}
+.header .categories > *:nth-child(2n)::before {
+  filter: hue-rotate(50deg) blur(2rem);
+}
+.header .categories > *:nth-child(3n)::before {
+  filter: hue-rotate(120deg) blur(2rem);
 }/*# sourceMappingURL=Header.css.map */
