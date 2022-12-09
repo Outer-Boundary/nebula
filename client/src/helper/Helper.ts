@@ -6,7 +6,7 @@ export function getEnumValues(enumType: {} | undefined): string[] {
   });
 }
 
-// lerps a value linearly interpolated between start and end. if end is lesser than start, it returns NaN
+// lerps a value linearly interpolated between start and end. if end is less than start, it returns NaN
 export function lerp(start: number, end: number, value: number): number {
   if (end < start) return NaN;
   const diff = end - start;
@@ -24,16 +24,4 @@ export function getKebabStyledString(str: string) {
     .toLowerCase()
     .replace(/[^A-z ]|[_]/g, "")
     .replace(/ /g, "-");
-}
-
-export function getTitleCaseStyledString(str: string) {
-  let newStr = str.substring(0, 1).toUpperCase();
-  for (let i = 1; i < str.length; i++) {
-    let letter = str[i];
-    if (str[i - 1] === " " || str[i - 1] === "-") {
-      letter = letter.toUpperCase();
-    }
-    newStr += letter;
-  }
-  return newStr;
 }

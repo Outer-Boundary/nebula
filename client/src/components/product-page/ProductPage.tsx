@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { getEnumValues, getTitleCaseStyledString } from "../../helper/Helper";
+import { getEnumValues } from "../../helper/Helper";
+import { toTitleCase } from "../../helper/String";
 import { Colour } from "../types/Colour";
 import { Product } from "../types/product";
 
@@ -58,11 +59,7 @@ export default function ProductPage() {
         <img className="product-image" src={product?.imageUrls[curImageIndex]} alt="" />
       )}
       <div className="right-container">
-        {isLoading ? (
-          <div className="name-text-suspense suspense"></div>
-        ) : (
-          <p className="name-text">{getTitleCaseStyledString(product?.title || "")}</p>
-        )}
+        {isLoading ? <div className="name-text-suspense suspense"></div> : <p className="name-text">{toTitleCase(product?.title || "")}</p>}
         {isLoading ? <div className="price-text-suspense suspense"></div> : <p className="price-text">${product?.price}</p>}
         <div className="divider"></div>
         <p className="colours-text">Colours</p>
@@ -97,7 +94,7 @@ export default function ProductPage() {
         <button className="add-to-cart-btn">Add To Cart</button>
         <details className="product-details">
           <summary className="details-text">Details</summary>
-          <p>Material - {getTitleCaseStyledString(product?.material || "")}</p>
+          <p>Material - {toTitleCase(product?.material || "")}</p>
         </details>
         <details className="product-description">
           <summary className="description-text">Description</summary>
