@@ -6,12 +6,12 @@ import { clamp, getEnumValues, lerp } from "../../../helper/Helper";
 import { Categories, CategoryType } from "../../types/Category";
 import IProduct from "../../types/IProduct";
 import Material from "../../types/Material";
-import { SectionType } from "../../types/SectionType";
+import { CategoryGroups } from "../../types/CategoryTypes";
 import Size from "../../types/Size";
 import "./styles/Filter.css";
 
 interface FilterProps {
-  section: SectionType;
+  // section: SectionType;
   products: IProduct[];
   setFilteredProducts: (products: IProduct[]) => void;
 }
@@ -23,7 +23,11 @@ interface FilterProps {
 */
 export default function Filter(props: FilterProps) {
   const [priceRange, setPriceRange] = useState({ low: 0, high: 0 });
-  const [priceHandleInfo, setPriceHandleInfo] = useState<{ handle?: "low" | "high"; offset?: number; isMoving: boolean }>({
+  const [priceHandleInfo, setPriceHandleInfo] = useState<{
+    handle?: "low" | "high";
+    offset?: number;
+    isMoving: boolean;
+  }>({
     isMoving: false,
   });
 
@@ -32,7 +36,7 @@ export default function Filter(props: FilterProps) {
     setPriceRange(priceRange);
     resetFilters();
     resetPriceRange(priceRange.low, priceRange.high);
-  }, [props.products, props.section]);
+  }, [props.products]);
 
   // goes through each filter then sets the products being viewed
   function filterProducts() {
@@ -65,7 +69,8 @@ export default function Filter(props: FilterProps) {
 
       for (const searchFilter of searchFilters) {
         const notIncludesKeyword =
-          !searchFilter.startsWith("-") && productKeywords.every((keyword) => keyword !== searchFilter.replace(/-/g, ""));
+          !searchFilter.startsWith("-") &&
+          productKeywords.every((keyword) => keyword !== searchFilter.replace(/-/g, ""));
         const includesNegatedKeyword =
           searchFilter.startsWith("-") && productKeywords.some((keyword) => keyword === searchFilter.replace(/-/g, ""));
         if ((notIncludesKeyword || includesNegatedKeyword) && searchFilter !== "") {
@@ -115,7 +120,8 @@ export default function Filter(props: FilterProps) {
         );
         // if there are subcategories checked and it matches the product or there are no subcategories checked and the category matches the product's
         if (
-          (checkedSubcategories.length > 0 && checkedSubcategories.some((subcategory) => subcategory.name === products[i].category.sub)) ||
+          (checkedSubcategories.length > 0 &&
+            checkedSubcategories.some((subcategory) => subcategory.name === products[i].category.sub)) ||
           (checkedSubcategories.length === 0 && checkedCategories[ii].name === products[i].category.main)
         ) {
           matches = true;
@@ -131,7 +137,9 @@ export default function Filter(props: FilterProps) {
 
   // filters products based on the selected sizes. shoes products that have either size
   function sizeFilter(products: IProduct[]) {
-    const checkedSizes = document.getElementById("sizes-container")!.querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
+    const checkedSizes = document
+      .getElementById("sizes-container")!
+      .querySelectorAll("input:checked") as NodeListOf<HTMLInputElement>;
     if (checkedSizes.length === 0) return;
 
     for (let i = 0; i < products.length; i++) {
@@ -202,11 +210,15 @@ export default function Filter(props: FilterProps) {
     if (!priceHandleInfo.isMoving) return;
 
     const handle = document.getElementById(`${priceHandleInfo.handle}-price-handle-container`) as HTMLElement;
-    const barBounds = (document.getElementsByClassName("price-range-slider-container")[0] as HTMLElement).getBoundingClientRect();
+    const barBounds = (
+      document.getElementsByClassName("price-range-slider-container")[0] as HTMLElement
+    ).getBoundingClientRect();
 
     const handleBounds = handle.getBoundingClientRect();
     if (priceHandleInfo.handle === "low") {
-      const highPriceHandleBounds = (document.getElementById("high-price-handle-container") as HTMLElement).getBoundingClientRect();
+      const highPriceHandleBounds = (
+        document.getElementById("high-price-handle-container") as HTMLElement
+      ).getBoundingClientRect();
       const lowBar = document.getElementsByClassName("price-range-bar-low")[0] as HTMLElement;
 
       const value = clamp(
@@ -218,7 +230,9 @@ export default function Filter(props: FilterProps) {
       handle.style.left = value + "px";
       lowBar.style.right = barBounds.width - value - handleBounds.width / 2 + "px";
     } else {
-      const lowPriceHandleBounds = (document.getElementById("low-price-handle-container") as HTMLElement).getBoundingClientRect();
+      const lowPriceHandleBounds = (
+        document.getElementById("low-price-handle-container") as HTMLElement
+      ).getBoundingClientRect();
       const highBar = document.getElementsByClassName("price-range-bar-high")[0] as HTMLElement;
 
       const value = clamp(
@@ -262,7 +276,9 @@ export default function Filter(props: FilterProps) {
   function resetPriceRange(lowPrice: number, highPrice: number) {
     const lowPriceHandle = document.getElementById("low-price-handle-container") as HTMLElement;
     const highPriceHandle = document.getElementById("high-price-handle-container") as HTMLElement;
-    const barBounds = (document.getElementsByClassName("price-range-slider-container")[0] as HTMLElement).getBoundingClientRect();
+    const barBounds = (
+      document.getElementsByClassName("price-range-slider-container")[0] as HTMLElement
+    ).getBoundingClientRect();
     lowPriceHandle.style.left = 0 - lowPriceHandle.getBoundingClientRect().width / 2 + "px";
     highPriceHandle.style.left = barBounds.width - highPriceHandle.getBoundingClientRect().width / 2 + "px";
 
@@ -355,7 +371,10 @@ export default function Filter(props: FilterProps) {
                   id={`${category.toLowerCase()}-visibility-icon`}
                   className="visibility-icon closed"
                   onClick={() =>
-                    toggleVisibility(`${category.toLowerCase()}-subcategories-container`, `${category.toLowerCase()}-visibility-icon`)
+                    toggleVisibility(
+                      `${category.toLowerCase()}-subcategories-container`,
+                      `${category.toLowerCase()}-visibility-icon`
+                    )
                   }
                 />
               </div>
@@ -457,7 +476,11 @@ export default function Filter(props: FilterProps) {
           <div
             id="low-price-handle-container"
             onMouseDown={(e) =>
-              setPriceHandleInfo({ handle: "low", offset: e.clientX - e.currentTarget.getBoundingClientRect().left, isMoving: true })
+              setPriceHandleInfo({
+                handle: "low",
+                offset: e.clientX - e.currentTarget.getBoundingClientRect().left,
+                isMoving: true,
+              })
             }
           >
             <TiArrowSortedUp id="low-price-handle" className="price-handle" />
@@ -465,7 +488,11 @@ export default function Filter(props: FilterProps) {
           <div
             id="high-price-handle-container"
             onMouseDown={(e) =>
-              setPriceHandleInfo({ handle: "high", offset: e.clientX - e.currentTarget.getBoundingClientRect().left, isMoving: true })
+              setPriceHandleInfo({
+                handle: "high",
+                offset: e.clientX - e.currentTarget.getBoundingClientRect().left,
+                isMoving: true,
+              })
             }
           >
             <TiArrowSortedDown id="high-price-handle" className="price-handle" />
