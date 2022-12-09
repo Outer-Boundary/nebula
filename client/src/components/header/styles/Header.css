@@ -1,7 +1,7 @@
 .header {
   width: 100vw;
   position: absolute;
-  background-image: url("../../../../public/images/bTQQmdDt.jpg");
+  background-image: url("/public/images/bTQQmdDt.jpg");
   background-size: 100% 100%;
   filter: saturate(150%);
 }
