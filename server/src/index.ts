@@ -53,7 +53,7 @@ app.get("/products/test", async (req, res) => {
 app.get("/products", async (req, res) => {
   const allowedFields = ["$sort", "$limit", "title", "category.main", "category.sub", "sizes", "material", "price"];
   const queryUrl = req.url.split("?").length === 2 ? req.url.split("?")[1] : "";
-  const query = getMongoDBQueryFromUrl(queryUrl, allowedFields)
+  const query = getMongoDBQueryFromUrl(queryUrl, allowedFields);
   const products = database.collection("products").find(query?.filter || {}, query?.options);
   res.json(await products.toArray());
   // res.json([]);
@@ -173,7 +173,7 @@ app.post("/products/upload-to-database", async (req, res) => {
       uploadPromises.push(productVariantUpsert);
     }
 
-    const productsCollection = database.collection<Omit<Product, "id" | "timesSold">>("products");
+    const productsCollection = database.collection<Omit<Product, "timesSold">>("products");
     const productUpsert = productsCollection.updateOne({ _id: products[i].id }, { $set: product }, { upsert: true });
 
     uploadPromises.push(productUpsert);
@@ -185,13 +185,13 @@ app.post("/products/upload-to-database", async (req, res) => {
   await Promise.all([...uploadPromises, metadataUpsert]);
 
   let endTime = performance.now();
+  ``;
 
   res.status(200).send("Upload completed. The process took " + Math.round(((endTime - startTime) / 1000) * 100) / 100 + " seconds");
 });
 
 app.get("/products/:id", async (req, res) => {
   const product = await database.collection("products").findOne({ _id: parseInt(req.params.id) });
-  console.log(product);
   res.json(product);
 });
 

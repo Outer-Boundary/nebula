@@ -12,7 +12,7 @@ import "./styles/Filter.css";
 
 interface FilterProps {
   section: SectionType;
-  products: Product[];
+  products: Product[] | null;
   setProducts: (products: Product[]) => void;
   setIsLoading: (state: boolean) => void;
 }
