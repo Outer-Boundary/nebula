@@ -1,0 +1,32 @@
+.multi-star-icon {
+  // position: relative;
+  // width: 1rem;
+  // height: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .star-icon {
+    position: absolute;
+    $size: 3rem;
+    min-width: $size;
+    min-height: $size;
+
+    &:nth-child(1) {
+      left: -0.75rem;
+      top: -1.75rem;
+      scale: 0.25 0.5;
+    }
+    &:nth-child(2) {
+      left: 0;
+      top: -1rem;
+      scale: 0.5 1;
+    }
+    &:nth-child(3) {
+      left: 0.65rem;
+      top: -2.25rem;
+      scale: 0.3 0.6;
+    }
+  }
+}

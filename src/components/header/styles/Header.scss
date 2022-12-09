@@ -1,31 +1,233 @@
+@use "../../../ui-library/scss/common.scss";
+
 .header {
-  width: 100%;
-  min-height: 6rem;
-  display: flex;
-  justify-content: center;
-  // border-bottom: 1px solid var(--secondary-element-colour);
-  box-shadow: 0 0 8px 0px rgb(200, 200, 200);
-  z-index: 100;
+  $border-size: 1px;
+  $opacity-fade: opacity 250ms ease, background-color 250ms ease;
+  $section-bg-opacity: 1;
+  $section-bg-blur: 2rem;
 
-  .section-title {
-    color: var(--primary-text-colour);
-    font-size: 1.7rem;
-    padding: 2rem;
-    border: none;
-    background-color: var(--primary-element-colour);
-    transition: background-color 125ms ease-in-out;
-    text-decoration: none;
+  width: 100vw;
+  position: absolute;
 
-    &:hover {
-      background-color: var(--secondary-element-colour);
+  background-image: url("../../../../public/images/bTQQmdDt.jpg");
+  background-size: 100% 100%;
+  filter: saturate(150%);
+
+  // Applies to all sections.
+  > * {
+    width: 100vw;
+    border-bottom: $border-size solid black;
+  }
+
+  .main-section {
+    height: 7rem;
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .categories {
+    height: 4.5rem;
+  }
+
+  .styles {
+    height: 2.5rem;
+  }
+
+  .groups {
+    @include common.display-flex-center();
+
+    // Applies to all group buttons.
+    > * {
+      width: 8rem;
+      height: 100%;
+      @include common.display-flex-center();
+
+      @include common.disable-link-styling();
+      border-right: $border-size solid black;
+
+      position: relative;
+      // overflow: hidden;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("../../../../public/images/SEr42QI-.jpg");
+        background-size: 100% 100%;
+        filter: hue-rotate(300deg) blur($section-bg-blur);
+        z-index: -1;
+        opacity: 0;
+
+        transition: $opacity-fade;
+      }
+
+      &:hover,
+      &:focus-visible {
+        outline: none;
+
+        &::before {
+          opacity: $section-bg-opacity;
+
+          transition: $opacity-fade;
+        }
+      }
+
+      &:focus-visible {
+        background-color: rgba(black, 0.1);
+
+        transition: $opacity-fade;
+      }
+
+      &:nth-child(2n)::before {
+        filter: hue-rotate(50deg) blur($section-bg-blur);
+      }
+      &:nth-child(3n)::before {
+        filter: hue-rotate(120deg) blur($section-bg-blur);
+      }
     }
   }
 
-  #sale-section {
-    color: rgb(233, 39, 39);
+  .logo {
+    position: absolute;
+    top: 50%;
+    bottom: 50%;
+    left: 50%;
+    right: 50%;
+    width: fit-content;
+    height: fit-content;
+    translate: -50% -50%;
+    padding: 1rem;
+    @include common.display-flex-center();
+
+    font-size: 4rem;
+    font-weight: 600;
+    color: black;
+    text-decoration: none;
+
+    transition: $opacity-fade;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("../../../../public/images/SEr42QI-.jpg");
+      background-size: 100% 100%;
+      filter: blur($section-bg-blur);
+      z-index: -1;
+      opacity: 0;
+
+      transition: $opacity-fade;
+    }
+
+    &:hover,
+    &:focus-visible {
+      outline: none;
+
+      &::before {
+        opacity: $section-bg-opacity;
+
+        transition: $opacity-fade;
+      }
+
+      > .star-icon {
+        rotate: 180deg;
+
+        transition: rotate 500ms ease;
+      }
+    }
+
+    &:focus-visible {
+      background-color: rgba(black, 0.1);
+
+      transition: $opacity-fade;
+    }
   }
 
-  .selected {
-    background-color: var(--secondary-element-colour);
+  .star-icon {
+    $size: 3rem;
+    min-width: $size;
+    min-height: $size;
+    scale: 0.5 1;
+    position: relative;
+  }
+
+  .categories {
+    width: 100vw;
+    display: flex;
+
+    overflow-x: scroll;
+    scrollbar-width: none;
+
+    // Applies to every category but the last.
+    > :first-child {
+      border-left: $border-size solid black;
+      margin-left: auto;
+    }
+
+    > :last-child {
+      margin-right: auto;
+    }
+
+    // Applies to every category.
+    > * {
+      min-width: 8.5rem;
+      height: 100%;
+
+      @include common.disable-link-styling();
+      @include common.display-flex-center();
+
+      font-size: 1.25rem;
+      border-right: $border-size solid black;
+
+      position: relative;
+      // overflow: hidden;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("../../../../public/images/SEr42QI-.jpg");
+        background-size: 100% 100%;
+        filter: hue-rotate(300deg) blur($section-bg-blur);
+        z-index: -1;
+        opacity: 0;
+
+        transition: $opacity-fade;
+      }
+
+      &:hover,
+      &:focus-visible {
+        outline: none;
+
+        &::before {
+          opacity: $section-bg-opacity;
+
+          transition: $opacity-fade;
+        }
+      }
+
+      &:focus-visible {
+        background-color: rgba(black, 0.1);
+
+        transition: $opacity-fade;
+      }
+
+      &:nth-child(2n)::before {
+        filter: hue-rotate(50deg) blur($section-bg-blur);
+      }
+      &:nth-child(3n)::before {
+        filter: hue-rotate(120deg) blur($section-bg-blur);
+      }
+    }
   }
 }

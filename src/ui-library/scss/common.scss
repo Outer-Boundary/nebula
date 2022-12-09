@@ -1,0 +1,12 @@
+@use "./helper.scss";
+
+@mixin display-flex-center() {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin disable-link-styling() {
+  color: black;
+  text-decoration: none;
+}

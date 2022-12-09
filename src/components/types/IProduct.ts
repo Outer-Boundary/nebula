@@ -1,7 +1,7 @@
 import { Category } from "./Category";
 import { Colour } from "./Colour";
 import Material from "./Material";
-import { SectionType } from "./SectionType";
+// import { SectionType } from "./CategoryTypes";
 import Size from "./Size";
 
 export default interface IProduct {

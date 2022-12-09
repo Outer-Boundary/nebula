@@ -2,7 +2,7 @@ import { BottomsSubcategory, CategoryType, OuterwearSubcategory, TopsSubcategory
 import { Colour } from "../types/Colour";
 import IProduct from "../types/IProduct";
 import Material from "../types/Material";
-import { SectionType } from "../types/SectionType";
+// import { SectionType } from "../types/CategoryTypes";
 import Size from "../types/Size";
 
 export const testProducts: IProduct[] = [
