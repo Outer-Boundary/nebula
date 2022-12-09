@@ -17,3 +17,11 @@ export function lerp(start: number, end: number, value: number): number {
 export function clamp(min: number, max: number, value: number): number {
   return Math.min(Math.max(min < max ? min : max, value), max > min ? max : min);
 }
+
+// returns a string in kebab style and removes any special characters or numbers. e.g changes 'Hello World' to 'hello-world'
+export function getKebabStyledString(str: string) {
+  return str
+    .toLowerCase()
+    .replace(/[^A-z ]|[_]/g, "")
+    .replace(/ /g, "-");
+}

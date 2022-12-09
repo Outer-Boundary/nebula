@@ -1,4 +1,5 @@
 .product-icon {
+  color: var(--primary-text-colour);
   background-color: var(--primary-element-colour);
   border-radius: var(--primary-border-radius);
   filter: var(--primary-drop-shadow);
@@ -7,6 +8,12 @@
   flex-direction: column;
   overflow: hidden;
   user-select: none;
+  transition: transform 100ms ease-in-out;
+  text-decoration: none;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 
   .product-image {
     height: 100%;

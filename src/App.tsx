@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import "./App.css";
 import Header from "./components/header/Header";
+import ProductPage from "./components/product-page/ProductPage";
 import Section from "./components/section/Section";
 import { categoryCollection } from "./components/types/CategoryTypes";
 import { toTitleCase } from "./helper/String";
