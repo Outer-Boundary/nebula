@@ -1,16 +1,41 @@
 // These categories are common to all category groups.
-const commonCategories = ["all", "new", "sale"] as const;
+const commonCategories = {
+  all: [],
+  new: [],
+  sale: [],
+} as const;
 
 // These categories are found in multiple category groups, like home, women, and men.
-const generalCategories = ["tops", "bottoms", "outerwear", "activewear", "swimwear", "underwear", "shoes", "accessories"] as const;
+const generalCategories = {
+  tops: ["TShirt", "LongSleeveShirt", "TankTop", "Flannel", "PoloShirt", "DressShirt"],
+  bottoms: ["Pants", "Shorts", "Sweatpants", "Jeans"],
+  outerwear: ["Jacket", "Hoodie", "Vest", "Coat", "Jumper"],
+  activewear: [],
+  swimwear: [],
+  underwear: [],
+  shoes: [],
+  accessories: [],
+} as const;
 
-const womenCategories = [...commonCategories, "dresses", ...generalCategories] as const;
+const womenCategories = {
+  ...commonCategories,
+  ...generalCategories,
+  dresses: [],
+} as const;
 
-const menCategories = [...commonCategories, ...generalCategories] as const;
+const menCategories = {
+  ...commonCategories,
+  ...generalCategories,
+} as const;
 
-const beautyCategories = [...commonCategories, "makeup", "skincare", "equipment"] as const;
+const beautyCategories = {
+  ...commonCategories,
+  makeup: [],
+  skincare: [],
+  equipment: [],
+} as const;
 
-const allCategories = [...new Set([...womenCategories, ...menCategories, ...beautyCategories])] as const;
+const allCategories = { ...womenCategories, ...menCategories, ...beautyCategories } as const;
 
 export const categoryCollection = {
   home: allCategories,
@@ -19,16 +44,16 @@ export const categoryCollection = {
   beauty: beautyCategories,
 } as const;
 
-export type CommonCategories = typeof commonCategories[number];
+export type CommonCategory = keyof typeof commonCategories;
 
-export type GeneralCategories = typeof generalCategories[number];
+export type GeneralCategory = keyof typeof generalCategories;
 
-export type WomenCategories = typeof womenCategories[number];
+export type WomenCategory = keyof typeof womenCategories;
 
-export type MenCategories = typeof menCategories[number];
+export type MenCategory = keyof typeof menCategories;
 
-export type BeautyCategories = typeof beautyCategories[number];
+export type BeautyCategory = keyof typeof beautyCategories;
 
-export type AllCategories = typeof allCategories[number];
+export type AllCategory = keyof typeof allCategories;
 
-export type CategoryGroups = keyof typeof categoryCollection;
+export type CategoryGroup = keyof typeof categoryCollection;

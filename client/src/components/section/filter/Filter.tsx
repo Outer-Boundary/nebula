@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 
 import { clamp, getEnumValues, lerp } from "../../../helper/Helper";
+import { toTitleCase } from "../../../helper/String";
+import { useNebulaCtx } from "../../../nebula-context/NebulaContext";
 import { Categories, CategoryType } from "../../types/Category";
+import { AllCategory, categoryCollection, CategoryGroup } from "../../types/CategoryTypes";
 import Material from "../../types/Material";
 import { Product } from "../../types/product";
 import { SectionType } from "../../types/SectionType";
@@ -26,6 +29,15 @@ interface FilterData {
   priceRange: { low: number; high: number };
 }
 
+const baseFilterData = {
+  searchText: "",
+  sortBy: 0,
+  categories: getEnumValues(CategoryType).map(() => ({ main: false, sub: [] })),
+  sizes: [],
+  materials: [],
+  priceRange: { low: 0, high: 0 },
+};
+
 const sortByOptions = ["Most Popular", "Newest", "Price Low to High", "Price High to Low"];
 
 /* to do: 
@@ -39,7 +51,8 @@ export default function Filter(props: FilterProps) {
   const [priceHandleInfo, setPriceHandleInfo] = useState<{ handle?: "low" | "high"; offset?: number; isMoving: boolean }>({
     isMoving: false,
   });
-  // const [filterData, setFilterData] = useState<FilterData>(filterDataInitState);
+
+  const nebulaContext = useNebulaCtx();
 
   useEffect(() => {
     resetFilters();
@@ -106,11 +119,12 @@ export default function Filter(props: FilterProps) {
     const filterData = {
       searchText: "",
       sortBy: 0,
-      categories: getEnumValues(CategoryType).map(() => ({ main: false, sub: [] })),
+      categories: Object.keys(categoryCollection[nebulaContext.group]).map(() => ({ main: false, sub: [] })),
       sizes: [],
       materials: [],
       priceRange: { low: 0, high: 0 },
     };
+
     const urlFilters: string[] = [];
     searchFilter(urlFilters, filterData);
     sortByFilter(urlFilters, filterData);
@@ -406,38 +420,42 @@ export default function Filter(props: FilterProps) {
           />
         </div>
         <div id="categories-container" className="flex">
-          {getEnumValues(CategoryType).map((category, index) => (
-            <div className="category-container" key={index}>
-              <div className="category-checkbox-container">
-                <input id={`${category.toLowerCase()}-category-checkbox`} className="category-checkbox" name={category} type="checkbox" />
-                <label htmlFor={`${category.toLowerCase()}-category-checkbox`} className="checkbox-label">
-                  {category.replace(/(?<=[a-z])(?=[A-Z])/g, " ").replace("TS", "T-S")}
-                </label>
-                <TiArrowSortedDown
-                  id={`${category.toLowerCase()}-visibility-icon`}
-                  className="visibility-icon closed"
-                  onClick={() =>
-                    toggleVisibility(`${category.toLowerCase()}-subcategories-container`, `${category.toLowerCase()}-visibility-icon`)
-                  }
-                />
+          {Object.keys(categoryCollection[nebulaContext.group])
+            .filter((category) => ["all", "new", "sale"].every((x) => x !== category))
+            .map((category, index) => (
+              <div className="category-container" key={index}>
+                <div className="category-checkbox-container">
+                  <input id={`${category.toLowerCase()}-category-checkbox`} className="category-checkbox" name={category} type="checkbox" />
+                  <label htmlFor={`${category.toLowerCase()}-category-checkbox`} className="checkbox-label">
+                    {toTitleCase(category)}
+                  </label>
+                  <TiArrowSortedDown
+                    id={`${category.toLowerCase()}-visibility-icon`}
+                    className="visibility-icon closed"
+                    onClick={() =>
+                      toggleVisibility(`${category.toLowerCase()}-subcategories-container`, `${category.toLowerCase()}-visibility-icon`)
+                    }
+                  />
+                </div>
+                <div id={`${category.toLowerCase()}-subcategories-container`} className="subcategories-container flex">
+                  {categoryCollection[nebulaContext.group][category as keyof typeof categoryCollection[typeof nebulaContext.group]].map(
+                    (subcategory: string, index) => (
+                      <div className="subcategory-checkbox-container" key={index}>
+                        <input
+                          id={`${subcategory.toLowerCase()}-subcategory-checkbox`}
+                          className="subcategory-checkbox"
+                          name={subcategory}
+                          type="checkbox"
+                        />
+                        <label htmlFor={`${subcategory.toLowerCase()}-category-checkbox`} className="checkbox-label">
+                          {subcategory.replace(/(?<=[a-z])(?=[A-Z])/g, " ").replace("TS", "T-S")}
+                        </label>
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
-              <div id={`${category.toLowerCase()}-subcategories-container`} className="subcategories-container flex">
-                {getEnumValues(Categories.find((x) => x.main === category)?.sub).map((subcategory, index) => (
-                  <div className="subcategory-checkbox-container" key={index}>
-                    <input
-                      id={`${subcategory.toLowerCase()}-subcategory-checkbox`}
-                      className="subcategory-checkbox"
-                      name={subcategory}
-                      type="checkbox"
-                    />
-                    <label htmlFor={`${subcategory.toLowerCase()}-category-checkbox`} className="checkbox-label">
-                      {subcategory.replace(/(?<=[a-z])(?=[A-Z])/g, " ").replace("TS", "T-S")}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
       <div className="filter-container">

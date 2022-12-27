@@ -21,10 +21,6 @@ export default function ProductPage() {
   const { id } = useParams();
 
   useEffect(() => {
-    console.log(curSize);
-  }, [curSize]);
-
-  useEffect(() => {
     if (product) setIsLoading(false);
   }, [product]);
 

@@ -1,22 +1,23 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { toTitleCase } from "../../helper/String";
+import { useNebulaCtx } from "../../nebula-context/NebulaContext";
 import { MultiStarIcon } from "../../ui-library/components/icons/MultiStarIcon/MultiStarIcon";
 import { StarIcon } from "../../ui-library/components/icons/StarIcon/StarIcon";
-import { categoryCollection, CategoryGroups } from "../types/CategoryTypes";
+import { categoryCollection, CategoryGroup } from "../types/CategoryTypes";
 
 import "./styles/Header.css";
 
 export default function Header() {
-  const [selectedGroup, setSelectedGroup] = useState<CategoryGroups>("home");
-
   const location = useLocation();
+
+  const nebulaContext = useNebulaCtx();
 
   useLayoutEffect(() => {
     const rootPath = location.pathname.substring(1).split("/")[0];
 
     if (Object.keys(categoryCollection).includes(rootPath)) {
-      setSelectedGroup(rootPath as CategoryGroups);
+      nebulaContext.setGroup(rootPath as CategoryGroup);
     }
   }, []);
 
@@ -26,17 +27,13 @@ export default function Header() {
         {/* Groups */}
         <div className="groups">
           {Object.keys(categoryCollection).map((group) => (
-            <Link
-              to={group === "home" ? "/" : `/${group}`}
-              onClick={() => setSelectedGroup(group as CategoryGroups)}
-              key={group}
-            >
+            <Link to={group === "home" ? "/" : `/${group}`} onClick={() => nebulaContext.setGroup(group as CategoryGroup)} key={group}>
               {toTitleCase(group)}
             </Link>
           ))}
         </div>
         {/* Logo */}
-        <Link className="logo" to="/" onClick={() => setSelectedGroup("home")}>
+        <Link className="logo" to="/" onClick={() => nebulaContext.setGroup("home")}>
           <div className="logo-text">NEBULA</div>
           <StarIcon />
         </Link>
@@ -44,8 +41,8 @@ export default function Header() {
       </div>
       {/* Categories */}
       <div className="categories">
-        {categoryCollection[selectedGroup].map((category) => (
-          <Link to={selectedGroup === "home" ? "/" : `/${selectedGroup}/` + "products"} key={category}>
+        {Object.keys(categoryCollection[nebulaContext.group]).map((category) => (
+          <Link to={nebulaContext.group === "home" ? "/" : `/${nebulaContext.group}/` + "products"} key={category}>
             <p className="test">{toTitleCase(category)}</p>
           </Link>
         ))}

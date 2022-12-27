@@ -1,15 +1,20 @@
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
+import { AllCategory, CategoryGroup } from "../components/types/CategoryTypes";
 
-export interface INebulaContext {}
+export interface INebulaContext {
+  group: CategoryGroup;
+  category: AllCategory;
+  setGroup: (group: CategoryGroup) => void;
+  setCategory: (category: AllCategory) => void;
+}
 
 export const NebulaContext = createContext<INebulaContext | null>(null);
 
-interface NebulaCtxProps {
-  children: ReactNode;
-}
+export const NebulaCtx = ({ children }: { children: ReactNode }) => {
+  const [group, setGroup] = useState<CategoryGroup>("home");
+  const [category, setCategory] = useState<AllCategory>("all");
 
-export const NebulaCtx = ({ children }: NebulaCtxProps) => {
-  return <NebulaContext.Provider value={{}}>{children}</NebulaContext.Provider>;
+  return <NebulaContext.Provider value={{ group, category, setGroup, setCategory }}>{children}</NebulaContext.Provider>;
 };
 
 export const useNebulaCtx = () => {

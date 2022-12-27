@@ -10,7 +10,7 @@ import "./styles/ProductIcon.css";
 */
 export default function ProductIcon({ product }: { product: Product }) {
   return (
-    <Link to={"/clothing/" + product._id} state={product} className="product-icon">
+    <Link to={"/products/" + product._id} state={product} className="product-icon">
       <img src={product.imageCardUrl} alt="" className="product-image" />
       <div className="product-details">
         <p className="name-text">{toTitleCase(product.title)}</p>
