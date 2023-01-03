@@ -14,9 +14,21 @@
   transition: transform 100ms ease-in-out;
   text-decoration: none;
   padding: 2rem;
+  position: relative;
 }
 .product-card:hover {
   transform: scale(1.05);
+}
+.product-card .background {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  filter: opacity(50%);
+  -o-object-fit: cover;
+     object-fit: cover;
+  z-index: -1;
 }
 .product-card .product-image {
   height: 70%;
@@ -25,7 +37,6 @@
      object-fit: contain;
   background-color: var(--primary-element-colour);
   border-radius: var(--primary-border-radius);
-  border: 1px solid var(--secondary-element-colour);
 }
 .product-card .product-details {
   padding: 1.2rem;
@@ -34,5 +45,4 @@
   gap: 0.4rem;
   background-color: var(--primary-element-colour);
   border-radius: var(--primary-border-radius);
-  border: 1px solid var(--secondary-element-colour);
 }/*# sourceMappingURL=ProductCard.css.map */

@@ -1,5 +1,4 @@
 .filter {
-  background-color: var(--primary-element-colour);
   height: calc(100% - 4rem);
   min-width: 30rem;
   border-radius: var(--primary-border-radius);
@@ -13,9 +12,20 @@
   margin-right: 0;
   align-items: center;
   gap: 1rem;
+  position: relative;
 }
 .filter::-webkit-scrollbar {
   display: none;
+}
+.filter .background {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  filter: opacity(50%);
+  background-image: url("../../../../../public/images/gradients/mesh-136.png");
+  z-index: -1;
 }
 .filter .search-container {
   width: 90%;
@@ -27,7 +37,7 @@
   padding: 1rem;
   padding-right: 0;
   outline: none;
-  border: 1px solid var(--tertiary-element-colour);
+  border: none;
   border-right: none;
   margin-top: 1.6rem;
   border-top-left-radius: var(--primary-border-radius);
@@ -36,7 +46,6 @@
 .filter .search-btn {
   margin-top: 1.6rem;
   background-color: var(--primary-element-colour);
-  border: 1px solid var(--tertiary-element-colour);
   border-left: none;
   border-top-right-radius: var(--primary-border-radius);
   border-bottom-right-radius: var(--primary-border-radius);
@@ -60,7 +69,6 @@
   padding: 0 1rem;
   font-size: 1.6rem;
   background-color: var(--primary-element-colour);
-  border: 1px solid var(--tertiary-element-colour);
   margin: 1.6rem 0;
   transition: background-color 125ms ease-in-out;
 }

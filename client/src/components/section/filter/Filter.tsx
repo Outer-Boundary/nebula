@@ -322,6 +322,7 @@ export default function Filter(props: FilterProps) {
 
   return (
     <div className="filter">
+      <img className="background" src="./images/gradients/mesh-486(1).png" />
       <form className="search-container">
         <input type="text" className="search-input" />
         <button

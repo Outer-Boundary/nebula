@@ -1,7 +1,6 @@
 .filter-container {
   width: 90%;
   padding: 1.6rem;
-  border: 1px solid var(--tertiary-element-colour);
   border-radius: var(--primary-border-radius);
   background-color: var(--primary-element-colour);
 }
