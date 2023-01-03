@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { toTitleCase } from "../../helper/String";
-import { useNebulaCtx } from "../../nebula-context/NebulaContext";
+import { useNebulaCtx } from "../../context/NebulaContext";
 import { MultiStarIcon } from "../../ui-library/components/icons/MultiStarIcon/MultiStarIcon";
 import { StarIcon } from "../../ui-library/components/icons/StarIcon/StarIcon";
 import { categoryCollection, CategoryGroup } from "../types/CategoryTypes";

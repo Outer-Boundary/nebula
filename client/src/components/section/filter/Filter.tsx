@@ -3,7 +3,7 @@ import { FiSearch } from "react-icons/fi";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 
 import { clamp, lerp } from "../../../helper/Helper";
-import { useNebulaCtx } from "../../../nebula-context/NebulaContext";
+import { useNebulaCtx } from "../../../context/NebulaContext";
 import { categoryCollection } from "../../types/CategoryTypes";
 import { Product } from "../../types/product";
 import { SectionType } from "../../types/SectionType";
