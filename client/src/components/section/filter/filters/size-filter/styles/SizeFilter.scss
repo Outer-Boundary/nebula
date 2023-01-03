@@ -1,0 +1,21 @@
+.size-filter {
+  .title-container {
+    display: flex;
+    align-items: center;
+  }
+
+  #sizes-container {
+    font-size: 1.5rem;
+    margin-top: 0.6rem;
+    display: none;
+    grid-template-columns: repeat(3, 1fr);
+
+    & > * {
+      margin-right: auto;
+    }
+  }
+
+  .checkbox-label {
+    margin-left: 0.6rem;
+  }
+}

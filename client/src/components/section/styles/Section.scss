@@ -15,14 +15,14 @@
   }
 
   .product-suspense-icon {
-    background-color: var(--secondary-element-colour);
+    background-color: rgb(233, 233, 233);
     border-radius: var(--primary-border-radius);
     animation: pulse 1.25s linear infinite;
   }
 
   @keyframes pulse {
     0% {
-      background-color: var(--secondary-element-colour);
+      background-color: rgb(233, 233, 233);
     }
     50% {
       background-color: rgb(214, 214, 214);

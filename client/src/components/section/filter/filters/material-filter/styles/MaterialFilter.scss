@@ -1,0 +1,21 @@
+.material-filter {
+  .title-container {
+    display: flex;
+    align-items: center;
+  }
+
+  #materials-container {
+    font-size: 1.5rem;
+    display: none;
+    grid-template-columns: repeat(2, 1fr);
+    margin-top: 0.6rem;
+
+    & > * {
+      margin-right: auto;
+    }
+  }
+
+  .checkbox-label {
+    margin-left: 0.6rem;
+  }
+}

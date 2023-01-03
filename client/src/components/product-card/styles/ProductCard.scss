@@ -1,4 +1,4 @@
-.product-icon {
+.product-card {
   color: var(--primary-text-colour);
   background-color: var(--primary-element-colour);
   border-radius: var(--primary-border-radius);
@@ -19,7 +19,7 @@
     height: 100%;
     border: none;
     object-fit: contain;
-    background-color: var(--secondary-element-colour);
+    background-color: var(--primary-element-colour);
   }
 
   .product-details {

@@ -1,0 +1,15 @@
+.sort-by-filter {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.sort-by-filter .sort-by-text {
+  white-space: nowrap;
+}
+.sort-by-filter select {
+  font-size: 1.6rem;
+  border-radius: var(--primary-border-radius);
+  border: 1px solid black;
+  padding: 0.2rem;
+  padding-left: 0.6rem;
+}/*# sourceMappingURL=SortByFilter.css.map */

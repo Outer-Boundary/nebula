@@ -1,0 +1,16 @@
+.size-filter .title-container {
+  display: flex;
+  align-items: center;
+}
+.size-filter #sizes-container {
+  font-size: 1.5rem;
+  margin-top: 0.6rem;
+  display: none;
+  grid-template-columns: repeat(3, 1fr);
+}
+.size-filter #sizes-container > * {
+  margin-right: auto;
+}
+.size-filter .checkbox-label {
+  margin-left: 0.6rem;
+}/*# sourceMappingURL=SizeFilter.css.map */

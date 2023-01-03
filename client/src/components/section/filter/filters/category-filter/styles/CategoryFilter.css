@@ -1,0 +1,49 @@
+.category-filter .title-container {
+  display: flex;
+  align-items: center;
+}
+.category-filter #categories-container,
+.category-filter .subcategories-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  display: none;
+}
+.category-filter #categories-container {
+  gap: 0.2rem;
+  font-size: 1.5rem;
+  margin-top: 0.6rem;
+}
+.category-filter .subcategories-container {
+  gap: 0.4rem;
+  left: 2rem;
+  margin: 0.6rem 0;
+}
+.category-filter .category-checkbox-container,
+.category-filter .subcategory-checkbox-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+.category-filter .category-checkbox:checked {
+  border-radius: 100%;
+  color: red;
+  background-color: red;
+  border: 1px solid red;
+}
+.category-filter .checkbox-label {
+  margin-left: 0.6rem;
+}
+.category-filter .visibility-icon {
+  min-width: 1.6rem;
+  min-height: 1.6rem;
+  transform: rotate(0deg);
+  transition: transform 100ms ease-in-out;
+  margin-left: auto;
+}
+.category-filter .visibility-icon.small {
+  margin-right: 0.1rem;
+  min-width: 1.4rem;
+  min-height: 1.4rem;
+  color: rgb(190, 190, 190);
+}/*# sourceMappingURL=CategoryFilter.css.map */

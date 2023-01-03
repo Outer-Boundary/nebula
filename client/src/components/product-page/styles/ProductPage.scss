@@ -25,20 +25,21 @@
   .image-card {
     width: 6rem;
     height: 7.5rem;
-    background-color: var(--secondary-element-colour);
+    background-color: var(--primary-element-colour);
     border-radius: var(--primary-border-radius);
     cursor: pointer;
 
     &.selected {
-      border: 2px solid var(--secondary-element-colour);
+      border: 1px solid var(--secondary-element-colour);
     }
   }
 
   .product-image {
     width: 48rem;
     height: 60rem;
-    background-color: var(--secondary-element-colour);
+    background-color: var(--primary-element-colour);
     border-radius: var(--primary-border-radius);
+    border: 1px solid var(--secondary-element-colour);
     object-fit: contain;
     margin-right: 2rem;
   }

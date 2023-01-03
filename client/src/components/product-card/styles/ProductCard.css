@@ -1,4 +1,4 @@
-.product-icon {
+.product-card {
   color: var(--primary-text-colour);
   background-color: var(--primary-element-colour);
   border-radius: var(--primary-border-radius);
@@ -14,19 +14,19 @@
   transition: transform 100ms ease-in-out;
   text-decoration: none;
 }
-.product-icon:hover {
+.product-card:hover {
   transform: scale(1.05);
 }
-.product-icon .product-image {
+.product-card .product-image {
   height: 100%;
   border: none;
   -o-object-fit: contain;
      object-fit: contain;
-  background-color: var(--secondary-element-colour);
+  background-color: var(--primary-element-colour);
 }
-.product-icon .product-details {
+.product-card .product-details {
   padding: 1.2rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-}/*# sourceMappingURL=ProductIcon.css.map */
+}/*# sourceMappingURL=ProductCard.css.map */

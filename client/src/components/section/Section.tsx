@@ -4,7 +4,7 @@ import "./styles/Section.css";
 import { SectionType } from "../types/SectionType";
 import Filter from "./filter/Filter";
 import { Product } from "../types/product";
-import ProductIcon from "../product-icon/ProductIcon";
+import ProductIcon from "../product-card/ProductCard";
 
 // need this to refresh when clicking on different sections so that the filters reset
 export default function Section({ section }: { section: SectionType }) {
