@@ -30,6 +30,11 @@
     height: 4.5rem;
   }
 
+  .category,
+  .group {
+    padding: 0 1rem;
+  }
+
   .styles {
     height: 2.5rem;
   }
@@ -39,7 +44,7 @@
 
     // Applies to all group buttons.
     > * {
-      width: 8rem;
+      min-width: 8rem;
       height: 100%;
       @include common.display-flex-center();
 

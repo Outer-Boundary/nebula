@@ -27,8 +27,13 @@ export default function Header() {
         {/* Groups */}
         <div className="groups">
           {Object.keys(categoryCollection).map((group) => (
-            <Link to={group === "home" ? "/" : `/${group}`} onClick={() => nebulaContext.setGroup(group as CategoryGroup)} key={group}>
-              {toTitleCase(group)}
+            <Link
+              to={group === "home" ? "/" : `/${group}`}
+              onClick={() => nebulaContext.setGroup(group as CategoryGroup)}
+              className="group"
+              key={group}
+            >
+              {group.toUpperCase()}
             </Link>
           ))}
         </div>
@@ -42,8 +47,8 @@ export default function Header() {
       {/* Categories */}
       <div className="categories">
         {Object.keys(categoryCollection[nebulaContext.group]).map((category) => (
-          <Link to={nebulaContext.group === "home" ? "/" : `/${nebulaContext.group}/` + "products"} key={category}>
-            <p className="test">{toTitleCase(category)}</p>
+          <Link to={nebulaContext.group === "home" ? "/" : `/${nebulaContext.group}/` + "products"} className="category" key={category}>
+            {category.toUpperCase()}
           </Link>
         ))}
       </div>
