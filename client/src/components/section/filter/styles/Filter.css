@@ -23,8 +23,8 @@
   position: absolute;
   left: 0;
   top: 0;
-  filter: opacity(50%);
-  background-image: url("../../../../../public/images/gradients/mesh-136.png");
+  filter: opacity(75%);
+  background-image: url("../../../../../public/images/gradients/mesh-293.png");
   z-index: -1;
 }
 .filter .search-container {

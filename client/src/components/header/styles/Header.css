@@ -1,9 +1,9 @@
 .header {
   width: 100vw;
   height: 11.5rem;
-  background-image: url("/public/images/gradients/mesh-565.png");
+  background-image: url("/public/images/gradients/mesh-69.png");
   background-size: cover;
-  background-position: 0% 62.5%;
+  background-position: 0% 25%;
 }
 .header > * {
   width: 100vw;

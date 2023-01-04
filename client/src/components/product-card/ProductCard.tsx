@@ -8,31 +8,7 @@ import "./styles/ProductCard.css";
  - save the filter state when opening the product page then reapply it if the user goes back to the previous page
 */
 
-const meshGradientBackgrounds = [
-  "57",
-  "136",
-  "151",
-  "197",
-  "234",
-  "257",
-  "321",
-  "345",
-  "377",
-  "486",
-  "487",
-  "515",
-  "523",
-  "608",
-  "623",
-  "738",
-  "813",
-  "829",
-  "831",
-  "846",
-  "885",
-  "926",
-  "941",
-];
+const meshGradientBackgrounds = ["326", "975", "538", "620", "388", "387", "556", "145", "974", "385", "385-1", "25", "428", "523", "806"];
 
 export default function ProductCard({ product }: { product: Product }) {
   const meshGradientIndex = Math.round(Math.random() * (meshGradientBackgrounds.length - 1));
