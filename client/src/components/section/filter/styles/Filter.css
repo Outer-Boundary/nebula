@@ -37,7 +37,7 @@
   padding: 1rem;
   padding-right: 0;
   outline: none;
-  border: none;
+  border: 1px solid var(--secondary-element-colour);
   border-right: none;
   margin-top: 1.6rem;
   border-top-left-radius: var(--primary-border-radius);
@@ -46,6 +46,7 @@
 .filter .search-btn {
   margin-top: 1.6rem;
   background-color: var(--primary-element-colour);
+  border: 1px solid var(--secondary-element-colour);
   border-left: none;
   border-top-right-radius: var(--primary-border-radius);
   border-bottom-right-radius: var(--primary-border-radius);
@@ -69,6 +70,7 @@
   padding: 0 1rem;
   font-size: 1.6rem;
   background-color: var(--primary-element-colour);
+  border: 1px solid var(--secondary-element-colour);
   margin: 1.6rem 0;
   transition: background-color 125ms ease-in-out;
 }

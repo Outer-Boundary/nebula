@@ -37,6 +37,7 @@
      object-fit: contain;
   background-color: var(--primary-element-colour);
   border-radius: var(--primary-border-radius);
+  border: 1px solid var(--secondary-element-colour);
 }
 .product-card .product-details {
   padding: 1.2rem;
@@ -45,4 +46,5 @@
   gap: 0.4rem;
   background-color: var(--primary-element-colour);
   border-radius: var(--primary-border-radius);
+  border: 1px solid var(--secondary-element-colour);
 }/*# sourceMappingURL=ProductCard.css.map */
