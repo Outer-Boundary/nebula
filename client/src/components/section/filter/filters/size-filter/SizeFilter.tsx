@@ -2,15 +2,21 @@ import { GiDiamonds } from "react-icons/gi";
 
 import { getEnumValues } from "../../../../../helper/Helper";
 import Size from "../../../../types/Size";
-import FilterContainer, { toggleVisibility } from "../filter-container/FilterContainer";
+import FilterContainer, { playSpinAnimation, toggleVisibility } from "../filter-container/FilterContainer";
 import "./styles/SizeFilter.css";
 
 export default function SizeFilter() {
   return (
     <FilterContainer className="size-filter">
-      <div className="title-container" onClick={() => toggleVisibility(`sizes-container`, `sizes-visibility-icon`)}>
+      <div
+        className="title-container"
+        onClick={() => {
+          toggleVisibility(`sizes-container`, `sizes-visibility-icon`);
+          playSpinAnimation("sizes-visibility-icon");
+        }}
+      >
         <p className="size-text filter-text">SIZE</p>
-        <GiDiamonds id="sizes-visibility-icon" className="visibility-icon closed" />
+        <GiDiamonds id="sizes-visibility-icon" className="visibility-icon reverse-spin" />
       </div>
       <div id="sizes-container" className="checkboxes-container grid">
         {getEnumValues(Size).map((size, index) => (

@@ -1,8 +1,6 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { toTitleCase } from "../../helper/String";
 import { useNebulaCtx } from "../../context/NebulaContext";
-import { MultiStarIcon } from "../../ui-library/components/icons/MultiStarIcon/MultiStarIcon";
 import { StarIcon } from "../../ui-library/components/icons/StarIcon/StarIcon";
 import { categoryCollection, CategoryGroup } from "../types/CategoryTypes";
 
@@ -21,6 +19,14 @@ export default function Header() {
     }
   }, []);
 
+  function playSpinAnimation() {
+    const starIcon = document.getElementsByClassName("star-icon")[0] as HTMLElement;
+    if (!starIcon.classList.contains("spin")) {
+      starIcon.classList.add("spin");
+      setTimeout(() => starIcon.classList.remove("spin"), 500);
+    }
+  }
+
   return (
     <div className="header">
       <div className="main-section">
@@ -38,7 +44,7 @@ export default function Header() {
           ))}
         </div>
         {/* Logo */}
-        <Link className="logo" to="/" onClick={() => nebulaContext.setGroup("home")}>
+        <Link className="logo" to="/" onClick={() => nebulaContext.setGroup("home")} onMouseEnter={() => playSpinAnimation()}>
           <div className="logo-text">NEBULA</div>
           <StarIcon />
         </Link>

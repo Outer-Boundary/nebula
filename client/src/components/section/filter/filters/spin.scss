@@ -1,0 +1,13 @@
+@mixin spin() {
+  &.spin {
+    rotate: 180deg;
+    transition: rotate 500ms ease;
+  }
+}
+
+@mixin reverse-spin() {
+  &.reverse-spin {
+    rotate: 0deg;
+    transition: rotate 500ms ease;
+  }
+}

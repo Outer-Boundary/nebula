@@ -9,14 +9,16 @@ export function toggleVisibility(childContainerId: string, iconId: string) {
   if (!element) return;
 
   let display = "none";
-  if (window.getComputedStyle(element as HTMLElement).display === "none") {
-    display = element.classList[element.classList.length - 1];
-    (document.getElementById(iconId) as HTMLElement).classList.remove("closed");
-  } else {
-    (document.getElementById(iconId) as HTMLElement).classList.add("closed");
-  }
+  if (window.getComputedStyle(element as HTMLElement).display === "none") display = element.classList[element.classList.length - 1];
 
   element.style.display = display;
+}
+
+export function playSpinAnimation(elementId: string) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+  element.classList.toggle("spin");
+  element.classList.toggle("reverse-spin");
 }
 
 interface FilterContainerProps {

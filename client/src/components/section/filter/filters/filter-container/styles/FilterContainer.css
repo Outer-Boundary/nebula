@@ -4,8 +4,20 @@
   border: 1px solid var(--secondary-element-colour);
   border-radius: var(--primary-border-radius);
   background-color: var(--primary-element-colour);
+  transition: height 125ms ease-in-out;
+}
+.filter-container .expanded {
+  height: auto;
 }
 .filter-container .filter-text {
   margin-top: 0.2rem;
   margin-right: auto;
+}
+.filter-container .visibility-icon.spin {
+  rotate: 180deg;
+  transition: rotate 500ms ease;
+}
+.filter-container .visibility-icon.reverse-spin {
+  rotate: 0deg;
+  transition: rotate 500ms ease;
 }/*# sourceMappingURL=FilterContainer.css.map */

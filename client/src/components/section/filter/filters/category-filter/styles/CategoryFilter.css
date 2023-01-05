@@ -33,13 +33,7 @@
 }
 .category-filter .checkbox-label {
   margin-left: 0.6rem;
-}
-.category-filter .visibility-icon {
-  min-width: 1.6rem;
-  min-height: 1.6rem;
-  transform: rotate(0deg);
-  transition: transform 100ms ease-in-out;
-  margin-left: auto;
+  margin-right: auto;
 }
 .category-filter .visibility-icon.small {
   margin-right: 0.1rem;

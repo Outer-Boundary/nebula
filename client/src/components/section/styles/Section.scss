@@ -27,4 +27,24 @@
       background-color: rgb(214, 214, 214);
     }
   }
+
+  #parent {
+    position: relative;
+    transition: height 0.5s;
+    overflow: hidden;
+
+    &.expanded {
+      height: auto;
+    }
+
+    .children {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow: hidden;
+    }
+  }
 }

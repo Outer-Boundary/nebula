@@ -24,8 +24,10 @@
     position: absolute;
     left: 0;
     top: 0;
+    bottom: 0;
+    object-fit: cover;
     filter: opacity(75%);
-    background-image: url("../../../../../public/images/gradients/mesh-293.png");
+    overflow: scroll;
     z-index: -1;
   }
 
@@ -103,5 +105,6 @@
     border-top-right-radius: var(--primary-border-radius);
     border-bottom-right-radius: var(--primary-border-radius);
     border-left: none;
+    padding: 0 1rem;
   }
 }

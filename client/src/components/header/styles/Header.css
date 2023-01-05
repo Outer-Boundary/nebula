@@ -116,10 +116,6 @@
   opacity: 1;
   transition: opacity 250ms ease, background-color 250ms ease;
 }
-.header .logo:hover > .star-icon, .header .logo:focus-visible > .star-icon {
-  rotate: 180deg;
-  transition: rotate 500ms ease;
-}
 .header .logo:focus-visible {
   background-color: rgba(0, 0, 0, 0.1);
   transition: opacity 250ms ease, background-color 250ms ease;
@@ -129,6 +125,10 @@
   min-height: 3rem;
   scale: 0.5 1;
   position: relative;
+}
+.header .star-icon.spin {
+  rotate: 180deg;
+  transition: rotate 500ms ease;
 }
 .header .categories {
   width: 100vw;

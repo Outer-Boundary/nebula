@@ -40,19 +40,10 @@
 
   .checkbox-label {
     margin-left: 0.6rem;
+    margin-right: auto;
   }
 
   .visibility-icon {
-    min-width: 1.6rem;
-    min-height: 1.6rem;
-    transform: rotate(0deg);
-    transition: transform 100ms ease-in-out;
-    margin-left: auto;
-
-    // &.closed {
-    //   transform: rotate(90deg);
-    // }
-
     &.small {
       margin-right: 0.1rem;
       min-width: 1.4rem;

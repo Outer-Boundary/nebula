@@ -1,3 +1,5 @@
+@use "../../spin.scss";
+
 .filter-container {
   width: 90%;
   padding: 1.6rem;
@@ -5,8 +7,19 @@
   border-radius: var(--primary-border-radius);
   background-color: var(--primary-element-colour);
 
+  transition: height 125ms ease-in-out;
+
+  .expanded {
+    height: auto;
+  }
+
   .filter-text {
     margin-top: 0.2rem;
     margin-right: auto;
+  }
+
+  .visibility-icon {
+    @include spin.spin();
+    @include spin.reverse-spin();
   }
 }

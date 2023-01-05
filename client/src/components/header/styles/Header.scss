@@ -1,4 +1,5 @@
 @use "../../../ui-library/scss/common.scss";
+@use "../../section/filter/filters/spin.scss";
 
 .header {
   $border-size: 1px;
@@ -140,12 +141,6 @@
 
         transition: $opacity-fade;
       }
-
-      > .star-icon {
-        rotate: 180deg;
-
-        transition: rotate 500ms ease;
-      }
     }
 
     &:focus-visible {
@@ -161,6 +156,8 @@
     min-height: $size;
     scale: 0.5 1;
     position: relative;
+
+    @include spin.spin();
   }
 
   .categories {
