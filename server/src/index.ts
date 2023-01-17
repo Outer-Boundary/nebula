@@ -56,7 +56,6 @@ app.get("/products", async (req, res) => {
   const query = getMongoDBQueryFromUrl(queryUrl, allowedFields);
   const products = database.collection("products").find(query?.filter || {}, query?.options);
   res.json(await products.toArray());
-  // res.json([]);
 });
 
 app.get("/products/metadata", async (req, res) => {
@@ -185,7 +184,6 @@ app.post("/products/upload-to-database", async (req, res) => {
   await Promise.all([...uploadPromises, metadataUpsert]);
 
   let endTime = performance.now();
-  ``;
 
   res.status(200).send("Upload completed. The process took " + Math.round(((endTime - startTime) / 1000) * 100) / 100 + " seconds");
 });

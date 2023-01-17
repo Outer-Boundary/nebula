@@ -25,3 +25,10 @@ export function getKebabStyledString(str: string) {
     .replace(/[^A-z ]|[_]/g, "")
     .replace(/ /g, "-");
 }
+
+/**
+ * Returns a number between the min and max value (inclusive)
+ */
+export function getRandomValueBetween(min: number, max: number) {
+  return min + Math.min(max, Math.floor(Math.random() * (max + 1)));
+}
