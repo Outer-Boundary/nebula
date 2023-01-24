@@ -23,10 +23,12 @@ export default function ProductCard({ product }: { product: Product }) {
       className="product-card"
       style={{ background: background[getRandomWholeValueBetween(0, background.length - 1)] }}
     >
-      <img src={product.imageCardUrl} alt="" className="product-image" />
-      <div className="product-details">
-        <p className="name-text">{toTitleCase(product.title)}</p>
-        <p className="price-text">${product.price}</p>
+      <div className="foreground">
+        <img src={product.imageCardUrl} alt="" className="product-image" />
+        <div className="product-details">
+          <p className="name-text">{toTitleCase(product.title)}</p>
+          <p className="price-text">${product.price}</p>
+        </div>
       </div>
     </Link>
   );

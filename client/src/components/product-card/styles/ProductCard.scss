@@ -1,31 +1,42 @@
 .product-card {
   color: var(--primary-text-colour);
   border-radius: var(--primary-border-radius);
-  border: 1px solid var(--secondary-element-colour);
-  cursor: pointer;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   overflow: hidden;
   user-select: none;
   transition: transform 100ms ease-in-out;
-  text-decoration: none;
-  padding: 2rem;
   position: relative;
   z-index: 10;
+  // background: radial-gradient(circle at 0% 75%, rgb(3, 2, 80), rgb(20, 0, 186), rgb(201, 7, 103), rgb(234, 85, 87) 85%);
 
-  // rgb(3, 2, 80), dark blue
-  // rgb(20, 0, 186), blue
-  // rgb(137, 57, 172), purple
-  // rgb(201, 7, 103), hot pink
-  // rgb(234, 85, 87), pink-orange-red
-  // rgb(255, 203, 99), light orange
-
-  background: radial-gradient(circle at 100% 100%, rgb(3, 2, 80), rgb(20, 0, 186), transparent 35%),
-    radial-gradient(circle at 15% 75%, rgb(3, 2, 80), rgb(20, 0, 186), rgb(137, 57, 172) 90%);
+  // radial-gradient(circle at 0% 75%, rgb(3, 2, 80), rgb(20, 0, 186), transparent 35%),
+  // radial-gradient(circle at 100% 15%, rgb(201, 7, 103), rgb(234, 85, 87), transparent 45%);
 
   &:hover {
     transform: scale(1.05);
+  }
+
+  * {
+    z-index: 10;
+  }
+
+  .foreground {
+    color: var(--primary-text-colour);
+    border-radius: var(--primary-border-radius);
+    // border: 1px solid var(--secondary-element-colour);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    user-select: none;
+    transition: transform 100ms ease-in-out;
+    text-decoration: none;
+    margin: 1rem;
+    padding: 1rem;
+    position: relative;
+    z-index: 10;
+    background-color: var(--secondary-element-colour);
   }
 
   .background {
@@ -34,9 +45,9 @@
     position: absolute;
     left: 0;
     top: 0;
-    filter: opacity(75%);
     object-fit: cover;
     z-index: -1;
+    background: radial-gradient(circle at 0% 75%, rgb(3, 2, 80), rgb(20, 0, 186), rgb(201, 7, 103), rgb(234, 85, 87) 85%);
   }
 
   .product-image {

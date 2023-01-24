@@ -1,7 +1,25 @@
 .product-card {
   color: var(--primary-text-colour);
   border-radius: var(--primary-border-radius);
-  border: 1px solid var(--secondary-element-colour);
+  display: flex;
+  overflow: hidden;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  transition: transform 100ms ease-in-out;
+  position: relative;
+  z-index: 10;
+}
+.product-card:hover {
+  transform: scale(1.05);
+}
+.product-card * {
+  z-index: 10;
+}
+.product-card .foreground {
+  color: var(--primary-text-colour);
+  border-radius: var(--primary-border-radius);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -13,13 +31,11 @@
           user-select: none;
   transition: transform 100ms ease-in-out;
   text-decoration: none;
-  padding: 2rem;
+  margin: 1rem;
+  padding: 1rem;
   position: relative;
   z-index: 10;
-  background: radial-gradient(circle at 100% 100%, rgb(3, 2, 80), rgb(20, 0, 186), transparent 35%), radial-gradient(circle at 15% 75%, rgb(3, 2, 80), rgb(20, 0, 186), rgb(137, 57, 172) 90%);
-}
-.product-card:hover {
-  transform: scale(1.05);
+  background-color: var(--secondary-element-colour);
 }
 .product-card .background {
   width: 100%;
@@ -27,10 +43,10 @@
   position: absolute;
   left: 0;
   top: 0;
-  filter: opacity(75%);
   -o-object-fit: cover;
      object-fit: cover;
   z-index: -1;
+  background: radial-gradient(circle at 0% 75%, rgb(3, 2, 80), rgb(20, 0, 186), rgb(201, 7, 103), rgb(234, 85, 87) 85%);
 }
 .product-card .product-image {
   height: 70%;
