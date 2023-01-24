@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FiSearch } from "react-icons/fi";
 import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 
-import { clamp, lerp } from "../../../helper/Helper";
+import { backgroundColours, clamp, getGradientBackground, lerp } from "../../../helper/Helper";
 import { useNebulaCtx } from "../../../context/NebulaContext";
 import { categoryCollection } from "../../types/CategoryTypes";
 import { Product } from "../../types/product";
@@ -322,7 +322,20 @@ export default function Filter(props: FilterProps) {
 
   return (
     <div className="filter">
-      <img className="background" src="./images/gradients/mesh-293.png" />
+      {["one", "two"].map((shape, index) => (
+        <div
+          className={`filter-background-shape ${shape}`}
+          onMouseEnter={() => {
+            const shape = document.getElementsByClassName("filter-background-shape")[index] as HTMLElement;
+            shape.classList.add("pulsate");
+          }}
+          onMouseLeave={() => {
+            const shape = document.getElementsByClassName("filter-background-shape")[index] as HTMLElement;
+            shape.classList.remove("pulsate");
+          }}
+          key={shape}
+        ></div>
+      ))}
       <form className="search-container">
         <input type="text" className="search-input" />
         <button

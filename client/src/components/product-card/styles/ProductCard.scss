@@ -12,7 +12,17 @@
   text-decoration: none;
   padding: 2rem;
   position: relative;
-  // background: radial-gradient(circle at 0% 45%, rgb(119, 161, 243), transparent 75%);
+  z-index: 10;
+
+  // rgb(3, 2, 80), dark blue
+  // rgb(20, 0, 186), blue
+  // rgb(137, 57, 172), purple
+  // rgb(201, 7, 103), hot pink
+  // rgb(234, 85, 87), pink-orange-red
+  // rgb(255, 203, 99), light orange
+
+  background: radial-gradient(circle at 100% 100%, rgb(3, 2, 80), rgb(20, 0, 186), transparent 35%),
+    radial-gradient(circle at 15% 75%, rgb(3, 2, 80), rgb(20, 0, 186), rgb(137, 57, 172) 90%);
 
   &:hover {
     transform: scale(1.05);

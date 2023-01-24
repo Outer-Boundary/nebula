@@ -1,0 +1,12 @@
+@mixin orbit-anim($name, $fromTop, $toTop, $delay) {
+  animation: $name $delay infinite ease-in-out alternate;
+
+  @keyframes #{$name} {
+    from {
+      top: $fromTop;
+    }
+    to {
+      top: $toTop;
+    }
+  }
+}

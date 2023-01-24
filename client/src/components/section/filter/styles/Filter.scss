@@ -1,3 +1,4 @@
+@use "../../../../ui-library/scss/orbit.scss";
 .filter {
   height: calc(100% - 4rem);
   min-width: 30rem;
@@ -13,22 +14,54 @@
   align-items: center;
   gap: 1rem;
   position: relative;
+  background: radial-gradient(
+    circle at 50% 25%,
+    rgb(255, 203, 99) 10%,
+    rgb(234, 85, 87),
+    rgb(201, 7, 103),
+    rgb(137, 57, 172) 70%,
+    rgb(20, 0, 186),
+    rgb(3, 2, 80)
+  );
+  pointer-events: none;
 
   &::-webkit-scrollbar {
     display: none;
   }
 
-  .background {
-    width: 100%;
-    height: 100%;
+  & * {
+    z-index: 10;
+    pointer-events: all;
+  }
+
+  .filter-background-shape {
     position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    object-fit: cover;
-    filter: opacity(75%);
-    overflow: scroll;
-    z-index: -1;
+    border: none;
+    border-radius: 100%;
+    z-index: 1;
+    transition: scale 350ms ease-in-out;
+
+    &.pulsate {
+      scale: 1.2;
+    }
+
+    &.one {
+      top: 15%;
+      left: 85%;
+      width: 7.5rem;
+      height: 7.5rem;
+      background: radial-gradient(circle at 100% 35%, rgb(255, 203, 99) 10%, rgb(234, 85, 87) 70%, rgb(201, 7, 103));
+      @include orbit.orbit-anim(orbit-four, 10%, 12.5%, 0.9s);
+    }
+
+    &.two {
+      top: 70%;
+      left: 10%;
+      width: 15rem;
+      height: 15rem;
+      background: radial-gradient(circle at 25% 0%, rgb(20, 0, 186) 10%, rgb(137, 57, 172), rgb(201, 7, 103), rgb(234, 85, 87));
+      @include orbit.orbit-anim(orbit-five, 70%, 72.5%, 1.1s);
+    }
   }
 
   // Search Filter
@@ -105,6 +138,6 @@
     border-top-right-radius: var(--primary-border-radius);
     border-bottom-right-radius: var(--primary-border-radius);
     border-left: none;
-    padding: 0 1rem;
+    padding: 0 2rem;
   }
 }

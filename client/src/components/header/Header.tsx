@@ -1,6 +1,7 @@
-import { useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useNebulaCtx } from "../../context/NebulaContext";
+import { backgroundColours, getGradientBackground } from "../../helper/Helper";
 import { StarIcon } from "../../ui-library/components/icons/StarIcon/StarIcon";
 import { categoryCollection, CategoryGroup } from "../types/CategoryTypes";
 
@@ -29,6 +30,20 @@ export default function Header() {
 
   return (
     <div className="header">
+      {["one", "two", "three"].map((shape, index) => (
+        <div
+          className={`header-background-shape ${shape}`}
+          onMouseEnter={() => {
+            const shape = document.getElementsByClassName("header-background-shape")[index] as HTMLElement;
+            shape.classList.add("pulsate");
+          }}
+          onMouseLeave={() => {
+            const shape = document.getElementsByClassName("header-background-shape")[index] as HTMLElement;
+            shape.classList.remove("pulsate");
+          }}
+          key={shape}
+        ></div>
+      ))}
       <div className="main-section">
         {/* Groups */}
         <div className="groups">

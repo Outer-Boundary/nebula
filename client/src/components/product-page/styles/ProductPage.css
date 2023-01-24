@@ -102,7 +102,7 @@
   transition: background-color 125ms ease-in-out;
 }
 .product-page .size-btn:hover, .product-page .size-btn.selected {
-  background-color: var(--secondary-element-colour);
+  background-color: var(--tertiary-element-colour);
 }
 .product-page .add-to-cart-btn {
   min-height: 6rem;
