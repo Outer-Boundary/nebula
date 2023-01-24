@@ -2,7 +2,7 @@
   width: 100%;
   height: calc(100% - 11.5rem);
   display: flex;
-  background-color: black;
+  background-color: var(--primary-element-colour);
 }
 .section .products-container {
   width: 100%;
