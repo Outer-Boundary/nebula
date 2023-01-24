@@ -3,6 +3,26 @@
   height: calc(100% - 11.5rem);
   display: flex;
   background-color: var(--primary-element-colour);
+  position: relative;
+  overflow: hidden;
+
+  @keyframes pulsate {
+    from {
+      scale: 1;
+    }
+    to {
+      scale: 1.1;
+    }
+  }
+
+  .section-background-shape {
+    position: absolute;
+    border: none;
+    border-radius: 100%;
+    z-index: 0;
+    animation: pulsate 2s infinite ease-in-out alternate;
+    pointer-events: none;
+  }
 
   .products-container {
     width: 100%;

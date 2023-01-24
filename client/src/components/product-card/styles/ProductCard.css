@@ -15,22 +15,11 @@
   text-decoration: none;
   padding: 2rem;
   position: relative;
+  z-index: 10;
+  background-color: var(--primary-element-colour);
 }
 .product-card:hover {
   transform: scale(1.05);
-}
-.product-card * {
-  z-index: 10;
-}
-.product-card .product-card-background-shape {
-  width: 5rem;
-  height: 5rem;
-  top: 65%;
-  left: 15%;
-  position: absolute;
-  border: none;
-  border-radius: 100%;
-  z-index: 1;
 }
 .product-card .product-image {
   height: 70%;
